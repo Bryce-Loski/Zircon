@@ -8,6 +8,13 @@ packages/
 licenses.licx
 /NuGet.Config
 
+# OS
+.DS_Store
+
 # Local tools
 System解析/
 .qoder/
+第三方资料/
+
+# Local docs
+技术方案*.md

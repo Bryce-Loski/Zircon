@@ -1,0 +1,12 @@
+**/.git
+**/.vs
+**/obj
+**/bin
+**/Build
+System解析/
+第三方资料/
+docs/
+*.md
+.gitignore
+**/*.user
+**/*.suo

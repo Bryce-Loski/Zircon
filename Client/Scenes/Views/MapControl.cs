@@ -165,6 +165,8 @@ namespace Client.Scenes.Views
         public Cell[,] Cells;
         public int Width, Height;
 
+        public PathFinder PathFinder;
+
         public List<DXControl> MapInfoObjects = new List<DXControl>();
         public List<MapObject> Objects = new List<MapObject>();
         public List<MirEffect> Effects = new List<MirEffect>();
@@ -523,6 +525,15 @@ namespace Client.Scenes.Views
             foreach (MapObject ob in Objects)
                 if (ob.CurrentLocation.X < Width && ob.CurrentLocation.Y < Height)
                     Cells[ob.CurrentLocation.X, ob.CurrentLocation.Y].AddObject(ob);
+
+            if (Width > 0 && Height > 0 && Cells != null)
+                PathFinder = new PathFinder(this);
+        }
+
+        public bool EmptyCell(Point loc)
+        {
+            return loc.X >= 0 && loc.Y >= 0 && loc.X < Width && loc.Y < Height
+                && !Cells[loc.X, loc.Y].Blocking();
         }
 
         private void UpdateWeather()

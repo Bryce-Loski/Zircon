@@ -799,6 +799,8 @@ namespace Library
         MonsterIceStorm = 502,
         MonsterDeathCloud = 503,
         MonsterThunderStorm = 504,
+        IgyuCyclone = 516,
+        IgyuScorchedEarth = 517,
 
         SamaGuardianFire = 505,
         SamaGuardianIce = 506,
@@ -1211,10 +1213,10 @@ namespace Library
         //NF_CursedSlave3 = 378,
         //NF_PoisonousGolem = 379,
 
-        //NF_GardenSoldier = 380,
-        //NF_GardenDefender = 381,
-        //NF_RedBlossom = 382,
-        //NF_BlueBlossom = 383,
+        QitiandashengAI = 380,
+        FireBird = 381,
+        BlueBlossom = 382,
+        RedBlossom = 383,
         //NF_FireBird = 384,
         //NF_BlueGorilla = 385,
         //NF_RedGorilla = 386,

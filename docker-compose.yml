@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  zircon-server:
+    build: .
+    ports:
+      - "7000:7000"
+      - "3000:3000"
+    volumes:
+      - ./datas:/zircon/datas
+      - ./Map:/zircon/Map
+    restart: unless-stopped
+    environment:
+      - DOTNET_RUNNING_IN_CONTAINER=true
