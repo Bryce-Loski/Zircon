@@ -7,24 +7,40 @@ using G = Library.Network.GeneralPackets;
 
 namespace Library.Network
 {
+    /// <summary>
+    /// 网络连接抽象基类
+    /// 封装了 TCP 连接的核心功能：异步收发数据、数据包队列管理、超时检测、断开连接等
+    /// 客户端 CConnection 和服务端 SConnection 均继承自此类
+    /// </summary>
     public abstract class BaseConnection
     {
+        /// <summary>网络诊断信息字典</summary>
         public static Dictionary<string, DiagnosticValue> Diagnostics = new Dictionary<string, DiagnosticValue>();
+        /// <summary>数据包处理方法缓存（类型 -> MethodInfo）</summary>
         public static Dictionary<Type, MethodInfo> PacketMethods = new Dictionary<Type, MethodInfo>();
+        /// <summary>是否启用网络监控</summary>
         public static bool Monitor;
 
+        /// <summary>是否已连接</summary>
         public bool Connected { get; set; }
+        /// <summary>是否正在发送数据</summary>
         protected bool Sending { get; set; }
 
+        /// <summary>已发送字节总数</summary>
         public int TotalBytesSent { get; set; }
+        /// <summary>已接收字节总数</summary>
         public int TotalBytesReceived { get; set; }
+        /// <summary>已处理数据包总数</summary>
         public int TotalPacketsProcessed { get; set; }
 
         public bool AdditionalLogging;
 
+        /// <summary>底层 TCP 客户端</summary>
         protected TcpClient Client;
 
+        /// <summary>连接建立时间</summary>
         public DateTime TimeConnected { get; set; }
+        /// <summary>连接持续时间</summary>
         public TimeSpan Duration => Time.Now - TimeConnected;
 
         protected abstract TimeSpan TimeOutDelay { get; }
@@ -42,7 +58,9 @@ namespace Library.Network
             }
         }
 
+        /// <summary>接收数据包队列（线程安全）</summary>
         public ConcurrentQueue<Packet> ReceiveList = new ConcurrentQueue<Packet>();
+        /// <summary>发送数据包队列（线程安全）</summary>
         public ConcurrentQueue<Packet> SendList = new ConcurrentQueue<Packet>();
         private byte[] _rawData = new byte[0];
 

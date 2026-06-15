@@ -5,9 +5,14 @@ using System.Security.Cryptography;
 
 namespace Server.Envir
 {
+    /// <summary>
+    /// 服务端配置类，对应 Server.ini 配置文件
+    /// 包含网络、系统、权限、邮件、Web服务、玩家、怪物、物品、倍率、钓鱼等所有服务端配置
+    /// </summary>
     [ConfigPath(@".\Server.ini")]
     public static class Config
     {
+        // ===== 网络配置 =====
         [ConfigSection("Network")]
         public static string IPAddress { get; set; } = "127.0.0.1";
         public static ushort Port { get; set; } = 7000;
@@ -18,6 +23,7 @@ namespace Server.Envir
         public static TimeSpan PacketBanTime { get; set; } = TimeSpan.FromMinutes(5);
         public static string SyncRemotePreffix { get; set; } = "http://127.0.0.1:80/Command/";
 
+        // ===== 系统配置 =====
         [ConfigSection("System")]
         public static bool CheckVersion { get; set; } = true;
         public static string VersionPath { get; set; } = @".\Zircon.dll";
@@ -37,6 +43,7 @@ namespace Server.Envir
         public static bool EncryptionEnabled { get; set; } = false;
         public static string EncryptionKey { get; set; } = string.Empty;
 
+        // ===== 权限控制 =====
         [ConfigSection("Control")]
         public static bool AllowLogin { get; set; } = true;
         public static bool AllowNewAccount { get; set; } = true;
@@ -62,6 +69,7 @@ namespace Server.Envir
         public static bool AllowTaoist { get; set; } = true;
         public static bool AllowAssassin { get; set; } = true;
 
+        // ===== 邮件服务配置 =====
         [ConfigSection("Mail")]
         public static string MailServer { get; set; } = @"smtp.gmail.com";
         public static int MailPort { get; set; } = 587;
@@ -71,6 +79,7 @@ namespace Server.Envir
         public static string MailFrom { get; set; } = "admin@zirconserver.com";
         public static string MailDisplayName { get; set; } = "Admin";
 
+        // ===== Web 服务配置（账号激活、密码重置等 HTTP 接口） =====
         [ConfigSection("WebServer")]
         public static bool EnableWebServer { get; set; } = false;
         public static string WebPrefix { get; set; } = @"http://*:80/Command/";
@@ -91,6 +100,7 @@ namespace Server.Envir
         public static bool AllowBuyGameGold { get; set; } = true;
 
 
+        // ===== 玩家相关配置（视野、聊天延迟、最高等级、PK系统等） =====
         [ConfigSection("Players")]
         public static int MaxViewRange { get; set; } = 18;
         public static TimeSpan ShoutDelay { get; set; } = TimeSpan.FromSeconds(10);
@@ -110,12 +120,14 @@ namespace Server.Envir
         public static bool EnableStruck { get; set; } = false;
         public static bool EnableHermit { get; set; } = false;
 
+        // ===== 怪物配置（尸体保留时间、采集时间等） =====
         [ConfigSection("Monsters")]
         public static TimeSpan DeadDuration { get; set; } = TimeSpan.FromMinutes(1);
         public static TimeSpan HarvestDuration { get; set; } = TimeSpan.FromMinutes(5);
         public static int MysteryShipRegionIndex { get; set; } = 0;
         public static int LairRegionIndex { get; set; } = 0;
 
+        // ===== 物品配置（掉落保留时间、幸运值、强化等） =====
         [ConfigSection("Items")]
         public static TimeSpan DropDuration { get; set; } = TimeSpan.FromMinutes(60);
         public static int DropDistance { get; set; } = 5;
@@ -135,6 +147,7 @@ namespace Server.Envir
         public static bool AdminStartInObserverMode { get; set; } = true;
         public static bool AdminStartInSupermanMode { get; set; } = true;
 
+        // ===== 游戏倍率配置（经验、掉落、金币、技能、伙伴） =====
         [ConfigSection("Rates")]
         public static int ExperienceRate { get; set; } = 0;
         public static int DropRate { get; set; } = 0;
@@ -142,6 +155,7 @@ namespace Server.Envir
         public static int SkillRate { get; set; } = 0;
         public static int CompanionRate { get; set; } = 0;
 
+        // ===== 钓鱼系统配置 =====
         [ConfigSection("Fishing")]
         public static bool FishEnablePerfectCatch { get; set; } = true;
         public static int FishNibbleChanceBase { get; set; } = 10;

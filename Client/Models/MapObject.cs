@@ -16,13 +16,23 @@ using Frame = Library.Frame;
 
 namespace Client.Models
 {
+    /// <summary>
+    /// 地图对象抽象基类（客户端）
+    /// 代表游戏地图上的所有可见实体：玩家、怪物、NPC、物品、法术等
+    /// 负责管理位置、方向、动画、绘制、名称显示等通用逻辑
+    /// 继承自此类的具体类型包括：PlayerObject、MonsterObject、NPCObject、ItemObject、SpellObject
+    /// </summary>
     public abstract class MapObject
     {
+        /// <summary>名称标签字典（按名称分组，复用标签实例减少内存分配）</summary>
         public static SortedDictionary<string, List<DXLabel>> NameLabels = new SortedDictionary<string, List<DXLabel>>();
+        /// <summary>聊天气泡标签列表</summary>
         public static List<DXLabel> ChatLabels = new List<DXLabel>();
 
+        /// <summary>当前用户对象快捷访问</summary>
         public static UserObject User => GameScene.Game.User;
 
+        /// <summary>鼠标悬停的对象</summary>
         public static MapObject MouseObject
         {
             get { return GameScene.Game.MouseObject; }
@@ -35,6 +45,7 @@ namespace Client.Models
                 GameScene.Game.MapControl.TextureValid = false;
             }
         }
+        /// <summary>当前攻击目标</summary>
         public static MapObject TargetObject
         {
             get { return GameScene.Game.TargetObject; }
@@ -47,6 +58,7 @@ namespace Client.Models
                 GameScene.Game.MapControl.TextureValid = false;
             }
         }
+        /// <summary>当前法术目标</summary>
         public static MapObject MagicObject
         {
             get { return GameScene.Game.MagicObject; }
@@ -62,10 +74,14 @@ namespace Client.Models
 
         public static Texture ShadowTexture;
 
+        /// <summary>对象类型（玩家/怪物/NPC/物品/法术）</summary>
         public abstract ObjectType Race { get; }
+        /// <summary>是否阻挡移动（可见且未死亡时阻挡）</summary>
         public virtual bool Blocking => Visible && !Dead;
+        /// <summary>是否可见</summary>
         public bool Visible = true;
 
+        /// <summary>对象唯一 ID（由服务器分配）</summary>
         public uint ObjectID;
 
         public virtual int Level { get; set; }

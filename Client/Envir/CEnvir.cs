@@ -23,33 +23,56 @@ using System.Windows.Forms;
 
 namespace Client.Envir
 {
+    /// <summary>
+    /// 客户端环境核心类（静态单例）
+    /// 负责管理游戏的全局状态、主循环、资源加载、网络连接、输入处理等
+    /// 是整个客户端的核心调度中心
+    /// </summary>
     public static class CEnvir
     {
+        /// <summary>主窗口实例（基于 SharpDX RenderForm）</summary>
         public static TargetForm Target;
+        /// <summary>全局随机数生成器</summary>
         public static Random Random = new Random();
 
+        // ===== FPS 帧率统计 =====
         private static DateTime _FPSTime;
-        private static int FPSCounter;
-        private static int FPSCount;
+        private static int FPSCounter;   // 当前秒内的帧数计数
+        private static int FPSCount;     // 上一秒的实际帧数
 
-        public static int DPSCounter;
-        private static int DPSCount;
+        // ===== DPS 绘制调用统计 =====
+        public static int DPSCounter;    // 当前秒内的绘制调用计数
+        private static int DPSCount;     // 上一秒的实际绘制调用数
 
+        // ===== 键盘修饰键状态 =====
         public static bool Shift, Alt, Ctrl;
+        /// <summary>当前时间快照（每帧更新一次）</summary>
         public static DateTime Now;
+        /// <summary>当前鼠标位置</summary>
         public static Point MouseLocation;
 
+        /// <summary>服务器网络连接实例</summary>
         public static CConnection Connection;
+        /// <summary>是否因版本不匹配而断开</summary>
         public static bool WrongVersion;
 
+        /// <summary>已加载的图库字典，键为图库类型枚举，值为图库实例</summary>
         public static Dictionary<LibraryFile, MirLibrary> LibraryList = new Dictionary<LibraryFile, MirLibrary>();
 
+        // ===== 仓库存储 =====
+        // Storage: 常规仓库物品数组（1000个槽位）
+        // PartsStorage: 部件仓库物品数组（1000个槽位）
         public static ClientUserItem[] Storage, MainStorage, PartsStorage, MainPartsStorage;
 
+        /// <summary>黑名单列表</summary>
         public static List<ClientBlockInfo> BlockList = new List<ClientBlockInfo>();
+        /// <summary>键盘绑定配置集合（持久化到本地数据库）</summary>
         public static DBCollection<KeyBindInfo> KeyBinds;
+        /// <summary>窗口位置/大小设置集合</summary>
         public static DBCollection<WindowSetting> WindowSettings;
+        /// <summary>城堡信息集合</summary>
         public static DBCollection<CastleInfo> CastleInfoList;
+        /// <summary>MirDB 本地数据库会话</summary>
         public static MirDB.Session Session;
 
         public static ConcurrentQueue<string> ChatLog = new ConcurrentQueue<string>();
@@ -149,6 +172,9 @@ namespace Client.Envir
             }
         }
 
+        /// <summary>游戏主循环（每帧调用一次）
+        /// 先更新游戏逻辑，再渲染画面
+        /// </summary>
         public static void GameLoop()
         {
             UpdateGame();
@@ -157,6 +183,10 @@ namespace Client.Envir
             if (Config.LimitFPS)
                 Thread.Sleep(1);
         }
+        /// <summary>
+        /// 游戏逻辑更新（每帧调用）
+        /// 处理：网络连接消息、场景逻辑、FPS/DPS统计、调试信息显示、提示标签更新
+        /// </summary>
         private static void UpdateGame()
         {
             Now = Time.Now;
@@ -295,6 +325,10 @@ namespace Client.Envir
                 DXControl.HintLabel.Text = null;
             }
         }
+        /// <summary>
+        /// 游戏画面渲染（每帧调用）
+        /// 通过渲染管线管理器执行场景绘制
+        /// </summary>
         private static void RenderGame()
         {
             if (Target.ClientSize.Width == 0 || Target.ClientSize.Height == 0)
@@ -309,6 +343,10 @@ namespace Client.Envir
             }
         }
 
+        /// <summary>
+        /// 返回登录场景（断开连接后调用）
+        /// 销毁当前场景、停止所有音效、创建新的登录场景
+        /// </summary>
         public static void ReturnToLogin()
         {
             if (DXControl.ActiveScene is LoginScene) return; // handle ?
@@ -320,6 +358,11 @@ namespace Client.Envir
             BlockList = new List<ClientBlockInfo>();
         }
 
+        /// <summary>
+        /// 加载客户端本地数据库（异步执行）
+        /// 初始化 MirDB 会话并加载所有游戏数据表（物品、技能、地图、怪物、NPC、任务等）
+        /// 这些数据用于客户端显示和解析
+        /// </summary>
         public static void LoadDatabase()
         {
             Loading = true;
@@ -471,6 +514,10 @@ namespace Client.Envir
             return text;
         }
 
+        /// <summary>
+        /// 填充仓库数据（从服务器同步的物品列表）
+        /// Slot >= 2000 的物品放入部件仓库，其余放入常规仓库
+        /// </summary>
         public static void FillStorage(List<ClientUserItem> items, bool observer)
         {
             Storage = new ClientUserItem[1000];
@@ -488,6 +535,7 @@ namespace Client.Envir
                 else
                     Storage[item.Slot] = item;
         }
+        /// <summary>向服务器发送网络数据包</summary>
         public static void Enqueue(Packet packet)
         {
             Connection?.Enqueue(packet);

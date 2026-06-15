@@ -7,3 +7,7 @@ Build/
 packages/
 licenses.licx
 /NuGet.Config
+
+# Local tools
+System解析/
+.qoder/

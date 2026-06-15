@@ -15,8 +15,18 @@ using Font = System.Drawing.Font;
 
 namespace Client
 {
+    /// <summary>
+    /// 游戏主窗口类
+    /// 继承自 SharpDX.Windows.RenderForm，是 DirectX 渲染的目标窗口
+    /// 负责：
+    /// - 将 Windows 输入事件（鼠标、键盘）转发给当前活动场景
+    /// - 窗口尺寸/样式管理（全屏、无边框、常规窗口）
+    /// - 屏幕截图功能（PrintScreen 键触发）
+    /// - 鼠标锁定、Alt+Enter 全屏切换
+    /// </summary>
     public sealed class TargetForm : RenderForm
     {
+        /// <summary>是否正在调整窗口大小</summary>
         public bool Resizing { get; private set; }
 
         public TargetForm() : base(Globals.ClientName)

@@ -7,17 +7,31 @@ using System.Reflection;
 
 namespace Library.Network
 {
+    /// <summary>
+    /// 网络数据包抽象基类
+    /// 定义了数据包的序列化/反序列化机制
+    /// 通过反射自动注册所有子类数据包，并建立类型读写器字典
+    /// 支持的基本类型包括：bool、byte、int、long、float、double、string、
+    /// DateTime、TimeSpan、Point、Size、Color 等
+    /// </summary>
     public abstract class Packet
     {
+        /// <summary>所有已注册的数据包类型列表</summary>
         private static readonly List<Type> Packets;
+        /// <summary>类型 -> 序列化写入器 字典</summary>
         private static readonly Dictionary<Type, Action<object, BinaryWriter>> TypeWrite;
+        /// <summary>类型 -> 反序列化读取器 字典</summary>
         private static readonly Dictionary<Type, Func<BinaryReader, object>> TypeRead;
 
+        /// <summary>是否为客户端模式（影响某些数据包的处理逻辑）</summary>
         public static bool IsClient { get; set; }
 
+        /// <summary>当前数据包的具体类型</summary>
         public Type PacketType;
 
+        /// <summary>数据包序列化后的字节长度</summary>
         public int Length;
+        /// <summary>是否允许观察者模式接收此数据包</summary>
         public bool ObserverPacket = true;
 
         static Packet()

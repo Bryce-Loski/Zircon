@@ -9,19 +9,31 @@ using System.Windows.Forms;
 //Cleaned
 namespace Client.Controls
 {
+    /// <summary>
+    /// UI 常量定义（活动/非活动标签页颜色）
+    /// </summary>
     public class Constants
     {
+        /// <summary>活动标签页颜色</summary>
         public static Color ActiveTabColour = Color.White;
+        /// <summary>非活动标签页颜色</summary>
         public static Color InactiveTabColour = Color.FromArgb(123, 105, 66);
 
         //TODO - Add more colour constants here
     }
 
+    /// <summary>
+    /// DX 控件基类
+    /// 实现自定义 UI 控件框架，支持鼠标事件、焦点管理、绘制、纹理缓存等
+    /// 所有 UI 控件（按钮、标签、列表框、窗口、滚动条等）均继承自此类
+    /// </summary>
     public class DXControl : IDisposable, ITextureCacheItem
     {
         #region Static
+        /// <summary>对话框列表（用于管理模态对话框）</summary>
         public static List<DXControl> MessageBoxList = new List<DXControl>();
 
+        /// <summary>当前鼠标悬停的控件（静态属性，触发 OnMouseLeave/OnMouseEnter 事件）</summary>
         public static DXControl MouseControl
         {
             get => _MouseControl;
@@ -39,6 +51,7 @@ namespace Client.Controls
         }
         private static DXControl _MouseControl;
 
+        /// <summary>当前焦点控件（触发 OnLostFocus/OnFocus 事件）</summary>
         public static DXControl FocusControl
         {
             get => _FocusControl;
@@ -61,6 +74,7 @@ namespace Client.Controls
         }
         private static DXControl _FocusControl;
 
+        /// <summary>当前活动场景（游戏场景或登录场景）</summary>
         public static DXScene ActiveScene
         {
             get => _ActiveScene;

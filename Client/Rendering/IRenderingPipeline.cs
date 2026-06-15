@@ -6,8 +6,15 @@ using System.Windows.Forms;
 
 namespace Client.Rendering
 {
+    /// <summary>
+    /// 渲染管线接口
+    /// 定义了游戏渲染层的所有抽象操作，支持多种实现（DX9、DX11）
+    /// 包括：设备初始化、帧渲染、全屏切换、分辨率设置、纹理绘制、
+    /// 透明度/混合模式、文本测量、DPI 获取等功能
+    /// </summary>
     public interface IRenderingPipeline
     {
+        /// <summary>管线唯一标识符</summary>
         string Id { get; }
 
         void Initialize(RenderingPipelineContext context);

@@ -11,6 +11,12 @@ using C = Library.Network.ClientPackets;
 
 namespace Client.Models
 {
+    /// <summary>
+    /// 用户对象（客户端）
+    /// 继承自 PlayerObject，代表本地玩家自己
+    /// 负责管理玩家的属性、经验、魔法值、攻击模式等，
+    /// 并在属性变化时触发游戏界面的相应更新
+    /// </summary>
     public sealed class UserObject : PlayerObject
     {
         #region Stats

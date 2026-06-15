@@ -29,12 +29,21 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Envir
 {
+    /// <summary>
+    /// 服务端环境核心类（静态单例）
+    /// 负责管理服务器的全局状态、网络连接、游戏逻辑线程、数据持久化等
+    /// 是整个服务端的核心调度中心
+    /// </summary>
     public static class SEnvir
     {
         #region Logging
 
+        // ===== 日志系统 =====
+        /// <summary>显示日志队列（用于界面显示，最多100条）</summary>
         public static ConcurrentQueue<string> DisplayLogs = [];
+        /// <summary>完整日志队列（用于文件写入，最多1000条）</summary>
         public static ConcurrentQueue<string> Logs = [];
+        /// <summary>是否使用控制台输出日志</summary>
         public static bool UseLogConsole = false;
 
         public static void Log(string log, bool hardLog = true)
@@ -72,14 +81,23 @@ namespace Server.Envir
 
         #region Network
 
+        // ===== 网络管理 =====
+        /// <summary>IP 地址封禁字典（IP -> 封禁到期时间）</summary>
         public static Dictionary<string, DateTime> IPBlocks = new Dictionary<string, DateTime>();
+        /// <summary>IP 地址连接计数（IP -> 当前连接数）</summary>
         public static Dictionary<string, int> IPCount = new Dictionary<string, int>();
 
+        /// <summary>所有活跃连接列表</summary>
         public static List<SConnection> Connections = new List<SConnection>();
+        /// <summary>新连接队列（线程安全，由网络线程填充）</summary>
         public static ConcurrentQueue<SConnection> NewConnections;
 
         private static TcpListener _listener, _userCountListener;
 
+        /// <summary>
+        /// 启动网络监听服务
+        /// 创建两个 TcpListener：一个用于游戏连接，一个用于在线人数查询
+        /// </summary>
         private static void StartNetwork(bool log = true)
         {
             try
@@ -103,6 +121,10 @@ namespace Server.Envir
                 Log(ex.ToString());
             }
         }
+        /// <summary>
+        /// 停止网络服务
+        /// 向所有客户端发送断开连接数据包，然后关闭监听器
+        /// </summary>
         private static void StopNetwork(bool log = true)
         {
             TcpListener expiredListener = _listener;
@@ -134,6 +156,10 @@ namespace Server.Envir
             if (log) Log("Network Stopped.");
         }
 
+        /// <summary>
+        /// 异步接受新连接的回调函数
+        /// 检查 IP 是否被封禁，创建新的 SConnection 实例
+        /// </summary>
         private static void Connection(IAsyncResult result)
         {
             try

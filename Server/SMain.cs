@@ -26,10 +26,18 @@ using System.Windows.Forms;
 
 namespace Server
 {
+    /// <summary>
+    /// 服务端主窗口类
+    /// 基于 DevExpress RibbonForm 实现，提供服务端管理界面
+    /// 包含：服务器启停控制、数据表管理、日志查看、插件管理等功能
+    /// </summary>
     public partial class SMain : DevExpress.XtraBars.Ribbon.RibbonForm
     {
+        /// <summary>已打开的子窗口列表</summary>
         public List<Control> Windows = new List<Control>();
+        /// <summary>MirDB 数据库会话（服务端模式）</summary>
         public static Session Session;
+        /// <summary>服务端状态缓存文件路径（JSON 格式）</summary>
         private static readonly string CacheFilePath = Path.Combine(Application.StartupPath, "Server.cache.json");
 
         public SMain()
@@ -41,6 +49,10 @@ namespace Server
                                                    SecurityProtocolType.Tls12;
         }
 
+        /// <summary>
+        /// 初始化插件系统
+        /// 注册插件事件处理器（日志、视图、地图查看器），加载所有 Plugin.*.dll 插件
+        /// </summary>
         private void SetupPlugin()
         {
             PluginLoader.Instance.Log += PluginLoader_Log;
@@ -81,6 +93,9 @@ namespace Server
             MapViewer.CurrentViewer.MapPath = e.MapPath;
         }
 
+        /// <summary>
+        /// 窗口加载事件：初始化数据库会话、加载配置、启动界面
+        /// </summary>
         private void SMain_Load(object sender, EventArgs e)
         {
             try
@@ -103,6 +118,8 @@ namespace Server
 
             ShowView(typeof(SystemLogView));
 
+            // 初始化 MirDB 数据库会话（System 模式，用于服务端配置数据）
+            // 加载 LibraryCore 和 ServerLibrary 程序集中的所有 DBObject 子类
             Session = new Session(SessionMode.System)
             {
                 BackUpDelay = 60
@@ -156,6 +173,7 @@ namespace Server
             while (SEnvir.EnvirThread != null) Thread.Sleep(1);
         }
 
+        /// <summary>显示指定类型的子窗口（MDI 子窗体）</summary>
         private void ShowView(Type type)
         {
             try
@@ -183,6 +201,7 @@ namespace Server
             Windows.Remove((Control)sender);
         }
 
+        /// <summary>界面定时器：更新服务端状态显示（连接数、对象数等）</summary>
         private void InterfaceTimer_Tick(object sender, EventArgs e)
         {
             UpdateInterface();

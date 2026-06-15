@@ -15,20 +15,33 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Envir
 {
+    /// <summary>
+    /// 服务端连接类，代表一个客户端连接
+    /// 继承自 BaseConnection，处理服务端与客户端之间的通信
+    /// 包含连接状态管理、账号/角色关联、观察者模式等功能
+    /// </summary>
     public sealed class SConnection : BaseConnection
     {
+        /// <summary>会话计数器（单调递增）</summary>
         private static int SessionCount;
 
+        /// <summary>连接超时时间（从服务端配置读取）</summary>
         protected override TimeSpan TimeOutDelay => Config.TimeOut;
 
-        private DateTime PingTime;
-        private bool PingSent;
+        private DateTime PingTime;        // 上次发送 Ping 的时间
+        private bool PingSent;            // 是否已发送 Ping 等待响应
+        /// <summary>当前连接延迟（毫秒）</summary>
         public int Ping { get; private set; }
 
+        /// <summary>当前游戏阶段（登录/选择角色/游戏中）</summary>
         public GameStage Stage { get; set; }
+        /// <summary>关联的账号信息</summary>
         public AccountInfo Account { get; set; }
+        /// <summary>关联的玩家对象</summary>
         public PlayerObject Player { get; set; }
+        /// <summary>客户端 IP 地址</summary>
         public string IPAddress { get; }
+        /// <summary>唯一会话 ID</summary>
         public int SessionID { get; }
 
         public SConnection Observed;
