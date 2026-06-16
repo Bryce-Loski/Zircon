@@ -1,266 +1,114 @@
-﻿namespace Server.Views
+namespace Server.Views
 {
     partial class SetInfoView
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        #region Component Designer generated code
         private void InitializeComponent()
         {
-            DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetInfoView));
-            this.SetStatsGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.StatImageComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemImageComboBox();
-            this.gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.RequiredClassImageComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemImageComboBox();
-            this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.SetInfoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.SetInfoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.ribbon = new DevExpress.XtraBars.Ribbon.RibbonControl();
-            this.SaveDatabaseButton = new DevExpress.XtraBars.BarButtonItem();
-            this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
-            this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            this.JsonImportExport = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            this.ImportButton = new DevExpress.XtraBars.BarButtonItem();
-            this.ExportButton = new DevExpress.XtraBars.BarButtonItem();
-            ((System.ComponentModel.ISupportInitialize)(this.SetStatsGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StatImageComboBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.RequiredClassImageComboBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SetInfoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SetInfoGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // SetStatsGridView
-            // 
-            this.SetStatsGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.gridColumn2,
-            this.gridColumn3,
-            this.gridColumn4,
-            this.gridColumn5});
-            this.SetStatsGridView.GridControl = this.SetInfoGridControl;
-            this.SetStatsGridView.Name = "SetStatsGridView";
-            this.SetStatsGridView.OptionsView.EnableAppearanceEvenRow = true;
-            this.SetStatsGridView.OptionsView.EnableAppearanceOddRow = true;
-            this.SetStatsGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
-            this.SetStatsGridView.OptionsView.ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowAlways;
-            this.SetStatsGridView.OptionsView.ShowGroupPanel = false;
-            // 
-            // gridColumn2
-            // 
-            this.gridColumn2.ColumnEdit = this.StatImageComboBox;
-            this.gridColumn2.FieldName = "Stat";
-            this.gridColumn2.Name = "gridColumn2";
-            this.gridColumn2.Visible = true;
-            this.gridColumn2.VisibleIndex = 0;
-            // 
+            viewToolStrip = new System.Windows.Forms.ToolStrip();
+            SaveButton = new System.Windows.Forms.ToolStripButton();
+            ImportButton = new System.Windows.Forms.ToolStripButton();
+            ExportButton = new System.Windows.Forms.ToolStripButton();
+            viewTabControl = new System.Windows.Forms.TabControl();
+            SetInfoTabPage = new System.Windows.Forms.TabPage();
+            SetStatsTabPage = new System.Windows.Forms.TabPage();
+            SetInfoDataGridView = new System.Windows.Forms.DataGridView();
+            SetStatsDataGridView = new System.Windows.Forms.DataGridView();
+            StatImageComboBox = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            RequiredClassImageComboBox = new System.Windows.Forms.DataGridViewComboBoxColumn();
+
+            viewToolStrip.SuspendLayout();
+            viewTabControl.SuspendLayout();
+            SetInfoTabPage.SuspendLayout();
+            SetStatsTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)SetInfoDataGridView).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)SetStatsDataGridView).BeginInit();
+            SuspendLayout();
+
+            // viewToolStrip
+            viewToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { SaveButton, ImportButton, ExportButton });
+            viewToolStrip.Location = new System.Drawing.Point(0, 0);
+            viewToolStrip.Name = "viewToolStrip";
+            viewToolStrip.Size = new System.Drawing.Size(800, 25);
+
+            SaveButton.Name = "SaveButton"; SaveButton.Text = "Save Database"; SaveButton.Click += SaveButton_Click;
+            ImportButton.Name = "ImportButton"; ImportButton.Text = "Import"; ImportButton.Click += ImportButton_Click;
+            ExportButton.Name = "ExportButton"; ExportButton.Text = "Export"; ExportButton.Click += ExportButton_Click;
+
             // StatImageComboBox
-            // 
-            this.StatImageComboBox.AutoHeight = false;
-            this.StatImageComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StatImageComboBox.Name = "StatImageComboBox";
-            // 
-            // gridColumn3
-            // 
-            this.gridColumn3.FieldName = "Amount";
-            this.gridColumn3.Name = "gridColumn3";
-            this.gridColumn3.Visible = true;
-            this.gridColumn3.VisibleIndex = 1;
-            // 
-            // gridColumn4
-            // 
-            this.gridColumn4.ColumnEdit = this.RequiredClassImageComboBox;
-            this.gridColumn4.FieldName = "Class";
-            this.gridColumn4.Name = "gridColumn4";
-            this.gridColumn4.Visible = true;
-            this.gridColumn4.VisibleIndex = 2;
-            // 
+            StatImageComboBox.Name = "StatImageComboBox";
+            StatImageComboBox.HeaderText = "Stat";
+
             // RequiredClassImageComboBox
-            // 
-            this.RequiredClassImageComboBox.AutoHeight = false;
-            this.RequiredClassImageComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.RequiredClassImageComboBox.Name = "RequiredClassImageComboBox";
-            // 
-            // gridColumn5
-            // 
-            this.gridColumn5.FieldName = "Level";
-            this.gridColumn5.Name = "gridColumn5";
-            this.gridColumn5.Visible = true;
-            this.gridColumn5.VisibleIndex = 3;
-            // 
-            // SetInfoGridControl
-            // 
-            this.SetInfoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            gridLevelNode1.LevelTemplate = this.SetStatsGridView;
-            gridLevelNode1.RelationName = "SetStats";
-            this.SetInfoGridControl.LevelTree.Nodes.AddRange(new DevExpress.XtraGrid.GridLevelNode[] {
-            gridLevelNode1});
-            this.SetInfoGridControl.Location = new System.Drawing.Point(0, 144);
-            this.SetInfoGridControl.MainView = this.SetInfoGridView;
-            this.SetInfoGridControl.MenuManager = this.ribbon;
-            this.SetInfoGridControl.Name = "SetInfoGridControl";
-            this.SetInfoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.StatImageComboBox,
-            this.RequiredClassImageComboBox});
-            this.SetInfoGridControl.ShowOnlyPredefinedDetails = true;
-            this.SetInfoGridControl.Size = new System.Drawing.Size(727, 342);
-            this.SetInfoGridControl.TabIndex = 2;
-            this.SetInfoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.SetInfoGridView,
-            this.SetStatsGridView});
-            // 
-            // SetInfoGridView
-            // 
-            this.SetInfoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.gridColumn1});
-            this.SetInfoGridView.GridControl = this.SetInfoGridControl;
-            this.SetInfoGridView.Name = "SetInfoGridView";
-            this.SetInfoGridView.OptionsDetail.AllowExpandEmptyDetails = true;
-            this.SetInfoGridView.OptionsView.EnableAppearanceEvenRow = true;
-            this.SetInfoGridView.OptionsView.EnableAppearanceOddRow = true;
-            this.SetInfoGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
-            this.SetInfoGridView.OptionsView.ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowAlways;
-            this.SetInfoGridView.OptionsView.ShowGroupPanel = false;
-            // 
-            // gridColumn1
-            // 
-            this.gridColumn1.FieldName = "SetName";
-            this.gridColumn1.Name = "gridColumn1";
-            this.gridColumn1.Visible = true;
-            this.gridColumn1.VisibleIndex = 0;
-            // 
-            // ribbon
-            // 
-            this.ribbon.ExpandCollapseItem.Id = 0;
-            this.ribbon.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.ribbon.ExpandCollapseItem,
-            this.SaveDatabaseButton,
-            this.ribbon.SearchEditItem,
-            this.ImportButton,
-            this.ExportButton});
-            this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 4;
-            this.ribbon.Name = "ribbon";
-            this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
-            this.ribbonPage1});
-            this.ribbon.Size = new System.Drawing.Size(727, 144);
-            // 
-            // SaveDatabaseButton
-            // 
-            this.SaveDatabaseButton.Caption = "Save Database";
-            this.SaveDatabaseButton.Id = 1;
-            this.SaveDatabaseButton.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("SaveDatabaseButton.ImageOptions.Image")));
-            this.SaveDatabaseButton.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("SaveDatabaseButton.ImageOptions.LargeImage")));
-            this.SaveDatabaseButton.LargeWidth = 60;
-            this.SaveDatabaseButton.Name = "SaveDatabaseButton";
-            this.SaveDatabaseButton.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.SaveDatabaseButton_ItemClick);
-            // 
-            // ribbonPage1
-            // 
-            this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
-            this.ribbonPageGroup1,
-            this.JsonImportExport});
-            this.ribbonPage1.Name = "ribbonPage1";
-            this.ribbonPage1.Text = "Home";
-            // 
-            // ribbonPageGroup1
-            // 
-            this.ribbonPageGroup1.AllowTextClipping = false;
-            this.ribbonPageGroup1.CaptionButtonVisible = DevExpress.Utils.DefaultBoolean.False;
-            this.ribbonPageGroup1.ItemLinks.Add(this.SaveDatabaseButton);
-            this.ribbonPageGroup1.Name = "ribbonPageGroup1";
-            this.ribbonPageGroup1.Text = "Saving";
-            // 
-            // JsonImportExport
-            // 
-            this.JsonImportExport.ItemLinks.Add(this.ImportButton);
-            this.JsonImportExport.ItemLinks.Add(this.ExportButton);
-            this.JsonImportExport.Name = "JsonImportExport";
-            this.JsonImportExport.Text = "Json";
-            // 
-            // ImportButton
-            // 
-            this.ImportButton.Caption = "Import";
-            this.ImportButton.Id = 2;
-            this.ImportButton.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("ImportButton.ImageOptions.Image")));
-            this.ImportButton.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("ImportButton.ImageOptions.LargeImage")));
-            this.ImportButton.Name = "ImportButton";
-            this.ImportButton.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.ImportButton_ItemClick);
-            // 
-            // ExportButton
-            // 
-            this.ExportButton.Caption = "Export";
-            this.ExportButton.Id = 3;
-            this.ExportButton.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("ExportButton.ImageOptions.Image")));
-            this.ExportButton.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("ExportButton.ImageOptions.LargeImage")));
-            this.ExportButton.Name = "ExportButton";
-            this.ExportButton.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.ExportButton_ItemClick);
-            // 
+            RequiredClassImageComboBox.Name = "RequiredClassImageComboBox";
+            RequiredClassImageComboBox.HeaderText = "Class";
+
+            // viewTabControl
+            viewTabControl.Controls.Add(SetInfoTabPage);
+            viewTabControl.Controls.Add(SetStatsTabPage);
+            viewTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            viewTabControl.Location = new System.Drawing.Point(0, 25);
+            viewTabControl.Name = "viewTabControl";
+
+            // SetInfoTabPage
+            SetInfoTabPage.Controls.Add(SetInfoDataGridView);
+            SetInfoTabPage.Name = "SetInfoTabPage";
+            SetInfoTabPage.Text = "Set Info";
+
+            // SetStatsTabPage
+            SetStatsTabPage.Controls.Add(SetStatsDataGridView);
+            SetStatsTabPage.Name = "SetStatsTabPage";
+            SetStatsTabPage.Text = "Set Stats";
+
+            // SetInfoDataGridView
+            SetInfoDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            SetInfoDataGridView.Name = "SetInfoDataGridView";
+            SetInfoDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+
+            // SetStatsDataGridView
+            SetStatsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            SetStatsDataGridView.Name = "SetStatsDataGridView";
+            SetStatsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            SetStatsDataGridView.Columns.Add(StatImageComboBox);
+            SetStatsDataGridView.Columns.Add(RequiredClassImageComboBox);
+
             // SetInfoView
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(727, 486);
-            this.Controls.Add(this.SetInfoGridControl);
-            this.Controls.Add(this.ribbon);
-            this.Name = "SetInfoView";
-            this.Ribbon = this.ribbon;
-            this.Text = "Set Info";
-            ((System.ComponentModel.ISupportInitialize)(this.SetStatsGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StatImageComboBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.RequiredClassImageComboBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SetInfoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SetInfoGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ribbon)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(viewTabControl);
+            Controls.Add(viewToolStrip);
+            Name = "SetInfoView";
+            Size = new System.Drawing.Size(800, 500);
 
+            viewToolStrip.ResumeLayout(false);
+            viewToolStrip.PerformLayout();
+            SetInfoTabPage.ResumeLayout(false);
+            SetStatsTabPage.ResumeLayout(false);
+            viewTabControl.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)SetInfoDataGridView).EndInit();
+            ((System.ComponentModel.ISupportInitialize)SetStatsDataGridView).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
-
         #endregion
 
-        private DevExpress.XtraBars.Ribbon.RibbonControl ribbon;
-        private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
-        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
-        private DevExpress.XtraBars.BarButtonItem SaveDatabaseButton;
-        private DevExpress.XtraGrid.GridControl SetInfoGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView SetStatsGridView;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn2;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn3;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn4;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
-        private DevExpress.XtraGrid.Views.Grid.GridView SetInfoGridView;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemImageComboBox StatImageComboBox;
-        private DevExpress.XtraEditors.Repository.RepositoryItemImageComboBox RequiredClassImageComboBox;
-        private DevExpress.XtraBars.BarButtonItem ImportButton;
-        private DevExpress.XtraBars.BarButtonItem ExportButton;
-        private DevExpress.XtraBars.Ribbon.RibbonPageGroup JsonImportExport;
+        private System.Windows.Forms.ToolStrip viewToolStrip;
+        private System.Windows.Forms.ToolStripButton SaveButton;
+        private System.Windows.Forms.ToolStripButton ImportButton;
+        private System.Windows.Forms.ToolStripButton ExportButton;
+        private System.Windows.Forms.TabControl viewTabControl;
+        private System.Windows.Forms.TabPage SetInfoTabPage;
+        private System.Windows.Forms.TabPage SetStatsTabPage;
+        private System.Windows.Forms.DataGridView SetInfoDataGridView;
+        private System.Windows.Forms.DataGridView SetStatsDataGridView;
+        private System.Windows.Forms.DataGridViewComboBoxColumn StatImageComboBox;
+        private System.Windows.Forms.DataGridViewComboBoxColumn RequiredClassImageComboBox;
     }
 }

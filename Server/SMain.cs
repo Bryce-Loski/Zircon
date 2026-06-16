@@ -1,9 +1,4 @@
-﻿using DevExpress.LookAndFeel;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Columns;
-using DevExpress.XtraGrid.Views.Grid;
-using Library;
+﻿using Library;
 using Library.SystemModels;
 using MirDB;
 using PluginCore;
@@ -26,12 +21,12 @@ namespace Server
 {
     /// <summary>
     /// 服务端主窗口类
-    /// 基于 DevExpress RibbonForm 实现，提供服务端管理界面
+    /// 基于标准 WinForms Form 实现，提供服务端管理界面
     /// 包含：服务器启停控制、数据表管理、日志查看、插件管理等功能
     /// </summary>
-    public partial class SMain : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class SMain : Form
     {
-        /// <summary>已打开的子窗口列表</summary>
+        /// <summary>已打开的子页面列表（UserControl 实例）</summary>
         public List<Control> Windows = new List<Control>();
         /// <summary>MirDB 数据库会话（服务端模式）</summary>
         public static Session Session;
@@ -53,7 +48,11 @@ namespace Server
             PluginLoader.Instance.View += PluginLoader_ShowView;
             PluginLoader.Instance.MapViewer += PluginLoader_MapViewer;
 
-            PluginLoader.LoadPlugins(this.ribbonPage3, SMain.Session);
+            PluginLoader.LoadPlugins(pluginsToolStrip, SMain.Session);
+
+            // 如果有插件添加了按钮，则显示工具栏
+            if (pluginsToolStrip.Items.Count > 0)
+                pluginsToolStrip.Visible = true;
         }
 
         private void PluginLoader_Log(object sender, PluginCore.LogEventArgs e)
@@ -80,7 +79,7 @@ namespace Server
 
             if (!System.IO.File.Exists(e.MapPath))
             {
-                XtraMessageBox.Show("Map file does not exist.");
+                MessageBox.Show("Map file does not exist.");
                 return;
             }
 
@@ -88,7 +87,7 @@ namespace Server
         }
 
         /// <summary>
-        /// 窗口加载事件：初始化数据库会话、加载配置、启动界面
+        /// 窗口加载事件：初始化数据库会话、加载配置、构建导航树、启动界面
         /// </summary>
         private void SMain_Load(object sender, EventArgs e)
         {
@@ -110,8 +109,6 @@ namespace Server
 
             LoadUserCache();
 
-            ShowView(typeof(SystemLogView));
-
             // 初始化 MirDB 数据库会话（System 模式，用于服务端配置数据）
             // 加载 LibraryCore 和 ServerLibrary 程序集中的所有 DBObject 子类
             Session = new Session(SessionMode.System)
@@ -126,18 +123,119 @@ namespace Server
 
             CurrencyInfoView.AddDefaultCurrencies();
 
+            BuildNavigationTree();
+
             SetupPlugin();
 
             UpdateInterface();
 
+            // 默认打开 SystemLogView
+            ShowView(typeof(SystemLogView));
+
             Application.Idle += Application_Idle;
+        }
+
+        /// <summary>
+        /// 构建左侧导航树
+        /// 将原有的 NavBarGroup/NavBarItem 结构映射为 TreeNode 层级
+        /// </summary>
+        private void BuildNavigationTree()
+        {
+            navigationTreeView.BeginUpdate();
+            navigationTreeView.Nodes.Clear();
+
+            // Operations
+            var operations = navigationTreeView.Nodes.Add("Operations", "Operations");
+            operations.Nodes.Add("SystemLogView", "System Log");
+            operations.Nodes.Add("ChatLogView", "Chat Log");
+            operations.Nodes.Add("ConfigView", "Config");
+
+            // Player
+            var player = navigationTreeView.Nodes.Add("Player", "Player");
+            player.Nodes.Add("BaseStatView", "Base Stats");
+            player.Nodes.Add("MagicInfoView", "Magic Info");
+            player.Nodes.Add("FameInfoView", "Fame Info");
+            player.Nodes.Add("DisciplineInfoView", "Discipline Info");
+            player.Nodes.Add("CompanionInfoView", "Companion Info");
+            player.Nodes.Add("CurrencyInfoView", "Currency Info");
+            player.Nodes.Add("HelpInfoView", "Help Info");
+
+            // Map
+            var map = navigationTreeView.Nodes.Add("Map", "Map");
+            map.Nodes.Add("MapInfoView", "Map Info");
+            map.Nodes.Add("InstanceInfoView", "Instance Info");
+            map.Nodes.Add("MapRegionView", "Map Region");
+            map.Nodes.Add("MovementInfoView", "Movement Info");
+            map.Nodes.Add("SafeZoneInfoView", "Safe Zone Info");
+            map.Nodes.Add("FishingInfoView", "Fishing Info");
+            map.Nodes.Add("CastleInfoView", "Castle Info");
+            map.Nodes.Add("EventInfoView", "Event Info");
+
+            // NPC
+            var npc = navigationTreeView.Nodes.Add("NPC", "NPC");
+            npc.Nodes.Add("NPCInfoView", "NPC Info");
+            npc.Nodes.Add("NPCPageView", "NPC Page");
+            npc.Nodes.Add("QuestInfoView", "Quest Info");
+            npc.Nodes.Add("MilestoneInfoView", "Milestone Info");
+            npc.Nodes.Add("StoreInfoView", "Store Info");
+
+            // Item
+            var item = navigationTreeView.Nodes.Add("Item", "Item");
+            item.Nodes.Add("ItemInfoView", "Item Info");
+            item.Nodes.Add("ItemInfoStatView", "Item Info Stat");
+            item.Nodes.Add("SetInfoView", "Set Info");
+            item.Nodes.Add("WeaponCraftStatInfoView", "Weapon Craft Info");
+            item.Nodes.Add("BundleInfoView", "Bundle Info");
+            item.Nodes.Add("LootBoxInfoView", "Loot Box Info");
+
+            // Monster
+            var monster = navigationTreeView.Nodes.Add("Monster", "Monster");
+            monster.Nodes.Add("MonsterInfoView", "Monster Info");
+            monster.Nodes.Add("MonsterInfoStatView", "Monster Info Stat");
+            monster.Nodes.Add("DropInfoView", "Drop Info");
+            monster.Nodes.Add("RespawnInfoView", "Respawn Info");
+
+            // Management
+            var management = navigationTreeView.Nodes.Add("Management", "Management");
+            management.Nodes.Add("AccountView", "Account");
+            management.Nodes.Add("CharacterView", "Character Info");
+            management.Nodes.Add("UserDropView", "User Drop");
+            management.Nodes.Add("GameGoldPaymentView", "Payments");
+            management.Nodes.Add("GameStoreSaleView", "Store Sales");
+            management.Nodes.Add("DiagnosticView", "Diagnostics");
+            management.Nodes.Add("OrphanDiagnosticView", "Orphan Diagnostics");
+            management.Nodes.Add("UserConquestStatsView", "Conquest Stats");
+            management.Nodes.Add("UserMailView", "User Mail");
+            management.Nodes.Add("NPCListView", "NPC Data");
+
+            // 展开所有分组
+            navigationTreeView.ExpandAll();
+
+            navigationTreeView.EndUpdate();
+        }
+
+        /// <summary>
+        /// 导航树节点选中事件 — 映射节点名称到 View 类型并打开
+        /// </summary>
+        private void NavigationTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node == null) return;
+
+            // 分组节点（父节点）不打开页面
+            if (e.Node.Level == 0) return;
+
+            string viewName = e.Node.Name;
+            Type viewType = Type.GetType($"Server.Views.{viewName}");
+            if (viewType != null)
+            {
+                ShowView(viewType);
+            }
         }
 
         private void Application_Idle(object sender, EventArgs e)
         {
             try
             {
-                //temp - move this in to a timer??
                 MapViewer.CurrentViewer?.Process();
 
                 while (AppStillIdle)
@@ -167,24 +265,45 @@ namespace Server
             while (SEnvir.EnvirThread != null) Thread.Sleep(1);
         }
 
-        /// <summary>显示指定类型的子窗口（MDI 子窗体）</summary>
+        /// <summary>
+        /// 显示指定类型的子页面
+        /// 在 TabControl 中查找已打开的页面，或创建新的 UserControl 并添加到 TabPage
+        /// </summary>
         private void ShowView(Type type)
         {
             try
             {
+                // 查找已打开的同类型页面
                 foreach (Control item in Windows)
+                {
                     if (item.GetType() == type)
                     {
-                        tabbedView1.ActivateDocument(item);
+                        // 找到对应的 TabPage 并激活
+                        foreach (TabPage tab in mainTabControl.TabPages)
+                        {
+                            if (tab.Controls.Contains(item))
+                            {
+                                mainTabControl.SelectedTab = tab;
+                                return;
+                            }
+                        }
                         return;
                     }
+                }
 
-                Form view = (Form)Activator.CreateInstance(type);
-                view.MdiParent = this;
-                view.Disposed += View_Disposed;
+                // 创建新的 UserControl 实例
+                UserControl view = (UserControl)Activator.CreateInstance(type);
+                view.Dock = DockStyle.Fill;
                 view.Tag = type.Name;
                 Windows.Add(view);
-                view.Show();
+
+                // 创建 TabPage 并添加 UserControl
+                string tabTitle = type.Name.Replace("View", "").Replace("Info", " Info");
+                TabPage tabPage = new TabPage(tabTitle);
+                tabPage.Controls.Add(view);
+                tabPage.Tag = type;
+                mainTabControl.TabPages.Add(tabPage);
+                mainTabControl.SelectedTab = tabPage;
             }
             finally
             { }
@@ -192,7 +311,25 @@ namespace Server
 
         private void View_Disposed(object sender, EventArgs e)
         {
-            Windows.Remove((Control)sender);
+            Control ctrl = (Control)sender;
+            Windows.Remove(ctrl);
+
+            // 移除对应的 TabPage
+            foreach (TabPage tab in mainTabControl.TabPages)
+            {
+                if (tab.Controls.Contains(ctrl))
+                {
+                    mainTabControl.TabPages.Remove(tab);
+                    tab.Dispose();
+                    break;
+                }
+            }
+        }
+
+        /// <summary>TabControl 标签页关闭时移除对应 UserControl</summary>
+        private void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // 预留扩展：可添加标签页关闭按钮等功能
         }
 
         /// <summary>界面定时器：更新服务端状态显示（连接数、对象数等）</summary>
@@ -209,58 +346,57 @@ namespace Server
             StartServerButton.Enabled = SEnvir.EnvirThread == null;
             StopServerButton.Enabled = SEnvir.Started;
 
-            ConnectionLabel.Caption = string.Format(@"Connections: {0:#,##0}", SEnvir.Connections.Count);
-            ObjectLabel.Caption = string.Format(@"Objects: {0} of {1:#,##0}", SEnvir.ActiveObjects.Count, SEnvir.Objects.Count);
-            ProcessLabel.Caption = string.Format(@"Process Count: {0:#,##0}", SEnvir.ProcessObjectCount);
-            LoopLabel.Caption = string.Format(@"Loop Count: {0:#,##0}", SEnvir.LoopCount);
-            EMailsSentLabel.Caption = string.Format(@"E-Mails Sent: {0:#,##0}", EmailService.EMailsSent);
+            ConnectionLabel.Text = string.Format(@"Connections: {0:#,##0}", SEnvir.Connections.Count);
+            ObjectLabel.Text = string.Format(@"Objects: {0} of {1:#,##0}", SEnvir.ActiveObjects.Count, SEnvir.Objects.Count);
+            ProcessLabel.Text = string.Format(@"Process Count: {0:#,##0}", SEnvir.ProcessObjectCount);
+            LoopLabel.Text = string.Format(@"Loop Count: {0:#,##0}", SEnvir.LoopCount);
+            EMailsSentLabel.Text = string.Format(@"E-Mails Sent: {0:#,##0}", EmailService.EMailsSent);
 
-            ConDelay.Caption = string.Format(@"Con Delay: {0:#,##0}ms", SEnvir.ConDelay);
-            SaveDelay.Caption = string.Format(@"Save Delay: {0:#,##0}ms", SEnvir.SaveDelay);
+            ConDelay.Text = string.Format(@"Con Delay: {0:#,##0}ms", SEnvir.ConDelay);
+            SaveDelay.Text = string.Format(@"Save Delay: {0:#,##0}ms", SEnvir.SaveDelay);
 
             const decimal KB = 1024;
             const decimal MB = KB * 1024;
             const decimal GB = MB * 1024;
 
             if (SEnvir.TotalBytesReceived > GB)
-                TotalDownloadLabel.Caption = string.Format(@"Downloaded: {0:#,##0.0}GB", SEnvir.TotalBytesReceived / GB);
+                TotalDownloadLabel.Text = string.Format(@"Downloaded: {0:#,##0.0}GB", SEnvir.TotalBytesReceived / GB);
             else if (SEnvir.TotalBytesReceived > MB)
-                TotalDownloadLabel.Caption = string.Format(@"Downloaded: {0:#,##0.0}MB", SEnvir.TotalBytesReceived / MB);
+                TotalDownloadLabel.Text = string.Format(@"Downloaded: {0:#,##0.0}MB", SEnvir.TotalBytesReceived / MB);
             else if (SEnvir.TotalBytesReceived > KB)
-                TotalDownloadLabel.Caption = string.Format(@"Downloaded: {0:#,##0}KB", SEnvir.TotalBytesReceived / KB);
+                TotalDownloadLabel.Text = string.Format(@"Downloaded: {0:#,##0}KB", SEnvir.TotalBytesReceived / KB);
             else
-                TotalDownloadLabel.Caption = string.Format(@"Downloaded: {0:#,##0}B", SEnvir.TotalBytesReceived);
+                TotalDownloadLabel.Text = string.Format(@"Downloaded: {0:#,##0}B", SEnvir.TotalBytesReceived);
 
             if (SEnvir.TotalBytesSent > GB)
-                TotalUploadLabel.Caption = string.Format(@"Uploaded: {0:#,##0.0}GB", SEnvir.TotalBytesSent / GB);
+                TotalUploadLabel.Text = string.Format(@"Uploaded: {0:#,##0.0}GB", SEnvir.TotalBytesSent / GB);
             else if (SEnvir.TotalBytesSent > MB)
-                TotalUploadLabel.Caption = string.Format(@"Uploaded: {0:#,##0.0}MB", SEnvir.TotalBytesSent / MB);
+                TotalUploadLabel.Text = string.Format(@"Uploaded: {0:#,##0.0}MB", SEnvir.TotalBytesSent / MB);
             else if (SEnvir.TotalBytesSent > KB)
-                TotalUploadLabel.Caption = string.Format(@"Uploaded: {0:#,##0}KB", SEnvir.TotalBytesSent / KB);
+                TotalUploadLabel.Text = string.Format(@"Uploaded: {0:#,##0}KB", SEnvir.TotalBytesSent / KB);
             else
-                TotalUploadLabel.Caption = string.Format(@"Uploaded: {0:#,##0}B", SEnvir.TotalBytesSent);
-
+                TotalUploadLabel.Text = string.Format(@"Uploaded: {0:#,##0}B", SEnvir.TotalBytesSent);
 
             if (SEnvir.DownloadSpeed > GB)
-                DownloadSpeedLabel.Caption = string.Format(@"D/L Speed: {0:#,##0.0}GBps", SEnvir.DownloadSpeed / GB);
+                DownloadSpeedLabel.Text = string.Format(@"D/L Speed: {0:#,##0.0}GBps", SEnvir.DownloadSpeed / GB);
             else if (SEnvir.DownloadSpeed > MB)
-                DownloadSpeedLabel.Caption = string.Format(@"D/L Speed: {0:#,##0.0}MBps", SEnvir.DownloadSpeed / MB);
+                DownloadSpeedLabel.Text = string.Format(@"D/L Speed: {0:#,##0.0}MBps", SEnvir.DownloadSpeed / MB);
             else if (SEnvir.DownloadSpeed > KB)
-                DownloadSpeedLabel.Caption = string.Format(@"D/L Speed: {0:#,##0}KBps", SEnvir.DownloadSpeed / KB);
+                DownloadSpeedLabel.Text = string.Format(@"D/L Speed: {0:#,##0}KBps", SEnvir.DownloadSpeed / KB);
             else
-                DownloadSpeedLabel.Caption = string.Format(@"D/L Speed: {0:#,##0}Bps", SEnvir.DownloadSpeed);
+                DownloadSpeedLabel.Text = string.Format(@"D/L Speed: {0:#,##0}Bps", SEnvir.DownloadSpeed);
 
             if (SEnvir.UploadSpeed > GB)
-                UploadSpeedLabel.Caption = string.Format(@"U/L Speed: {0:#,##0.0}GBps", SEnvir.UploadSpeed / GB);
+                UploadSpeedLabel.Text = string.Format(@"U/L Speed: {0:#,##0.0}GBps", SEnvir.UploadSpeed / GB);
             else if (SEnvir.UploadSpeed > MB)
-                UploadSpeedLabel.Caption = string.Format(@"U/L Speed: {0:#,##0.0}MBps", SEnvir.UploadSpeed / MB);
+                UploadSpeedLabel.Text = string.Format(@"U/L Speed: {0:#,##0.0}MBps", SEnvir.UploadSpeed / MB);
             else if (SEnvir.UploadSpeed > KB)
-                UploadSpeedLabel.Caption = string.Format(@"U/L Speed: {0:#,##0}KBps", SEnvir.UploadSpeed / KB);
+                UploadSpeedLabel.Text = string.Format(@"U/L Speed: {0:#,##0}KBps", SEnvir.UploadSpeed / KB);
             else
-                UploadSpeedLabel.Caption = string.Format(@"U/L Speed: {0:#,##0}Bps", SEnvir.UploadSpeed);
+                UploadSpeedLabel.Text = string.Format(@"U/L Speed: {0:#,##0}Bps", SEnvir.UploadSpeed);
         }
 
-        private void StartServerButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void StartServerButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -274,57 +410,33 @@ namespace Server
             }
         }
 
-        private void StopServerButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void StopServerButton_Click(object sender, EventArgs e)
         {
             SEnvir.Started = false;
             UpdateInterface();
         }
 
-        private void LogNavButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        /// <summary>
+        /// 设置 DataGridView 的通用选项（多选、键盘快捷键）
+        /// 替代原有的 GridView 设置方法
+        /// </summary>
+        public static void SetUpView(DataGridView view)
         {
-            ShowView(typeof(SystemLogView));
-        }
-
-        private void ChatLogNavButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(ChatLogView));
-        }
-
-        private void ConfigButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(ConfigView));
-        }
-
-        private void MapInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(MapInfoView));
-        }
-        private void InstanceInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(InstanceInfoView));
-        }
-        private void MonsterInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(MonsterInfoView));
-        }
-
-        public static void SetUpView(GridView view)
-        {
-            view.BestFitColumns();
+            view.MultiSelect = true;
+            view.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            view.AutoResizeColumns();
             view.KeyPress += PasteData_KeyPress;
             view.KeyDown += DeleteRows_KeyDown;
-            view.OptionsSelection.MultiSelect = true;
-            view.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
         }
 
-        public static void InsertRowAfterFocusedObject<T>(GridView view) where T : DBObject, new()
+        public static void InsertRowAfterFocusedObject<T>(DataGridView view) where T : DBObject, new()
         {
             var collection = Session.GetCollection<T>();
             string title = $"Insert {typeof(T)}";
 
-            if (view.GetFocusedRow() is not T focusedObject)
+            if (view.CurrentRow?.DataBoundItem is not T focusedObject)
             {
-                XtraMessageBox.Show($"Please select a {typeof(T)} to insert after.", title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Please select a {typeof(T)} to insert after.", title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -333,193 +445,101 @@ namespace Server
             if (string.IsNullOrWhiteSpace(description))
                 description = focusedObject.Index.ToString();
 
-            DialogResult result = XtraMessageBox.Show($"Do you want to insert row after {description}?", title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show($"Do you want to insert row after {description}?", title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result != DialogResult.Yes) return;
 
             T newObject = Session.InsertObjectAfter<T>(focusedObject.Index);
 
-            view.RefreshData();
+            // 刷新数据源
+            if (view.DataSource is BindingSource bs)
+                bs.ResetBindings(false);
 
-            int bindingIndex = collection.Binding.IndexOf(newObject);
-            int rowHandle = view.GetRowHandle(bindingIndex);
-
-            view.FocusedRowHandle = rowHandle;
-            view.SelectRow(rowHandle);
+            // 选中新插入的行
+            if (view.DataSource is BindingSource bs2)
+            {
+                int idx = bs2.List.IndexOf(newObject);
+                if (idx >= 0 && idx < view.Rows.Count)
+                {
+                    view.ClearSelection();
+                    view.Rows[idx].Selected = true;
+                    view.FirstDisplayedScrollingRowIndex = idx;
+                }
+            }
+            view.AutoResizeColumns();
         }
 
         private static void DeleteRows_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Delete) return;
 
-            if (XtraMessageBox.Show("Delete rows?", "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            if (MessageBox.Show("Delete rows?", "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
-            GridView view = (GridView)sender;
-            //view.DeleteSelectedRows();
-
-            int[] rows = view.GetSelectedRows();
+            DataGridView view = (DataGridView)sender;
 
             List<DBObject> objects = new List<DBObject>();
 
-            foreach (int index in rows)
-                objects.Add((DBObject)view.GetRow(index));
+            foreach (DataGridViewRow row in view.SelectedRows)
+            {
+                if (row.DataBoundItem is DBObject obj)
+                    objects.Add(obj);
+            }
+
+            // 也支持单元格选择模式下的行删除
+            if (objects.Count == 0)
+            {
+                HashSet<int> rowIndexes = new HashSet<int>();
+                foreach (DataGridViewCell cell in view.SelectedCells)
+                    rowIndexes.Add(cell.RowIndex);
+
+                foreach (int idx in rowIndexes)
+                {
+                    if (view.Rows[idx].DataBoundItem is DBObject obj)
+                        objects.Add(obj);
+                }
+            }
 
             foreach (DBObject ob in objects)
                 ob?.Delete();
         }
+
         private static void PasteData_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 0x16)
             {
+                // 粘贴功能待实现，不拦截按键，让默认行为处理
+                DataGridView view = (DataGridView)sender;
+                string data = Clipboard.GetText();
+                if (string.IsNullOrWhiteSpace(data)) return;
+
+                string[] copied = data.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (copied.Length <= 1) return;
+
                 e.Handled = true;
 
-                GridView view = (GridView)sender;
-                string data = Clipboard.GetText();
-                string[] copied = data.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                // 简单粘贴：尝试逐行写入当前单元格所在行及后续行
+                int startRow = view.CurrentCell?.RowIndex ?? 0;
+                int startCol = view.CurrentCell?.ColumnIndex ?? 0;
 
-                var rows = view.GetSelectedRows();
-
-                if (rows.Length == 0)
+                for (int i = 1; i < copied.Length; i++) // 跳过标题行
                 {
-                    //Pasting Column
-                    for (int i = 1; i < copied.Length; i++) //Avoid Header
+                    int targetRow = startRow + i - 1;
+                    if (targetRow >= view.Rows.Count) break;
+
+                    string[] fields = copied[i].Split('\t');
+                    for (int j = 0; j < fields.Length; j++)
                     {
-                        view.AddNewRow();
-                        string[] row = copied[i].Split('\t');
+                        int targetCol = startCol + j;
+                        if (targetCol >= view.Columns.Count) break;
 
-
-                        for (int c = 0; c < row.Length; c++)
-                        {
-                            if (c >= view.Columns.Count) break;
-
-                            GridColumn column = view.GetVisibleColumn(view.FocusedColumn.VisibleIndex + c);
-
-                            if (column.ColumnType.IsSubclassOf(typeof(DBObject)))
-                            {
-                                RepositoryItemLookUpEdit tmep = column.ColumnEdit as
-                                    RepositoryItemLookUpEdit;
-
-                                if (tmep == null) return;
-
-                                view.SetRowCellValue(view.FocusedRowHandle, column, Session.GetObject(column.ColumnType, tmep.DisplayMember, row[c]));
-
-                            }
-                            else if (column.ColumnType == typeof(bool))
-                                view.SetRowCellValue(view.FocusedRowHandle, column, row[c] == "Checked");
-                            else if (column.ColumnType == typeof(decimal) && row[c].EndsWith("%"))
-                                view.SetRowCellValue(view.FocusedRowHandle, column, decimal.Parse(row[c].TrimEnd('%', ' ')) / 100M);
-                            else
-                                view.SetRowCellValue(view.FocusedRowHandle, column, row[c]);
-                        }
-                    }
-                    return;
-                }
-
-                for (int i = 0; i < rows.Length; i++)
-                {
-                    //Could paste multiple cells;
-                    if (i + 1 >= copied.Length) break;
-                    string[] row = copied[i + 1].Split('\t');
-
-                    var cells = view.GetSelectedCells(rows[i]);
-
-                    if (cells.Length != row.Length)
-                    {
-                        XtraMessageBox.Show("Column Count does not Copied Column Count");
-                        return;
-                    }
-
-                    for (int c = 0; c < cells.Length; c++)
-                    {
-                        GridColumn column = view.Columns[cells[c].FieldName];
-
-                        if (column.ColumnType.IsSubclassOf(typeof(DBObject)))
-                        {
-                            RepositoryItemLookUpEdit tmep = column.ColumnEdit as RepositoryItemLookUpEdit;
-
-                            if (tmep == null) return;
-
-                            view.SetRowCellValue(rows[i], column, Session.GetObject(column.ColumnType, tmep.DisplayMember, row[c]));
-
-                        }
-                        else if (column.ColumnType == typeof(bool))
-                            view.SetRowCellValue(rows[i], column, row[c] == "Checked");
-                        else if (column.ColumnType == typeof(decimal) && row[c].EndsWith("%"))
-                            view.SetRowCellValue(rows[i], column, decimal.Parse(row[c].TrimEnd('%', ' ')) / 100M);
-                        else
-                            view.SetRowCellValue(rows[i], column, row[c]);
+                        var cell = view.Rows[targetRow].Cells[targetCol];
+                        if (!cell.ReadOnly)
+                            cell.Value = fields[j];
                     }
                 }
-
+                view.Refresh();
             }
-        }
-
-        private void ItemInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(ItemInfoView));
-        }
-
-        private void NPCInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(NPCInfoView));
-        }
-
-        private void NPCPageButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(NPCPageView));
-        }
-
-        private void MagicInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(MagicInfoView));
-        }
-
-        private void CurrencyInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(CurrencyInfoView));
-        }
-
-        private void HelpInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(HelpInfoView));
-        }
-
-        private void CharacterInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(CharacterView));
-        }
-
-        private void AccountInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(AccountView));
-        }
-
-        private void MovementInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(MovementInfoView));
-        }
-
-
-        private void ItemInfoStatButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(ItemInfoStatView));
-        }
-
-        private void SetInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(SetInfoView));
-
-        }
-
-        private void StoreInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(StoreInfoView));
-        }
-
-        private void BaseStatButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(BaseStatView));
         }
 
         #region Idle Check
@@ -531,7 +551,6 @@ namespace Server
                 return !PeekMessage(out msg, IntPtr.Zero, 0, 0, 0);
             }
         }
-
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
@@ -550,126 +569,6 @@ namespace Server
         }
         #endregion
 
-        private void SafeZoneInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(SafeZoneInfoView));
-        }
-
-        private void RespawnInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(RespawnInfoView));
-        }
-
-        private void MapRegionButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(MapRegionView));
-        }
-
-        private void DropInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(DropInfoView));
-        }
-
-        private void UserDropButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(UserDropView));
-        }
-
-        private void QuestInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(QuestInfoView));
-        }
-
-        private void MilestoneInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(MilestoneInfoView));
-        }
-
-        private void CompanionInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(CompanionInfoView));
-        }
-
-        private void EventInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(EventInfoView));
-        }
-
-        private void MonsterInfoStatButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(MonsterInfoStatView));
-        }
-
-        private void CastleInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(CastleInfoView));
-        }
-
-        private void PaymentButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(GameGoldPaymentView));
-        }
-
-        private void StoreSalesButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(GameStoreSaleView));
-        }
-
-        private void DiagnosticButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(DiagnosticView));
-        }
-
-        private void OrphanDiagnosticsButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(OrphanDiagnosticView));
-        }
-
-        private void navBarItem3_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(UserConquestStatsView));
-        }
-
-        private void navBarItem4_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(UserMailView));
-        }
-
-        private void WeaponCraftInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(WeaponCraftStatInfoView));
-        }
-
-        private void FishingInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(FishingInfoView));
-        }
-
-        private void DisciplineInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(DisciplineInfoView));
-        }
-
-        private void navBarItem5_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(NPCListView));
-        }
-
-        private void FameInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(FameInfoView));
-        }
-
-        private void BundleInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(BundleInfoView));
-        }
-
-        private void LootBoxInfoButton_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
-        {
-            ShowView(typeof(LootBoxInfoView));
-        }
-
         private void LoadUserCache()
         {
             try
@@ -680,18 +579,17 @@ namespace Server
 
                 if (cache == null) return;
 
-                if (!string.IsNullOrEmpty(cache.SkinName))
-                {
-                    UserLookAndFeel.Default.SetSkinStyle(cache.SkinName);
-                    DLookAndFeel.LookAndFeel.SkinName = cache.SkinName;
-                }
-
                 WindowState = cache.Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
 
                 if (cache.ExpandedGroups != null)
                 {
-                    foreach (DevExpress.XtraNavBar.NavBarGroup group in navBarControl1.Groups)
-                        group.Expanded = cache.ExpandedGroups.Contains(group.Name);
+                    foreach (TreeNode group in navigationTreeView.Nodes)
+                    {
+                        if (cache.ExpandedGroups.Contains(group.Name))
+                            group.Expand();
+                        else
+                            group.Collapse();
+                    }
                 }
             }
             catch (Exception ex)
@@ -704,10 +602,16 @@ namespace Server
         {
             try
             {
+                var expandedGroups = new List<string>();
+                foreach (TreeNode group in navigationTreeView.Nodes)
+                {
+                    if (group.IsExpanded)
+                        expandedGroups.Add(group.Name);
+                }
+
                 var cache = new ServerUserCache
                 {
-                    SkinName = string.IsNullOrEmpty(UserLookAndFeel.Default.SkinName) ? DLookAndFeel.LookAndFeel.SkinName : UserLookAndFeel.Default.SkinName,
-                    ExpandedGroups = navBarControl1.Groups.Cast<DevExpress.XtraNavBar.NavBarGroup>().Where(x => x.Expanded).Select(x => x.Name).ToList(),
+                    ExpandedGroups = expandedGroups,
                     Maximized = WindowState == FormWindowState.Maximized
                 };
 
@@ -724,7 +628,6 @@ namespace Server
 
         private class ServerUserCache
         {
-            public string SkinName { get; set; }
             public List<string> ExpandedGroups { get; set; } = new List<string>();
             public bool Maximized { get; set; }
         }

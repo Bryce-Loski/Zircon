@@ -1,5 +1,4 @@
-﻿using DevExpress.XtraEditors;
-using MirDB;
+﻿using MirDB;
 using Server.Envir;
 using System;
 using System.IO;
@@ -31,9 +30,9 @@ namespace Server
             ImportReferenceResolver.SetDeferredResolution(allowDeferredReferences);
             SMain.Session.Save(true);
 
-            XtraOpenFileDialog dlg = new()
+            OpenFileDialog dlg = new()
             {
-                InitialDirectory = $"{Directory.GetCurrentDirectory()}\\Exports\\{typeof(T).Name}\\",
+                InitialDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Exports", typeof(T).Name),
                 Filter = "json files (*.json)|*.json|All files (*.*)|*.*",
                 RestoreDirectory = true
             };
@@ -60,13 +59,13 @@ namespace Server
                         }
                     }
 
-                    XtraMessageBox.Show(message, "Success", MessageBoxButtons.OK);
+                    MessageBox.Show(message, "Success", MessageBoxButtons.OK);
                 }
                 catch (Exception ex)
                 {
                     SEnvir.Log(ex.Message);
 
-                    XtraMessageBox.Show($"Failed to import all rows.\r\n\r\n{ex.Message}", "Fail", MessageBoxButtons.OK);
+                    MessageBox.Show($"Failed to import all rows.\r\n\r\n{ex.Message}", "Fail", MessageBoxButtons.OK);
                 }
             }
         }

@@ -1,6 +1,3 @@
-using DevExpress.XtraBars;
-using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Views.Grid;
 using Server.Diagnostics;
 using Server.Envir;
 using System;
@@ -9,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class OrphanDiagnosticView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class OrphanDiagnosticView : UserControl
     {
         private readonly BindingList<OrphanDiagnostic.OrphanTypeResult> _results = new BindingList<OrphanDiagnostic.OrphanTypeResult>();
 
@@ -22,21 +19,21 @@ namespace Server.Views
         {
             base.OnLoad(e);
 
-            DiagnosticGridView.OptionsSelection.MultiSelect = true;
-            DiagnosticGridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
-            DiagnosticGridControl.DataSource = _results;
-            DiagnosticGridView.OptionsBehavior.Editable = false;
-            DiagnosticGridView.OptionsBehavior.ReadOnly = true;
+            DiagnosticGrid.MultiSelect = true;
+            DiagnosticGrid.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            DiagnosticGrid.DataSource = _results;
+            DiagnosticGrid.ReadOnly = true;
+            DiagnosticGrid.AllowUserToAddRows = false;
         }
 
-        private void ScanOrphansButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ScanOrphansButton_Click(object sender, EventArgs e)
         {
             RunScan(cleanRun: false);
         }
 
-        private void CleanOrphansButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void CleanOrphansButton_Click(object sender, EventArgs e)
         {
-            if (XtraMessageBox.Show(this,
+            if (MessageBox.Show(this,
                 "This will mark all cleanable orphan aggregate-child rows as temporary so they are skipped on the next database save. Continue?",
                 "Clean DB orphans",
                 MessageBoxButtons.YesNo,
@@ -61,16 +58,16 @@ namespace Server.Views
                     _results.Add(row);
 
                 string log = OrphanDiagnostic.FormatLog(result, cleanRun);
-                memoEdit1.EditValue = log;
+                memoTextBox.Text = log;
 
-                DiagnosticGridView.BestFitColumns();
+                DiagnosticGrid.AutoResizeColumns();
             }
             catch (Exception ex)
             {
                 string message = cleanRun ? "DB orphan clean failed: " + ex.Message : "DB orphan scan failed: " + ex.Message;
-                memoEdit1.EditValue = message;
+                memoTextBox.Text = message;
                 SEnvir.Log(message);
-                XtraMessageBox.Show(this, message, "DB Orphans", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, message, "DB Orphans", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {

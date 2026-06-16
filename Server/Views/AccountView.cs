@@ -1,19 +1,22 @@
-﻿using DevExpress.XtraGrid.Views.Grid;
 using Server.Envir;
+using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class AccountView : DevExpress.XtraEditors.XtraForm
+    public partial class AccountView : UserControl
     {
         public AccountView()
         {
             InitializeComponent();
+            AccountDataGridView.DataSource = SEnvir.AccountInfoList?.Binding;
+        }
 
-            AccountGridControl.DataSource = SEnvir.AccountInfoList?.Binding;
-            AccountLookUpEdit.DataSource = SEnvir.AccountInfoList?.Binding;
-
-            AccountGridView.OptionsSelection.MultiSelect = true;
-            AccountGridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            AccountDataGridView.MultiSelect = true;
+            AccountDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
         }
     }
 }

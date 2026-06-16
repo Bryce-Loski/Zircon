@@ -1,4 +1,4 @@
-﻿using Server.Envir;
+using Server.Envir;
 using System;
 using System.IO;
 using System.Net.Http;

@@ -1,7 +1,4 @@
-﻿using DevExpress.LookAndFeel;
-using DevExpress.Skins;
-using DevExpress.UserSkins;
-using Library;
+﻿using Library;
 using Server.Envir;
 using System;
 using System.Reflection;
@@ -28,10 +25,6 @@ namespace Server
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
-
-            BonusSkins.Register();
-            SkinManager.EnableFormSkins();
-            UserLookAndFeel.Default.SetSkinStyle(SkinStyle.Office2010Blue);
 
             Application.Run(new SMain());
 

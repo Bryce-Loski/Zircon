@@ -1,4 +1,4 @@
-﻿using Library;
+using Library;
 using Library.SystemModels;
 using Server.Envir;
 using Server.Extensions;
@@ -25,7 +25,7 @@ using Result = SharpDX.Result;
 
 namespace Server.Views
 {
-    public partial class MapViewer : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class MapViewer : Form
     {
         public static MapViewer CurrentViewer;
         public DXManager Manager;
@@ -191,9 +191,9 @@ namespace Server.Views
                 Map.Animation++;
             }
 
-            MapSizeLabel.Caption = string.Format(@"Map Size: {0},{1}", Map.Width, Map.Height);
-            PositionLabel.Caption = string.Format(@"Position: {0},{1}", Map.MouseLocation.X, Map.MouseLocation.Y);
-            SelectedCellsLabel.Caption = string.Format(@"Selected Cells: {0}", Map.Selection.Count);
+            MapSizeLabel.Text = string.Format(@"Map Size: {0},{1}", Map.Width, Map.Height);
+            PositionLabel.Text = string.Format(@"Position: {0},{1}", Map.MouseLocation.X, Map.MouseLocation.Y);
+            SelectedCellsLabel.Text = string.Format(@"Selected Cells: {0}", Map.Selection.Count);
         }
 
         private void RenderEnvironment()
@@ -273,13 +273,13 @@ namespace Server.Views
             Map.StartX = MapHScroll.Value;
         }
 
-        private void ZoomResetButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ZoomResetButton_Click(object sender, EventArgs e)
         {
             Map.Zoom = 1;
             UpdateScrollBars();
         }
 
-        private void ZoomInButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ZoomInButton_Click(object sender, EventArgs e)
         {
             Map.Zoom *= 2F;
             if (Map.Zoom > 4F)
@@ -288,7 +288,7 @@ namespace Server.Views
             UpdateScrollBars();
         }
 
-        private void ZoomOutButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ZoomOutButton_Click(object sender, EventArgs e)
         {
             Map.Zoom /= 2;
             if (Map.Zoom < 0.01F)
@@ -297,7 +297,7 @@ namespace Server.Views
             UpdateScrollBars();
         }
 
-        private void AttributesButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void AttributesButton_Click(object sender, EventArgs e)
         {
             Map.DrawAttributes = !Map.DrawAttributes;
         }
@@ -331,12 +331,12 @@ namespace Server.Views
             Map.MouseLeave();
         }
 
-        private void SelectionButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void SelectionButton_Click(object sender, EventArgs e)
         {
             Map.DrawSelection = !Map.DrawSelection;
         }
 
-        private void SaveButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             Save();
         }
@@ -366,7 +366,7 @@ namespace Server.Views
             MapRegion.Size = Map.Selection.Count;
         }
 
-        private void CancelButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void CancelButton_Click(object sender, EventArgs e)
         {
             if (MapRegion == null) return;
 
@@ -375,7 +375,7 @@ namespace Server.Views
             Map.TextureValid = false;
         }
 
-        private void BlockedOnlyButton_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void BlockedOnlyButton_Click(object sender, EventArgs e)
         {
             Map.AttributeSelection = !Map.AttributeSelection;
         }
@@ -383,6 +383,7 @@ namespace Server.Views
 
 
 }
+
 
 
 namespace Server.Views.DirectX

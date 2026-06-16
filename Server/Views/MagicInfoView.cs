@@ -1,50 +1,31 @@
-﻿using DevExpress.XtraBars;
 using Library;
 using Library.SystemModels;
 using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class MagicInfoView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class MagicInfoView : UserControl
     {
         public MagicInfoView()
         {
             InitializeComponent();
+            MainGrid.DataSource = SMain.Session.GetCollection<MagicInfo>().Binding;
 
-            MagicInfoGridControl.DataSource = SMain.Session.GetCollection<MagicInfo>().Binding;
-
-            MagicImageComboBox.Items.AddEnum<MagicType>();
-            SchoolImageComboBox.Items.AddEnum<MagicSchool>();
-            PropertyImageComboBox.Items.AddEnum<MagicProperty>();
-            ClassImageComboBox.Items.AddEnum<MirClass>();
+            MagicImageComboBox.Items.AddEnumValues<MagicType>();
+            SchoolImageComboBox.Items.AddEnumValues<MagicSchool>();
+            PropertyImageComboBox.Items.AddEnumValues<MagicProperty>();
+            ClassImageComboBox.Items.AddEnumValues<MirClass>();
         }
-
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            SMain.SetUpView(MagicInfoGridView);
+            SMain.SetUpView(MainGrid);
         }
 
-        private void SaveButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            SMain.Session.Save(true);
-        }
-
-        private void MagicInfoView_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ImportButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            JsonImporter.Import<MagicInfo>();
-        }
-
-        private void ExportButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            JsonExporter.Export<MagicInfo>(MagicInfoGridView);
-        }
+        private void SaveButton_Click(object sender, EventArgs e) { SMain.Session.Save(true); }
+        private void ImportButton_Click(object sender, EventArgs e) { JsonImporter.Import<MagicInfo>(); }
+        private void ExportButton_Click(object sender, EventArgs e) { JsonExporter.Export<MagicInfo>(MainGrid); }
     }
 }

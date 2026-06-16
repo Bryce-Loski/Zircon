@@ -1,4 +1,4 @@
-﻿namespace Server.Views
+namespace Server.Views
 {
     partial class SyncForm
     {

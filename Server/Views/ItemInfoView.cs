@@ -1,49 +1,49 @@
-﻿using DevExpress.XtraBars;
 using Library;
 using Library.SystemModels;
 using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class ItemInfoView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class ItemInfoView : UserControl
     {
         public ItemInfoView()
         {
             InitializeComponent();
 
-            ItemInfoGridControl.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
-            MonsterLookUpEdit.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
-            SetLookUpEdit.DataSource = SMain.Session.GetCollection<SetInfo>().Binding;
+            ItemInfoGrid.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
+            // MonsterLookUpEdit.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
+            // SetLookUpEdit.DataSource = SMain.Session.GetCollection<SetInfo>().Binding;
 
-            ItemTypeImageComboBox.Items.AddEnum<ItemType>();
-            RequiredClassImageComboBox.Items.AddEnum<RequiredClass>();
-            RequiredGenderImageComboBox.Items.AddEnum<RequiredGender>();
-            StatImageComboBox.Items.AddEnum<Stat>();
-            RequiredTypeImageComboBox.Items.AddEnum<RequiredType>();
+            ItemTypeImageComboBox.Items.AddEnumValues<ItemType>();
+            RequiredClassImageComboBox.Items.AddEnumValues<RequiredClass>();
+            RequiredGenderImageComboBox.Items.AddEnumValues<RequiredGender>();
+            StatImageComboBox.Items.AddEnumValues<Stat>();
+            RequiredTypeImageComboBox.Items.AddEnumValues<RequiredType>();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            SMain.SetUpView(ItemInfoGridView);
-            SMain.SetUpView(ItemStatsGridView);
-            SMain.SetUpView(DropsGridView);
+            SMain.SetUpView(ItemInfoGrid);
+            SMain.SetUpView(ItemStatsGrid);
+            SMain.SetUpView(DropsGrid);
         }
 
-        private void SaveButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             SMain.Session.Save(true);
         }
 
-        private void ImportButton_Click(object sender, ItemClickEventArgs e)
+        private void ImportButton_Click(object sender, EventArgs e)
         {
             JsonImporter.Import<ItemInfo>();
         }
 
-        private void ExportButton_Click(object sender, ItemClickEventArgs e)
+        private void ExportButton_Click(object sender, EventArgs e)
         {
-            JsonExporter.Export<ItemInfo>(ItemInfoGridView);
+            JsonExporter.Export<ItemInfo>(ItemInfoGrid);
         }
     }
 }

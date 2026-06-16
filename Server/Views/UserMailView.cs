@@ -1,18 +1,22 @@
-﻿using DevExpress.XtraGrid.Views.Grid;
 using Server.Envir;
+using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class UserMailView : DevExpress.XtraEditors.XtraForm
+    public partial class UserMailView : UserControl
     {
         public UserMailView()
         {
             InitializeComponent();
+            UserMailDataGridView.DataSource = SEnvir.MailInfoList?.Binding;
+        }
 
-            UserDropGridControl.DataSource = SEnvir.MailInfoList?.Binding;
-
-            UserDropGridView.OptionsSelection.MultiSelect = true;
-            UserDropGridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            UserMailDataGridView.MultiSelect = true;
+            UserMailDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
         }
     }
 }

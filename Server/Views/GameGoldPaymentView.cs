@@ -1,19 +1,22 @@
-﻿using DevExpress.XtraGrid.Views.Grid;
 using Server.Envir;
+using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class GameGoldPaymentView : DevExpress.XtraEditors.XtraForm
+    public partial class GameGoldPaymentView : UserControl
     {
         public GameGoldPaymentView()
         {
             InitializeComponent();
+            GameGoldPaymentDataGridView.DataSource = SEnvir.GameGoldPaymentList?.Binding;
+        }
 
-            GameGoldPaymentGridControl.DataSource = SEnvir.GameGoldPaymentList?.Binding;
-            AccountLookUpEdit.DataSource = SEnvir.AccountInfoList?.Binding;
-
-            GameGoldPaymentGridView.OptionsSelection.MultiSelect = true;
-            GameGoldPaymentGridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            GameGoldPaymentDataGridView.MultiSelect = true;
+            GameGoldPaymentDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
         }
     }
 }

@@ -1,23 +1,23 @@
-﻿using DevExpress.XtraBars;
 using Library;
 using Library.SystemModels;
 using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class MonsterInfoView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class MonsterInfoView : UserControl
     {
         public MonsterInfoView()
         {
             InitializeComponent();
 
-            MonsterInfoGridControl.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
+            MonsterInfoGrid.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
 
-            RegionLookUpEdit.DataSource = SMain.Session.GetCollection<MapRegion>().Binding;
-            ItemLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
+            // RegionLookUpEdit.DataSource = SMain.Session.GetCollection<MapRegion>().Binding;
+            // ItemLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
 
-            MonsterImageComboBox.Items.AddEnum<MonsterImage>();
-            StatComboBox.Items.AddEnum<Stat>();
+            MonsterImageComboBox.Items.AddEnumValues<MonsterImage>();
+            StatComboBox.Items.AddEnumValues<Stat>();
 
             CheckNeedMonsterUpdate();
         }
@@ -26,28 +26,28 @@ namespace Server.Views
         {
             base.OnLoad(e);
 
-            SMain.SetUpView(MonsterInfoGridView);
-            SMain.SetUpView(MonsterInfoStatsGridView);
-            SMain.SetUpView(DropsGridView);
-            SMain.SetUpView(RespawnsGridView);
+            SMain.SetUpView(MonsterInfoGrid);
+            SMain.SetUpView(MonsterInfoStatsGrid);
+            SMain.SetUpView(DropsGrid);
+            SMain.SetUpView(RespawnsGrid);
         }
 
-        private void SaveButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             SMain.Session.Save(true);
         }
 
-        private void ImportButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ImportButton_Click(object sender, EventArgs e)
         {
             JsonImporter.Import<MonsterInfo>();
         }
 
-        private void ExportButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ExportButton_Click(object sender, EventArgs e)
         {
-            JsonExporter.Export<MonsterInfo>(MonsterInfoGridView);
+            JsonExporter.Export<MonsterInfo>(MonsterInfoGrid);
         }
 
-        private void UpdateMonsterImageButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void UpdateMonsterImageButton_Click(object sender, EventArgs e)
         {
             var monsterInfos = SMain.Session.GetCollection<MonsterInfo>().Binding;
 
@@ -89,9 +89,7 @@ namespace Server.Views
     public enum OldMonsterImage
     {
         None,
-
         Guard,
-
         Chicken,
         Pig,
         Deer,
@@ -107,7 +105,6 @@ namespace Server.Views
         SpittingSpider,
         Scarecrow,
         OmaHero,
-
         CaveBat,
         Scorpion,
         Skeleton,
@@ -115,7 +112,6 @@ namespace Server.Views
         SkeletonAxeThrower,
         SkeletonWarrior,
         SkeletonLord,
-
         CaveMaggot,
         GhostSorcerer,
         GhostMage,
@@ -123,20 +119,16 @@ namespace Server.Views
         DevouringGhost,
         CorpseRaisingGhost,
         GhoulChampion,
-
         ArmoredAnt,
         AntSoldier,
         AntHealer,
         AntNeedler,
-
         ShellNipper,
         Beetle,
         VisceralWorm,
-
         MutantFlea,
         PoisonousMutantFlea,
         BlasterMutantFlea,
-
         WasHatchling,
         Centipede,
         ButterflyWorm,
@@ -144,17 +136,14 @@ namespace Server.Views
         Earwig,
         IronLance,
         LordNiJae,
-
         RottingGhoul,
         DecayingGhoul,
         BloodThirstyGhoul,
-
         SpinedDarkLizard,
         UmaInfidel,
         UmaFlameThrower,
         UmaAnguisher,
         UmaKing,
-
         SpiderBat,
         ArachnidGazer,
         Larva,
@@ -163,18 +152,15 @@ namespace Server.Views
         VenomousArachnid,
         DarkArachnid,
         RedMoonTheFallen,
-
         ZumaSharpShooter,
         ZumaFanatic,
         ZumaGuardian,
         ViciousRat,
         ZumaKing,
-
         EvilFanatic,
         Monkey,
         EvilElephant,
         CannibalFanatic,
-
         SpikedBeetle,
         NumaGrunt,
         NumaMage,
@@ -184,7 +170,6 @@ namespace Server.Views
         WindfurySorceress,
         CursedCactus,
         NetherWorldGate,
-
         RagingLizard,
         SawToothLizard,
         MutantLizard,
@@ -194,7 +179,6 @@ namespace Server.Views
         CrazedLizard,
         TaintedTerror,
         DeathLordJichon,
-
         Minotaur,
         FrostMinotaur,
         ShockMinotaur,
@@ -203,13 +187,11 @@ namespace Server.Views
         BanyaLeftGuard,
         BanyaRightGuard,
         EmperorSaWoo,
-
         BoneArcher,
         BoneBladesman,
         BoneCaptain,
         BoneSoldier,
         ArchLichTaedu,
-
         WedgeMothLarva,
         LesserWedgeMoth,
         WedgeMoth,
@@ -218,19 +200,16 @@ namespace Server.Views
         BlackBoar,
         TuskLord,
         RazorTusk,
-
         PinkGoddess,
         GreenGoddess,
         MutantCaptain,
         StoneGriffin,
         FlameGriffin,
-
         WhiteBone,
         Shinsu,
         InfernalSoldier,
         InfernalGuardian,
         InfernalWarrior,
-
         CorpseStalker,
         LightArmedSoldier,
         CorrosivePoisonSpitter,
@@ -241,13 +220,11 @@ namespace Server.Views
         CrimsonNecromancer,
         ChaosKnight,
         PachonTheChaosBringer,
-
         NumaCavalry,
         NumaHighMage,
         NumaStoneThrower,
         NumaRoyalGuard,
         NumaArmoredSoldier,
-
         IcyRanger,
         IcyGoddess,
         IcySpiritWarrior,
@@ -260,7 +237,6 @@ namespace Server.Views
         WildBoar,
         JinamStoneGate,
         FrostLordHwa,
-
         Companion_Pig,
         Companion_TuskLord,
         Companion_SkeletonLord,
@@ -271,15 +247,12 @@ namespace Server.Views
         Companion_BanyoLordGuzak,
         Companion_Panda,
         Companion_Rabbit,
-
         JinchonDevil,
         OmaWarlord,
-
         EscortCommander,
         FieryDancer,
         EmeraldDancer,
         QueenOfDawn,
-
         OYoungBeast,
         YumgonWitch,
         MaWarlord,
@@ -289,9 +262,7 @@ namespace Server.Views
         ChiwooGeneral,
         DragonQueen,
         DragonLord,
-
         FerociousIceTiger,
-
         SamaFireGuardian,
         SamaIceGuardian,
         SamaLightningGuardian,
@@ -307,7 +278,6 @@ namespace Server.Views
         SamaSorcerer,
         EnshrinementBox,
         BloodStone,
-
         OrangeTiger,
         RegularTiger,
         RedTiger,
@@ -319,7 +289,6 @@ namespace Server.Views
         BigBossTiger,
         WildMonkey,
         FrostYeti,
-
         EvilSnake,
         Salamander,
         SandGolem,
@@ -348,10 +317,8 @@ namespace Server.Views
         GangSpider,
         VenomSpider,
         SDMob26,
-
         LobsterLord,
         LobsterSpawn,
-
         NewMob1,
         NewMob2,
         NewMob3,
@@ -362,7 +329,6 @@ namespace Server.Views
         NewMob8,
         NewMob9,
         NewMob10,
-
         MonasteryMon0,
         MonasteryMon1,
         MonasteryMon2,
@@ -370,9 +336,7 @@ namespace Server.Views
         MonasteryMon4,
         MonasteryMon5,
         MonasteryMon6,
-
         CastleFlag,
-
         Tornado
     }
 }

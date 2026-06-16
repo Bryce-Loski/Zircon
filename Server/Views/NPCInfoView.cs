@@ -1,56 +1,43 @@
-﻿using DevExpress.XtraBars;
 using Library;
 using Library.SystemModels;
 using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class NPCInfoView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class NPCInfoView : UserControl
     {
         public NPCInfoView()
         {
             InitializeComponent();
+            MainGrid.DataSource = SMain.Session.GetCollection<NPCInfo>().Binding;
 
-            NPCInfoGridControl.DataSource = SMain.Session.GetCollection<NPCInfo>().Binding;
-            RegionLookUpEdit.DataSource = SMain.Session.GetCollection<MapRegion>().Binding.Where(x => x.RegionType == RegionType.None || x.RegionType == RegionType.Npc);
-            PageLookUpEdit.DataSource = SMain.Session.GetCollection<NPCPage>().Binding;
+            // RegionLookUpEdit.DataSource = SMain.Session.GetCollection<MapRegion>().Binding.Where(x => x.RegionType == RegionType.None || x.RegionType == RegionType.Npc);
+            // PageLookUpEdit.DataSource = SMain.Session.GetCollection<NPCPage>().Binding;
+            // QuestInfoLookUpEdit.DataSource = SMain.Session.GetCollection<QuestInfo>().Binding;
+            // ItemInfoLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
 
-            QuestInfoLookUpEdit.DataSource = SMain.Session.GetCollection<QuestInfo>().Binding;
-            ItemInfoLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
-
-            RequiredClassImageComboBox.Items.AddEnum<RequiredClass>();
-            RequirementImageComboBox.Items.AddEnum<NPCRequirementType>();
-            MapIconImageComboBox.Items.AddEnum<MapIcon>();
-
-            DaysOfWeekImageComboBox.Items.AddEnum<DaysOfWeek>();
+            RequiredClassImageComboBox.Items.AddEnumValues<RequiredClass>();
+            RequirementImageComboBox.Items.AddEnumValues<NPCRequirementType>();
+            MapIconImageComboBox.Items.AddEnumValues<MapIcon>();
+            DaysOfWeekImageComboBox.Items.AddEnumValues<DaysOfWeek>();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            SMain.SetUpView(NPCInfoGridView);
-            SMain.SetUpView(RequirementGridView);
-        }
-        private void SaveButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            SMain.Session.Save(true);
+            SMain.SetUpView(MainGrid);
+            SMain.SetUpView(RequirementGrid);
         }
 
-        private void barButtonItem1_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            JsonImporter.Import<NPCInfo>();
-        }
+        private void SaveButton_Click(object sender, EventArgs e) { SMain.Session.Save(true); }
+        private void ImportButton_Click(object sender, EventArgs e) { JsonImporter.Import<NPCInfo>(); }
+        private void ExportButton_Click(object sender, EventArgs e) { JsonExporter.Export<NPCInfo>(MainGrid); }
 
-        private void ExportButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void InsertRowButton_Click(object sender, EventArgs e)
         {
-            JsonExporter.Export<NPCInfo>(NPCInfoGridView);
-        }
-
-        private void InsertRowButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            SMain.InsertRowAfterFocusedObject<NPCInfo>(NPCInfoGridView);
+            SMain.InsertRowAfterFocusedObject<NPCInfo>(MainGrid);
         }
     }
 }

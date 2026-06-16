@@ -1,18 +1,22 @@
-﻿using Server.Envir;
+using Server.Envir;
+using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class CharacterView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class CharacterView : UserControl
     {
         public CharacterView()
         {
             InitializeComponent();
+            CharacterDataGridView.DataSource = SEnvir.CharacterInfoList?.Binding;
+        }
 
-            CharacterGridControl.DataSource = SEnvir.CharacterInfoList?.Binding;
-            AccountLookUpEdit.DataSource = SEnvir.AccountInfoList?.Binding;
-
-            CharacterGridView.OptionsSelection.MultiSelect = true;
-            CharacterGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            CharacterDataGridView.MultiSelect = true;
+            CharacterDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
         }
     }
 }

@@ -1,30 +1,28 @@
-﻿using DevExpress.XtraBars;
 using Library;
 using Library.SystemModels;
 using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class CurrencyInfoView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class CurrencyInfoView : UserControl
     {
         public CurrencyInfoView()
         {
             InitializeComponent();
+            MainGrid.DataSource = SMain.Session.GetCollection<CurrencyInfo>().Binding;
 
-            CurrencyInfoGridControl.DataSource = SMain.Session.GetCollection<CurrencyInfo>().Binding;
-
-            CurrencyTypeImageComboBox.Items.AddEnum<CurrencyType>();
-            CurrencyCategoryImageComboBox.Items.AddEnum<CurrencyCategory>();
-            ItemLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding.Where(x => x.ItemType == ItemType.Currency);
+            CurrencyTypeImageComboBox.Items.AddEnumValues<CurrencyType>();
+            CurrencyCategoryImageComboBox.Items.AddEnumValues<CurrencyCategory>();
+            // ItemLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding.Where(x => x.ItemType == ItemType.Currency);
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            SMain.SetUpView(CurrencyInfoGridView);
-            SMain.SetUpView(CurrencyInfoImageGridView);
+            SMain.SetUpView(MainGrid);
+            SMain.SetUpView(CurrencyInfoImageGrid);
         }
 
         public static void AddDefaultCurrencies()
@@ -220,19 +218,8 @@ namespace Server.Views
             }
         }
 
-        private void SaveDatabaseButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            SMain.Session.Save(true);
-        }
-
-        private void ImportButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            JsonImporter.Import<CurrencyInfo>();
-        }
-
-        private void ExportButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            JsonExporter.Export<CurrencyInfo>(CurrencyInfoGridView);
-        }
+        private void SaveButton_Click(object sender, EventArgs e) { SMain.Session.Save(true); }
+        private void ImportButton_Click(object sender, EventArgs e) { JsonImporter.Import<CurrencyInfo>(); }
+        private void ExportButton_Click(object sender, EventArgs e) { JsonExporter.Export<CurrencyInfo>(MainGrid); }
     }
 }

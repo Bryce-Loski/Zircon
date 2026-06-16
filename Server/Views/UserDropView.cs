@@ -1,21 +1,22 @@
-﻿using DevExpress.XtraGrid.Views.Grid;
 using Server.Envir;
+using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class UserDropView : DevExpress.XtraEditors.XtraForm
+    public partial class UserDropView : UserControl
     {
         public UserDropView()
         {
             InitializeComponent();
+            UserDropDataGridView.DataSource = SEnvir.UserDropList?.Binding;
+        }
 
-            UserDropGridControl.DataSource = SEnvir.UserDropList?.Binding;
-
-            AccountLookUpEdit.DataSource = SEnvir.AccountInfoList?.Binding;
-            ItemLookUpEdit.DataSource = SEnvir.ItemInfoList?.Binding;
-
-            UserDropGridView.OptionsSelection.MultiSelect = true;
-            UserDropGridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            UserDropDataGridView.MultiSelect = true;
+            UserDropDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
         }
     }
 }

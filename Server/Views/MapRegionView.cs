@@ -1,36 +1,35 @@
-﻿using DevExpress.XtraBars;
-using DevExpress.XtraGrid.Views.Grid;
 using Library;
 using Library.SystemModels;
 using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class MapRegionView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class MapRegionView : UserControl
     {
         public MapRegionView()
         {
             InitializeComponent();
 
-            MapRegionGridControl.DataSource = SMain.Session.GetCollection<MapRegion>().Binding;
-            MapLookUpEdit.DataSource = SMain.Session.GetCollection<MapInfo>().Binding;
+            MapRegionGrid.DataSource = SMain.Session.GetCollection<MapRegion>().Binding;
+            // MapLookUpEdit.DataSource = SMain.Session.GetCollection<MapInfo>().Binding;
 
-            RegionTypeImageComboBox.Items.AddEnum<RegionType>();
+            RegionTypeImageComboBox.Items.AddEnumValues<RegionType>();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            SMain.SetUpView(MapRegionGridView);
+            SMain.SetUpView(MapRegionGrid);
         }
 
-        private void SaveButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             SMain.Session.Save(true);
         }
 
-        private void EditButtonEdit_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        private void EditMapButton_Click(object sender, EventArgs e)
         {
             if (MapViewer.CurrentViewer == null)
             {
@@ -40,28 +39,28 @@ namespace Server.Views
 
             MapViewer.CurrentViewer.BringToFront();
 
-            GridView view = MapRegionGridControl.FocusedView as GridView;
+            if (MapRegionGrid.CurrentRow == null) return;
 
-            if (view == null) return;
+            var region = MapRegionGrid.CurrentRow.DataBoundItem as MapRegion;
+            if (region == null) return;
 
             MapViewer.CurrentViewer.Save();
-
-            MapViewer.CurrentViewer.MapRegion = view.GetFocusedRow() as MapRegion;
+            MapViewer.CurrentViewer.MapRegion = region;
         }
 
-        private void ImportButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ImportButton_Click(object sender, EventArgs e)
         {
             JsonImporter.Import<MapRegion>();
         }
 
-        private void ExportButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ExportButton_Click(object sender, EventArgs e)
         {
-            JsonExporter.Export<MapRegion>(MapRegionGridView);
+            JsonExporter.Export<MapRegion>(MapRegionGrid);
         }
 
-        private void InsertRowButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void InsertRowButton_Click(object sender, EventArgs e)
         {
-            SMain.InsertRowAfterFocusedObject<MapRegion>(MapRegionGridView);
+            SMain.InsertRowAfterFocusedObject<MapRegion>(MapRegionGrid);
         }
     }
 }

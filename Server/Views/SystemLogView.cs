@@ -1,11 +1,11 @@
-﻿using DevExpress.XtraBars;
-using Server.Envir;
+﻿using Server.Envir;
 using System;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class SystemLogView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class SystemLogView : UserControl
     {
         public static BindingList<string> Logs = new BindingList<string>();
 
@@ -13,7 +13,7 @@ namespace Server.Views
         {
             InitializeComponent();
 
-            LogListBoxControl.DataSource = Logs;
+            LogListBox.DataSource = Logs;
         }
 
         private void InterfaceTimer_Tick(object sender, EventArgs e)
@@ -31,7 +31,7 @@ namespace Server.Views
                 ClearLogsButton.Enabled = true;
         }
 
-        private void ClearLogsButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ClearLogsButton_Click(object sender, EventArgs e)
         {
             Logs.Clear();
             ClearLogsButton.Enabled = false;

@@ -1,26 +1,24 @@
-﻿using DevExpress.XtraGrid.Views.Grid;
 using Server.Envir;
 using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class NPCListView : DevExpress.XtraEditors.XtraForm
+    public partial class NPCListView : UserControl
     {
         public NPCListView()
         {
             InitializeComponent();
-
-            NPCListGridControl.DataSource = SEnvir.GameNPCList?.Binding;
-
-            NPCListGridView.OptionsSelection.MultiSelect = true;
-            NPCListGridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
+            NPCListDataGridView.DataSource = SEnvir.GameNPCList?.Binding;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            NPCListDataGridView.MultiSelect = true;
+            NPCListDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
 
-            SMain.SetUpView(NPCListGridView);
+            SMain.SetUpView(NPCListDataGridView);
         }
     }
 }

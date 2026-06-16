@@ -1,41 +1,28 @@
-﻿using DevExpress.XtraBars;
 using Library;
 using Library.SystemModels;
 using System;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class MonsterInfoStatView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class MonsterInfoStatView : UserControl
     {
         public MonsterInfoStatView()
         {
             InitializeComponent();
-
-            MonsterInfoStatGridControl.DataSource = SMain.Session.GetCollection<MonsterInfoStat>().Binding;
-            MonsterLookUpEdit.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
-            StatImageComboBox.Items.AddEnum<Stat>();
+            MonsterInfoStatDataGridView.DataSource = SMain.Session.GetCollection<MonsterInfoStat>().Binding;
+            // MonsterLookUpEdit.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
+            StatImageComboBox.Items.AddEnumValues<Stat>();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            SMain.SetUpView(MonsterInfoStatGridView);
+            SMain.SetUpView(MonsterInfoStatDataGridView);
         }
 
-        private void SaveButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            SMain.Session.Save(true);
-        }
-
-        private void ImportButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            JsonImporter.Import<MonsterInfoStat>();
-        }
-
-        private void ExportButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            JsonExporter.Export<MonsterInfoStat>(MonsterInfoStatGridView);
-        }
+        private void SaveButton_Click(object sender, EventArgs e) { SMain.Session.Save(true); }
+        private void ImportButton_Click(object sender, EventArgs e) { JsonImporter.Import<MonsterInfoStat>(); }
+        private void ExportButton_Click(object sender, EventArgs e) { JsonExporter.Export<MonsterInfoStat>(MonsterInfoStatDataGridView); }
     }
 }

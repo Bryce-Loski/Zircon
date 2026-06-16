@@ -1,6 +1,4 @@
-﻿using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Views.Grid;
-using MirDB;
+﻿using MirDB;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +9,7 @@ namespace Server
 {
     public class JsonExporter
     {
-        public static void Export<T>(GridView grid) where T : DBObject, new()
+        public static void Export<T>(DataGridView grid) where T : DBObject, new()
         {
             var options = new JsonSerializerOptions
             {
@@ -22,7 +20,7 @@ namespace Server
             JsonExporter.Export<T>(grid, options);
         }
 
-        public static void Export<T>(GridView gridView, JsonSerializerOptions options) where T : DBObject, new()
+        public static void Export<T>(DataGridView dataGridView, JsonSerializerOptions options) where T : DBObject, new()
         {
             if (!Directory.Exists($"Exports/{typeof(T).Name}"))
             {
@@ -31,23 +29,41 @@ namespace Server
 
             List<T> selectedItems = new();
 
-            var rows = gridView.GetSelectedRows();
-
-            if (rows.Length == 0)
+            if (dataGridView.SelectedRows.Count == 0)
             {
+                // No rows selected — export all
                 selectedItems.AddRange(SMain.Session.GetCollection<T>().Binding);
             }
             else
             {
-                foreach (var row in rows)
+                foreach (DataGridViewRow row in dataGridView.SelectedRows)
                 {
-                    T selRow = (T)gridView.GetRow(row);
-
-                    selectedItems.Add(selRow);
+                    if (row.DataBoundItem is T selRow)
+                        selectedItems.Add(selRow);
                 }
             }
 
-            if (XtraMessageBox.Show($"You're about to export {selectedItems.Count} rows, are you sure?", "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            // Also support cell-selection mode
+            if (selectedItems.Count == 0 && dataGridView.SelectedCells.Count > 0)
+            {
+                HashSet<int> rowIndexes = new HashSet<int>();
+                foreach (DataGridViewCell cell in dataGridView.SelectedCells)
+                    rowIndexes.Add(cell.RowIndex);
+
+                foreach (int idx in rowIndexes)
+                {
+                    if (dataGridView.Rows[idx].DataBoundItem is T selRow)
+                        selectedItems.Add(selRow);
+                }
+            }
+
+            // Fallback: if still empty, export all
+            if (selectedItems.Count == 0)
+            {
+                selectedItems.AddRange(SMain.Session.GetCollection<T>().Binding);
+            }
+
+            if (MessageBox.Show($"You're about to export {selectedItems.Count} rows, are you sure?", "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
                 return;
             }
@@ -63,7 +79,7 @@ namespace Server
 
             file.WriteLine(json);
 
-            XtraMessageBox.Show($"All selected rows have been exported to '{path}'.", "Success", MessageBoxButtons.OK);
+            MessageBox.Show($"All selected rows have been exported to '{path}'.", "Success", MessageBoxButtons.OK);
         }
     }
 }

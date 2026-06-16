@@ -1,14 +1,15 @@
-﻿using Library.SystemModels;
+using Library.SystemModels;
 using MirDB;
 using Server.DBModels;
 using Server.Envir;
 using System;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class DatabaseEncryptionForm : DevExpress.XtraEditors.XtraForm
+    public partial class DatabaseEncryptionForm : Form
     {
         public DatabaseEncryptionForm()
         {
@@ -35,7 +36,7 @@ namespace Server.Views
             }
             catch (Exception)
             {
-                AlertControl.Show(this, "Validation", "Encryption key is not a valid base64", false);
+                MessageBox.Show(this, "Encryption key is not a valid base64", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

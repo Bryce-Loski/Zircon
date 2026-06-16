@@ -1,69 +1,39 @@
-﻿using DevExpress.XtraBars;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.Grid;
 using Library;
 using Library.SystemModels;
 using System;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class MapInfoView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class MapInfoView : UserControl
     {
         public MapInfoView()
         {
             InitializeComponent();
 
-            MapInfoGridControl.DataSource = SMain.Session.GetCollection<MapInfo>().Binding;
-            MonsterLookUpEdit.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
-            MapInfoLookUpEdit.DataSource = SMain.Session.GetCollection<MapInfo>().Binding;
-            ItemLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
-            RegionLookUpEdit.DataSource = SMain.Session.GetCollection<MapRegion>().Binding;
+            MapInfoGrid.DataSource = SMain.Session.GetCollection<MapInfo>().Binding;
+            // MonsterLookUpEdit.DataSource = SMain.Session.GetCollection<MonsterInfo>().Binding;
+            // MapInfoLookUpEdit.DataSource = SMain.Session.GetCollection<MapInfo>().Binding;
+            // ItemLookUpEdit.DataSource = SMain.Session.GetCollection<ItemInfo>().Binding;
+            // RegionLookUpEdit.DataSource = SMain.Session.GetCollection<MapRegion>().Binding;
 
-            LightComboBox.Items.AddEnum<LightSetting>();
-            WeatherComboBox.Items.AddEnum<Weather>();
-            DirectionImageComboBox.Items.AddEnum<MirDirection>();
-            MapIconImageComboBox.Items.AddEnum<MapIcon>();
-            StartClassImageComboBox.Items.AddEnum<RequiredClass>();
-            RequiredClassImageComboBox.Items.AddEnum<RequiredClass>();
-            StatImageComboBox.Items.AddEnum<Stat>();
-
-            MiningGridView.CustomRowCellEditForEditing += MiningGridView_CustomRowCellEditForEditing;
-        }
-
-        private void MiningGridView_CustomRowCellEditForEditing(object sender, CustomRowCellEditEventArgs e)
-        {
-            if (e.Column.FieldName == "Region")
-            {
-                var currentMapRow = MapInfoGridView.GetRow(MapInfoGridView.FocusedRowHandle) as MapInfo;
-
-                var binding = SMain.Session.GetCollection<MapRegion>().Binding;
-
-                var filteredDataSource = binding.Where(x => x.Map == currentMapRow).ToList();
-
-                RepositoryItemLookUpEdit lookupEdit = new()
-                {
-                    DataSource = filteredDataSource,
-                    DisplayMember = "Description",
-                    NullText = "[Region is null]"
-                };
-
-                lookupEdit.Columns.AddRange(new DevExpress.XtraEditors.Controls.LookUpColumnInfo[] { new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Index", "Index"), new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Description", "Description"), new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Size", "Size") });
-
-                e.RepositoryItem = lookupEdit;
-            }
+            LightComboBox.Items.AddEnumValues<LightSetting>();
+            WeatherComboBox.Items.AddEnumValues<Weather>();
+            DirectionImageComboBox.Items.AddEnumValues<MirDirection>();
+            MapIconImageComboBox.Items.AddEnumValues<MapIcon>();
+            StartClassImageComboBox.Items.AddEnumValues<RequiredClass>();
+            RequiredClassImageComboBox.Items.AddEnumValues<RequiredClass>();
+            StatImageComboBox.Items.AddEnumValues<Stat>();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            SMain.SetUpView(MapInfoGridView);
-            SMain.SetUpView(GuardsGridView);
-            SMain.SetUpView(RegionGridView);
-            SMain.SetUpView(MiningGridView);
+            SMain.SetUpView(MapInfoGrid);
+            SMain.SetUpView(GuardsGrid);
+            SMain.SetUpView(RegionGrid);
+            SMain.SetUpView(MiningGrid);
 
             UpdateInfoStats();
         }
@@ -191,12 +161,12 @@ namespace Server.Views
             }
         }
 
-        private void SaveButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             SMain.Session.Save(true);
         }
 
-        private void EditButtonEdit_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        private void EditMapButton_Click(object sender, EventArgs e)
         {
             if (MapViewer.CurrentViewer == null)
             {
@@ -206,28 +176,28 @@ namespace Server.Views
 
             MapViewer.CurrentViewer.BringToFront();
 
-            GridView view = MapInfoGridControl.FocusedView as GridView;
+            if (RegionGrid.CurrentRow == null) return;
 
-            if (view == null) return;
+            var region = RegionGrid.CurrentRow.DataBoundItem as MapRegion;
+            if (region == null) return;
 
             MapViewer.CurrentViewer.Save();
-
-            MapViewer.CurrentViewer.MapRegion = view.GetFocusedRow() as MapRegion;
+            MapViewer.CurrentViewer.MapRegion = region;
         }
 
-        private void ImportButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ImportButton_Click(object sender, EventArgs e)
         {
             JsonImporter.Import<MapInfo>();
         }
 
-        private void ExportButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ExportButton_Click(object sender, EventArgs e)
         {
-            JsonExporter.Export<MapInfo>(MapInfoGridView);
+            JsonExporter.Export<MapInfo>(MapInfoGrid);
         }
 
-        private void InsertRowButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void InsertRowButton_Click(object sender, EventArgs e)
         {
-            SMain.InsertRowAfterFocusedObject<MapInfo>(MapInfoGridView);
+            SMain.InsertRowAfterFocusedObject<MapInfo>(MapInfoGrid);
         }
     }
 }

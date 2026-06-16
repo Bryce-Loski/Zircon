@@ -1,13 +1,12 @@
-using DevExpress.XtraBars;
-using DevExpress.XtraGrid.Views.Grid;
 using Library.Network;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Server.Views
 {
-    public partial class DiagnosticView : DevExpress.XtraBars.Ribbon.RibbonForm
+    public partial class DiagnosticView : UserControl
     {
         private BindingList<DiagnosticValue> Results;
 
@@ -20,25 +19,25 @@ namespace Server.Views
             foreach (KeyValuePair<string, DiagnosticValue> pair in BaseConnection.Diagnostics)
                 Results.Add(pair.Value);
 
-            DiagnosticGridControl.DataSource = Results;
+            DiagnosticGrid.DataSource = Results;
 
-            DiagnosticButton.Down = BaseConnection.Monitor;
+            DiagnosticButton.Checked = BaseConnection.Monitor;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            DiagnosticGridView.OptionsSelection.MultiSelect = true;
-            DiagnosticGridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
+            DiagnosticGrid.MultiSelect = true;
+            DiagnosticGrid.SelectionMode = DataGridViewSelectionMode.CellSelect;
         }
 
-        private void DiagnosticButton_DownChanged(object sender, ItemClickEventArgs e)
+        private void DiagnosticButton_CheckedChanged(object sender, EventArgs e)
         {
-            BaseConnection.Monitor = DiagnosticButton.Down;
+            BaseConnection.Monitor = DiagnosticButton.Checked;
         }
 
-        private void ResetTimeButton_ItemClick(object sender, ItemClickEventArgs e)
+        private void ResetTimeButton_Click(object sender, EventArgs e)
         {
             foreach (DiagnosticValue result in Results)
             {

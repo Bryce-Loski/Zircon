@@ -17,271 +17,217 @@ namespace Server.Views
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OrphanDiagnosticView));
-            ribbon = new DevExpress.XtraBars.Ribbon.RibbonControl();
-            ScanOrphansButton = new DevExpress.XtraBars.BarButtonItem();
-            CleanOrphansButton = new DevExpress.XtraBars.BarButtonItem();
-            ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
-            ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            repositoryItemToggleSwitch1 = new DevExpress.XtraEditors.Repository.RepositoryItemToggleSwitch();
-            DiagnosticGridControl = new DevExpress.XtraGrid.GridControl();
-            DiagnosticGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn6 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn8 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn9 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn10 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn11 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn12 = new DevExpress.XtraGrid.Columns.GridColumn();
-            gridColumn13 = new DevExpress.XtraGrid.Columns.GridColumn();
-            memoEdit1 = new DevExpress.XtraEditors.MemoEdit();
+            toolStrip1 = new System.Windows.Forms.ToolStrip();
+            ScanOrphansButton = new System.Windows.Forms.ToolStripButton();
+            CleanOrphansButton = new System.Windows.Forms.ToolStripButton();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            ((System.ComponentModel.ISupportInitialize)ribbon).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)repositoryItemToggleSwitch1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)DiagnosticGridControl).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)DiagnosticGridView).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)memoEdit1.Properties).BeginInit();
+            DiagnosticGrid = new System.Windows.Forms.DataGridView();
+            colObjectType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colParentType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colParentProperty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colParentList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colTotalRows = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colLinkedRows = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colCleanableOrphans = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colExistingTemporaryOrphans = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colMissingParent = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colDeletedParent = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colMissingParentListLink = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colMarkedTemporary = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colSampleIndices = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            memoTextBox = new System.Windows.Forms.TextBox();
+            toolStrip1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)DiagnosticGrid).BeginInit();
             SuspendLayout();
             // 
-            // ribbon
+            // toolStrip1
             // 
-            ribbon.ExpandCollapseItem.Id = 0;
-            ribbon.Items.AddRange(new DevExpress.XtraBars.BarItem[] { ribbon.ExpandCollapseItem, ScanOrphansButton, CleanOrphansButton });
-            ribbon.Location = new System.Drawing.Point(0, 0);
-            ribbon.MaxItemId = 8;
-            ribbon.Name = "ribbon";
-            ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] { ribbonPage1 });
-            ribbon.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] { repositoryItemToggleSwitch1 });
-            ribbon.Size = new System.Drawing.Size(865, 144);
+            toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ScanOrphansButton, CleanOrphansButton });
+            toolStrip1.Location = new System.Drawing.Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Size = new System.Drawing.Size(865, 25);
+            toolStrip1.TabIndex = 0;
+            toolStrip1.Text = "toolStrip1";
             // 
             // ScanOrphansButton
             // 
-            ScanOrphansButton.Caption = "Scan";
-            ScanOrphansButton.Id = 6;
-            ScanOrphansButton.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("ScanOrphansButton.ImageOptions.Image");
-            ScanOrphansButton.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("ScanOrphansButton.ImageOptions.LargeImage");
+            ScanOrphansButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             ScanOrphansButton.Name = "ScanOrphansButton";
-            ScanOrphansButton.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
-            ScanOrphansButton.ItemClick += ScanOrphansButton_ItemClick;
+            ScanOrphansButton.Size = new System.Drawing.Size(38, 22);
+            ScanOrphansButton.Text = "Scan";
+            ScanOrphansButton.Click += ScanOrphansButton_Click;
             // 
             // CleanOrphansButton
             // 
-            CleanOrphansButton.Caption = "Clean";
-            CleanOrphansButton.Id = 7;
-            CleanOrphansButton.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("CleanOrphansButton.ImageOptions.Image");
-            CleanOrphansButton.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("CleanOrphansButton.ImageOptions.LargeImage");
+            CleanOrphansButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             CleanOrphansButton.Name = "CleanOrphansButton";
-            CleanOrphansButton.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
-            CleanOrphansButton.ItemClick += CleanOrphansButton_ItemClick;
-            // 
-            // ribbonPage1
-            // 
-            ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] { ribbonPageGroup1 });
-            ribbonPage1.Name = "ribbonPage1";
-            ribbonPage1.Text = "Home";
-            // 
-            // ribbonPageGroup1
-            // 
-            ribbonPageGroup1.AllowTextClipping = false;
-            ribbonPageGroup1.CaptionButtonVisible = DevExpress.Utils.DefaultBoolean.False;
-            ribbonPageGroup1.ItemLinks.Add(ScanOrphansButton);
-            ribbonPageGroup1.ItemLinks.Add(CleanOrphansButton);
-            ribbonPageGroup1.Name = "ribbonPageGroup1";
-            ribbonPageGroup1.Text = "Diagnostics";
-            // 
-            // repositoryItemToggleSwitch1
-            // 
-            repositoryItemToggleSwitch1.AutoHeight = false;
-            repositoryItemToggleSwitch1.Name = "repositoryItemToggleSwitch1";
-            repositoryItemToggleSwitch1.OffText = "Off";
-            repositoryItemToggleSwitch1.OnText = "On";
-            // 
-            // DiagnosticGridControl
-            // 
-            DiagnosticGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            DiagnosticGridControl.Location = new System.Drawing.Point(3, 3);
-            DiagnosticGridControl.MainView = DiagnosticGridView;
-            DiagnosticGridControl.MenuManager = ribbon;
-            DiagnosticGridControl.Name = "DiagnosticGridControl";
-            DiagnosticGridControl.Size = new System.Drawing.Size(859, 300);
-            DiagnosticGridControl.TabIndex = 3;
-            DiagnosticGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { DiagnosticGridView });
-            // 
-            // DiagnosticGridView
-            // 
-            DiagnosticGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { gridColumn1, gridColumn2, gridColumn3, gridColumn4, gridColumn5, gridColumn6, gridColumn7, gridColumn8, gridColumn9, gridColumn10, gridColumn11, gridColumn12, gridColumn13 });
-            DiagnosticGridView.GridControl = DiagnosticGridControl;
-            DiagnosticGridView.Name = "DiagnosticGridView";
-            DiagnosticGridView.OptionsView.EnableAppearanceEvenRow = true;
-            DiagnosticGridView.OptionsView.EnableAppearanceOddRow = true;
-            DiagnosticGridView.OptionsView.ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowAlways;
-            DiagnosticGridView.OptionsView.ShowGroupPanel = false;
-            // 
-            // gridColumn1
-            // 
-            gridColumn1.FieldName = "ObjectType";
-            gridColumn1.Name = "gridColumn1";
-            gridColumn1.Visible = true;
-            gridColumn1.VisibleIndex = 0;
-            // 
-            // gridColumn2
-            // 
-            gridColumn2.FieldName = "ParentType";
-            gridColumn2.Name = "gridColumn2";
-            gridColumn2.Visible = true;
-            gridColumn2.VisibleIndex = 1;
-            // 
-            // gridColumn3
-            // 
-            gridColumn3.FieldName = "ParentProperty";
-            gridColumn3.Name = "gridColumn3";
-            gridColumn3.Visible = true;
-            gridColumn3.VisibleIndex = 2;
-            // 
-            // gridColumn4
-            // 
-            gridColumn4.FieldName = "ParentList";
-            gridColumn4.Name = "gridColumn4";
-            gridColumn4.Visible = true;
-            gridColumn4.VisibleIndex = 3;
-            // 
-            // gridColumn5
-            // 
-            gridColumn5.FieldName = "TotalRows";
-            gridColumn5.Name = "gridColumn5";
-            gridColumn5.Visible = true;
-            gridColumn5.VisibleIndex = 4;
-            // 
-            // gridColumn6
-            // 
-            gridColumn6.FieldName = "LinkedRows";
-            gridColumn6.Name = "gridColumn6";
-            gridColumn6.Visible = true;
-            gridColumn6.VisibleIndex = 5;
-            // 
-            // gridColumn7
-            // 
-            gridColumn7.FieldName = "CleanableOrphans";
-            gridColumn7.Name = "gridColumn7";
-            gridColumn7.Visible = true;
-            gridColumn7.VisibleIndex = 6;
-            // 
-            // gridColumn8
-            // 
-            gridColumn8.FieldName = "ExistingTemporaryOrphans";
-            gridColumn8.Name = "gridColumn8";
-            gridColumn8.Visible = true;
-            gridColumn8.VisibleIndex = 7;
-            // 
-            // gridColumn9
-            // 
-            gridColumn9.FieldName = "MissingParent";
-            gridColumn9.Name = "gridColumn9";
-            gridColumn9.Visible = true;
-            gridColumn9.VisibleIndex = 8;
-            // 
-            // gridColumn10
-            // 
-            gridColumn10.FieldName = "DeletedParent";
-            gridColumn10.Name = "gridColumn10";
-            gridColumn10.Visible = true;
-            gridColumn10.VisibleIndex = 9;
-            // 
-            // gridColumn11
-            // 
-            gridColumn11.FieldName = "MissingParentListLink";
-            gridColumn11.Name = "gridColumn11";
-            gridColumn11.Visible = true;
-            gridColumn11.VisibleIndex = 10;
-            // 
-            // gridColumn12
-            // 
-            gridColumn12.FieldName = "MarkedTemporary";
-            gridColumn12.Name = "gridColumn12";
-            gridColumn12.Visible = true;
-            gridColumn12.VisibleIndex = 11;
-            // 
-            // gridColumn13
-            // 
-            gridColumn13.FieldName = "SampleIndices";
-            gridColumn13.Name = "gridColumn13";
-            gridColumn13.Visible = true;
-            gridColumn13.VisibleIndex = 12;
-            // 
-            // memoEdit1
-            // 
-            memoEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
-            memoEdit1.Location = new System.Drawing.Point(3, 309);
-            memoEdit1.MenuManager = ribbon;
-            memoEdit1.Name = "memoEdit1";
-            memoEdit1.Size = new System.Drawing.Size(859, 105);
-            memoEdit1.TabIndex = 5;
+            CleanOrphansButton.Size = new System.Drawing.Size(42, 22);
+            CleanOrphansButton.Text = "Clean";
+            CleanOrphansButton.Click += CleanOrphansButton_Click;
             // 
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel1.Controls.Add(DiagnosticGridControl, 0, 0);
-            tableLayoutPanel1.Controls.Add(memoEdit1, 0, 1);
+            tableLayoutPanel1.Controls.Add(DiagnosticGrid, 0, 0);
+            tableLayoutPanel1.Controls.Add(memoTextBox, 0, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            tableLayoutPanel1.Location = new System.Drawing.Point(0, 144);
+            tableLayoutPanel1.Location = new System.Drawing.Point(0, 25);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 111F));
             tableLayoutPanel1.Size = new System.Drawing.Size(865, 417);
-            tableLayoutPanel1.TabIndex = 6;
+            tableLayoutPanel1.TabIndex = 1;
+            // 
+            // DiagnosticGrid
+            // 
+            DiagnosticGrid.AllowUserToAddRows = false;
+            DiagnosticGrid.AllowUserToDeleteRows = false;
+            DiagnosticGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            DiagnosticGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            DiagnosticGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+                colObjectType, colParentType, colParentProperty, colParentList,
+                colTotalRows, colLinkedRows, colCleanableOrphans, colExistingTemporaryOrphans,
+                colMissingParent, colDeletedParent, colMissingParentListLink,
+                colMarkedTemporary, colSampleIndices
+            });
+            DiagnosticGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            DiagnosticGrid.Location = new System.Drawing.Point(3, 3);
+            DiagnosticGrid.Name = "DiagnosticGrid";
+            DiagnosticGrid.ReadOnly = true;
+            DiagnosticGrid.RowHeadersVisible = false;
+            DiagnosticGrid.Size = new System.Drawing.Size(859, 300);
+            DiagnosticGrid.TabIndex = 0;
+            // 
+            // colObjectType
+            // 
+            colObjectType.DataPropertyName = "ObjectType";
+            colObjectType.HeaderText = "Object Type";
+            colObjectType.Name = "colObjectType";
+            // 
+            // colParentType
+            // 
+            colParentType.DataPropertyName = "ParentType";
+            colParentType.HeaderText = "Parent Type";
+            colParentType.Name = "colParentType";
+            // 
+            // colParentProperty
+            // 
+            colParentProperty.DataPropertyName = "ParentProperty";
+            colParentProperty.HeaderText = "Parent Property";
+            colParentProperty.Name = "colParentProperty";
+            // 
+            // colParentList
+            // 
+            colParentList.DataPropertyName = "ParentList";
+            colParentList.HeaderText = "Parent List";
+            colParentList.Name = "colParentList";
+            // 
+            // colTotalRows
+            // 
+            colTotalRows.DataPropertyName = "TotalRows";
+            colTotalRows.HeaderText = "Total Rows";
+            colTotalRows.Name = "colTotalRows";
+            // 
+            // colLinkedRows
+            // 
+            colLinkedRows.DataPropertyName = "LinkedRows";
+            colLinkedRows.HeaderText = "Linked Rows";
+            colLinkedRows.Name = "colLinkedRows";
+            // 
+            // colCleanableOrphans
+            // 
+            colCleanableOrphans.DataPropertyName = "CleanableOrphans";
+            colCleanableOrphans.HeaderText = "Cleanable Orphans";
+            colCleanableOrphans.Name = "colCleanableOrphans";
+            // 
+            // colExistingTemporaryOrphans
+            // 
+            colExistingTemporaryOrphans.DataPropertyName = "ExistingTemporaryOrphans";
+            colExistingTemporaryOrphans.HeaderText = "Existing Temporary Orphans";
+            colExistingTemporaryOrphans.Name = "colExistingTemporaryOrphans";
+            // 
+            // colMissingParent
+            // 
+            colMissingParent.DataPropertyName = "MissingParent";
+            colMissingParent.HeaderText = "Missing Parent";
+            colMissingParent.Name = "colMissingParent";
+            // 
+            // colDeletedParent
+            // 
+            colDeletedParent.DataPropertyName = "DeletedParent";
+            colDeletedParent.HeaderText = "Deleted Parent";
+            colDeletedParent.Name = "colDeletedParent";
+            // 
+            // colMissingParentListLink
+            // 
+            colMissingParentListLink.DataPropertyName = "MissingParentListLink";
+            colMissingParentListLink.HeaderText = "Missing Parent List Link";
+            colMissingParentListLink.Name = "colMissingParentListLink";
+            // 
+            // colMarkedTemporary
+            // 
+            colMarkedTemporary.DataPropertyName = "MarkedTemporary";
+            colMarkedTemporary.HeaderText = "Marked Temporary";
+            colMarkedTemporary.Name = "colMarkedTemporary";
+            // 
+            // colSampleIndices
+            // 
+            colSampleIndices.DataPropertyName = "SampleIndices";
+            colSampleIndices.HeaderText = "Sample Indices";
+            colSampleIndices.Name = "colSampleIndices";
+            // 
+            // memoTextBox
+            // 
+            memoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            memoTextBox.Location = new System.Drawing.Point(3, 309);
+            memoTextBox.Multiline = true;
+            memoTextBox.Name = "memoTextBox";
+            memoTextBox.ReadOnly = true;
+            memoTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            memoTextBox.Size = new System.Drawing.Size(859, 105);
+            memoTextBox.TabIndex = 1;
             // 
             // OrphanDiagnosticView
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(865, 561);
+            ClientSize = new System.Drawing.Size(865, 442);
             Controls.Add(tableLayoutPanel1);
-            Controls.Add(ribbon);
+            Controls.Add(toolStrip1);
             Name = "OrphanDiagnosticView";
-            Ribbon = ribbon;
-            Text = "Orphan Diagnostics";
-            ((System.ComponentModel.ISupportInitialize)ribbon).EndInit();
-            ((System.ComponentModel.ISupportInitialize)repositoryItemToggleSwitch1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)DiagnosticGridControl).EndInit();
-            ((System.ComponentModel.ISupportInitialize)DiagnosticGridView).EndInit();
-            ((System.ComponentModel.ISupportInitialize)memoEdit1.Properties).EndInit();
+            Size = new System.Drawing.Size(865, 442);
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)DiagnosticGrid).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private DevExpress.XtraBars.Ribbon.RibbonControl ribbon;
-        private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
-        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemToggleSwitch repositoryItemToggleSwitch1;
-        private DevExpress.XtraGrid.GridControl DiagnosticGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView DiagnosticGridView;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn1;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn2;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn3;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn4;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn6;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn7;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn8;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn9;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn10;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn11;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn12;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn13;
-        private DevExpress.XtraBars.BarButtonItem ScanOrphansButton;
-        private DevExpress.XtraBars.BarButtonItem CleanOrphansButton;
-        private DevExpress.XtraEditors.MemoEdit memoEdit1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton ScanOrphansButton;
+        private System.Windows.Forms.ToolStripButton CleanOrphansButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.DataGridView DiagnosticGrid;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colObjectType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colParentType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colParentProperty;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colParentList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTotalRows;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLinkedRows;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCleanableOrphans;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colExistingTemporaryOrphans;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMissingParent;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDeletedParent;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMissingParentListLink;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMarkedTemporary;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSampleIndices;
+        private System.Windows.Forms.TextBox memoTextBox;
     }
 }
