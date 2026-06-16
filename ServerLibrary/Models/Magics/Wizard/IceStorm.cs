@@ -6,6 +6,18 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【冰风暴】- 冰系范围AOE攻击技能
+    /// 
+    /// 效果：在指定位置召唤冰风暴，对3x3范围内所有敌人造成冰系伤害并减速。
+    /// 元素属性：冰 (Element.Ice)
+    /// 减速参数：Slow=5，SlowLevel=5
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 地面指向性，GetCells(location, 0, 1) 获取3x3区域
+    ///   500ms延迟后对所有格子创建 DelayedAction
+    /// - MagicComplete: 逐格遍历对象进行伤害判定
+    /// </summary>
     [MagicType(MagicType.IceStorm)]
     public class IceStorm : MagicObject
     {

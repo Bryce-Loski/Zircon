@@ -6,6 +6,18 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【龙卷风】- 风系范围AOE攻击技能（自定义技能）
+    /// 
+    /// 效果：在指定位置召唤龙卷风，对3x3范围内所有敌人造成风系伤害。
+    /// 元素属性：风 (Element.Wind)
+    /// 击退参数：Repel=5
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 地面指向性，GetCells(location, 0, 1) 获取3x3区域
+    ///   1200ms延迟后对所有格子创建 DelayedAction
+    /// - MagicComplete: 逐格遍历对象进行伤害判定
+    /// </summary>
     [MagicType(MagicType.DragonTornado)]
     public class DragonTornado : MagicObject
     {

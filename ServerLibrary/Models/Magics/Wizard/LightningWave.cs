@@ -6,6 +6,17 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【雷电波】- 雷系范围AOE攻击技能
+    /// 
+    /// 效果：在指定位置释放雷电波，对3x3范围内所有敌人造成雷系伤害。
+    /// 元素属性：雷 (Element.Lightning)
+    /// 
+    /// 实现机制：
+    /// - 标准地面AOE模板，GetCells(location, 0, 1) 获取3x3区域
+    /// - 500ms延迟后逐格伤害判定
+    /// - 联动 FuryBlast 麻痹强化
+    /// </summary>
     [MagicType(MagicType.LightningWave)]
     public class LightningWave : MagicObject
     {
@@ -18,7 +29,7 @@ namespace Server.Models.Magics
 
         public override int GetShock(int shock, Stats stats = null)
         {
-            var shocked = GetAugmentedSkill(MagicType.Shocked);
+            var shocked = GetAugmentedSkill(MagicType.FuryBlast);
 
             if (shocked != null && SEnvir.Random.Next(Globals.MagicMaxLevel) <= shocked.Level)
             {

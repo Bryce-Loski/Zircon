@@ -5,6 +5,18 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【冰箭术】- 冰系单体攻击技能
+    /// 
+    /// 效果：向目标发射冰箭，造成冰系伤害并附带减速效果。
+    /// 元素属性：冰 (Element.Ice)
+    /// 减速参数：Slow=10（减速值），SlowLevel=3（减速等级）
+    /// 
+    /// 实现机制：
+    /// - 标准单体远程攻击模板：目标选取 → 飞行延迟 → 伤害判定
+    /// - 减速效果通过基类的 Slow/SlowLevel 属性自动在命中时触发
+    /// - 伤害公式: Magic.GetPower() + Player.GetMC()
+    /// </summary>
     [MagicType(MagicType.IceBolt)]
     public class IceBolt : MagicObject
     {

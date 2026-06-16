@@ -3045,7 +3045,7 @@ namespace Client.Scenes
 
             if (CEnvir.Now < User.NextMagicTime || User.Dead ||
                 User.Buffs.Any(x => x.Type == BuffType.DragonRepulse) ||
-                (User.Buffs.Any(x => x.Type == BuffType.ElementalHurricane) && magic.Info.Magic != MagicType.ElementalHurricane) ||
+                (User.Buffs.Any(x => x.Type == BuffType.ElementalHurricane) && magic.Info.Magic != MagicType.BurstOfEnergy) ||
                 (User.Poison & PoisonType.Paralysis) == PoisonType.Paralysis ||
                 (User.Poison & PoisonType.Silenced) == PoisonType.Silenced) return;
 
@@ -3116,7 +3116,7 @@ namespace Client.Scenes
                         return;
                     }
                     break;
-                case MagicType.ElementalHurricane:
+                case MagicType.BurstOfEnergy:
                     int cost = magic.Cost;
                     if (MapObject.User.VisibleBuffs.ContainsKey(BuffType.ElementalHurricane))
                         cost = 0;
@@ -3188,14 +3188,14 @@ namespace Client.Scenes
                 case MagicType.GustBlast:
                 case MagicType.ElectricShock:
                 case MagicType.AdamantineFireBall:
-                case MagicType.FireBounce:
+                case MagicType.RayOfLight:
                 case MagicType.ThunderBolt:
                 case MagicType.ChainLightning:
                 case MagicType.IceBlades:
                 case MagicType.Cyclone:
                 case MagicType.ExpelUndead:
-                case MagicType.LightningStrike:
-                case MagicType.IceRain:
+                case MagicType.TempestOfUnstableEnergy:
+                case MagicType.AdvancedRenounce:
                 case MagicType.IceDragon:
 
                 case MagicType.PoisonDust:
@@ -3203,7 +3203,7 @@ namespace Client.Scenes
                 case MagicType.EvilSlayer:
                 case MagicType.GreaterEvilSlayer:
                 case MagicType.ImprovedExplosiveTalisman:
-                case MagicType.Parasite:
+                case MagicType.MassTransparency:
                 case MagicType.Neutralize:
                 case MagicType.SearingLight:
                 case MagicType.BindingTalisman:
@@ -3272,12 +3272,12 @@ namespace Client.Scenes
 
                     target = MouseObject;
                     break;
-                case MagicType.SoulResonance:
+                case MagicType.DragonBreath:
                     if (MouseObject == null || MouseObject.Dead || MouseObject.Race != ObjectType.Player || !IsAlly(MouseObject.ObjectID)) return;
 
                     target = MouseObject;
                     break;
-                case MagicType.CursedDoll:
+                case MagicType.Scarecrow:
                     if (CanAttackTarget(MouseObject))
                         target = MouseObject;
                     break;
@@ -3287,7 +3287,7 @@ namespace Client.Scenes
                         target = MouseObject;
                     break;
 
-                case MagicType.Spiritualism:
+                case MagicType.GreaterHolyStrike:
                     if (Equipment[(int)EquipmentSlot.Amulet] == null || Equipment[(int)EquipmentSlot.Amulet].Info.Shape != 0 || Equipment[(int)EquipmentSlot.Amulet].Count < 1) return;
 
                     direction = MirDirection.Down;
@@ -3326,7 +3326,7 @@ namespace Client.Scenes
                 case MagicType.MagicShield:
                     if (User.Buffs.Any(x => x.Type == BuffType.MagicShield || x.Type == BuffType.SuperiorMagicShield)) return;
                     break;
-                case MagicType.SuperiorMagicShield:
+                case MagicType.ShieldOfPreservation:
                     if (User.Buffs.Any(x => x.Type == BuffType.SuperiorMagicShield)) return;
                     break;
                 case MagicType.FrostBite:
@@ -3350,13 +3350,13 @@ namespace Client.Scenes
                 case MagicType.GreaterFrozenEarth:
                 case MagicType.ThunderStrike:
                 case MagicType.MirrorImage:
-                case MagicType.ElementalHurricane:
+                case MagicType.BurstOfEnergy:
                 case MagicType.IceAura:
                 case MagicType.IceBreaker:
                 case MagicType.FrozenDragon:
 
                 case MagicType.Invisibility:
-                case MagicType.CombatKick:
+                case MagicType.TaoistCombatKick:
                 case MagicType.ThunderKick:
                 case MagicType.Fetter:
                 case MagicType.SummonSkeleton:
@@ -4261,12 +4261,12 @@ namespace Client.Scenes
 
                 if (userQuest.IsComplete)
                 {
-                    current.Icon = QuestIcon.Complete;
+                    current.Icon = QuestIcon.QuestComplete;
                     completed = true;
                 }
                 else
                 {
-                    current.Icon = QuestIcon.Incomplete;
+                    current.Icon = QuestIcon.QuestIncomplete;
                 }
 
                 quest.FinishNPC.CurrentQuest = current;
@@ -4279,7 +4279,7 @@ namespace Client.Scenes
                 quest.StartNPC.CurrentQuest = new CurrentQuest
                 {
                     Type = quest.QuestType,
-                    Icon = QuestIcon.New
+                    Icon = QuestIcon.NewQuest
                 };
             }
 
@@ -4340,16 +4340,16 @@ namespace Client.Scenes
 
                 switch (npc.CurrentQuest.Icon)
                 {
-                    case QuestIcon.New:
+                    case QuestIcon.NewQuest:
                         icon += 0;
                         iconString = "!";
                         break;
-                    case QuestIcon.Incomplete:
+                    case QuestIcon.QuestIncomplete:
                         icon = 2;
                         colour = Color.White;
                         iconString = "?";
                         break;
-                    case QuestIcon.Complete:
+                    case QuestIcon.QuestComplete:
                         icon += 2;
                         iconString = "?";
                         break;

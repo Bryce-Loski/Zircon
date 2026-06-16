@@ -8,7 +8,7 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.Parasite)]
+    [MagicType(MagicType.MassTransparency)]
     public class Parasite : MagicObject
     {
         protected override Element Element => Element.None;
@@ -45,12 +45,12 @@ namespace Server.Models.Magics
         {
             var ob = (MapObject)data[1];
 
-            if (ob?.Node == null || !Player.CanAttackTarget(ob) || (ob.Poison & PoisonType.Parasite) == PoisonType.Parasite) return;
+            if (ob?.Node == null || !Player.CanAttackTarget(ob) || (ob.Poison & PoisonType.Infection) == PoisonType.Infection) return;
 
             ob.ApplyPoison(new Poison
             {
                 Value = Magic.GetPower(),
-                Type = PoisonType.Parasite,
+                Type = PoisonType.Infection,
                 Owner = Player,
                 TickCount = 10 + Magic.Level * 5,
                 TickFrequency = TimeSpan.FromSeconds(2),
@@ -80,7 +80,7 @@ namespace Server.Models.Magics
                     MapObject ob = cell.Objects[j];
                     if (!Player.CanAttackTarget(ob)) continue;
 
-                    Player.MagicAttack(new List<MagicType> { MagicType.Parasite }, ob, true);
+                    Player.MagicAttack(new List<MagicType> { MagicType.MassTransparency }, ob, true);
                 }
             }
 

@@ -6,6 +6,21 @@ using System.Drawing;
 
 namespace Server.Models.Magics.Wizard
 {
+    /// <summary>
+    /// 【冰霜光环】- 冰系地面持续法术技能（自定义技能）
+    /// 
+    /// 效果：沿面向方向8格直线，在第一个命中的敌人位置创建冰霜光环地面法术。
+    ///       光环持续 5+Level*3 秒，tick2次。
+    /// 元素属性：冰 (Element.Ice)
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 沿方向1-8格遍历，记录最远位置作为视觉效果
+    ///   为每个格子创建 DelayedAction
+    /// - MagicComplete: 在第一个有对象的格子生成 SpellObject(SpellEffect.IceAura)
+    ///   TickCount=2，TickFrequency=5+Level*3秒
+    ///   生成后break（只作用于第一个命中格子）
+    /// - 伤害修改函数被注释掉（使用SpellObject自身的伤害逻辑）
+    /// </summary>
     [MagicType(MagicType.IceAura)]
     public class IceAura : MagicObject
     {

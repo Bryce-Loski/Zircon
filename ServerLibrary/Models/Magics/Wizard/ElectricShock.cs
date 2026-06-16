@@ -8,6 +8,25 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【诱惑之光】- 怪物控制/捕捉技能
+    /// 
+    /// 效果：对怪物释放电击，可能产生以下效果（按概率递进判定）：
+    ///   1. 震慑：使怪物眩晕 (Level*5+10) 秒
+    ///   2. 驯服：将怪物收为宠物（最多3只，持续 Level+1 小时）
+    ///   3. 即死：20分之一概率直接击杀
+    ///   对Boss无效，已驯服宠物可重新延长震慑时间。
+    /// 元素属性：无 (Element.None)
+    /// 特性：UpdateCombatTime = false
+    /// 
+    /// 实现机制：
+    /// - 仅限怪物目标（Race == Monster），Boss免疫
+    /// - 成功率判定: Random(MaxLevel+1) <= Level
+    /// - 已有宠物：延长震慑时间
+    /// - 未驯服：50%概率震慑 → 等级判定 → 驯服概率判定
+    ///   驯服后设置 PetOwner/TameTime/SummonLevel 等属性
+    ///   清除原 SpawnInfo/Master 关联
+    /// </summary>
     [MagicType(MagicType.ElectricShock)]
     public class ElectricShock : MagicObject
     {

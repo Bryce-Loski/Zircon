@@ -6,7 +6,20 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.IceRain)]
+    /// <summary>
+    /// 【冰雨】(AdvancedRenounce) - 冰系大范围AOE攻击技能
+    /// 
+    /// 效果：在目标位置7x7范围内随机降下多波冰雨（Level+1波），
+    ///       每波随机命中约30%的格子，对命中格造成冰系伤害。
+    /// 元素属性：冰 (Element.Ice)
+    /// 
+    /// 实现机制：
+    /// - MagicCast: GetCells(location, 0, 3, true) 获取7x7范围
+    ///   循环 Level+1 次（波数），每波对每个格子 20% 概率命中
+    ///   延迟递增：500 + 10*48 + index*200 ms，实现错落效果
+    /// - MagicComplete: 逐格伤害判定（TODO注释提到未实现冰冻毒效果）
+    /// </summary>
+    [MagicType(MagicType.AdvancedRenounce)]
     public class IceRain : MagicObject
     {
         protected override Element Element => Element.Ice;

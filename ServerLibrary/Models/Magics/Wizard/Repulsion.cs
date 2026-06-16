@@ -5,6 +5,20 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【抗拒火环】- 周围推开技能
+    /// 
+    /// 效果：将周围8个方向的敌人推开，推开距离基于技能等级。
+    ///       成功率与等级差和魔法等级相关。
+    /// 元素属性：无 (Element.None)
+    /// 特性：UpdateCombatTime = false
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 对8个方向(Up~UpLeft)各创建一个 DelayedAction
+    /// - MagicComplete: 检查目标等级必须低于玩家
+    ///   成功率 = Random(16) < 6+Level*3+PlayerLevel-TargetLevel
+    ///   调用 ob.Pushed(direction, GetPower()) 推开目标
+    /// </summary>
     [MagicType(MagicType.Repulsion)]
     public class Repulsion : MagicObject
     {

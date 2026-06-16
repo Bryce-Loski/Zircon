@@ -37,7 +37,7 @@ namespace Server.Models.Magics
             var damage = 5 + Magic.Level * 3;
             var duration = TimeSpan.FromSeconds(15 + Magic.Level * 10);
 
-            var augmentReflectDamage = GetAugmentedSkill(MagicType.AugmentReflectDamage);
+            var augmentReflectDamage = GetAugmentedSkill(MagicType.MaelstromBlade);
 
             if (augmentReflectDamage != null)
             {

@@ -6,6 +6,22 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【飓风术】- 风系持续性地面法术
+    /// 
+    /// 效果：在目标位置3x3范围内召唤飓风，每2秒对范围内敌人造成风系伤害。
+    ///       与火墙术类似但为风属性，可替代火墙放置在相同位置。
+    /// 元素属性：风 (Element.Wind)
+    /// 击退参数：Repel=5
+    /// 特性：CanStruck = false（不可被打断）
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 攻沙战中先清除旧飓风
+    ///   GetCells(location, 0, 1) 获取3x3区域
+    /// - MagicComplete: 清除旧火墙/飓风后创建 SpellObject(SpellEffect.Tempest)
+    ///   持续时间 = (Level+2)*5 次tick，tick频率 = 2秒
+    /// - ModifyPowerMultiplier: 伤害乘以 0.80（80%系数，比火墙60%更高）
+    /// </summary>
     [MagicType(MagicType.Tempest)]
     public class Tempest : MagicObject
     {

@@ -246,12 +246,12 @@ namespace Library
         Veteran = 14,
 
         MapEffect = 15,
-        InstanceEffect = 16,
-        Guild = 17,
+        Guild = 16,
 
-        DeathDrops = 18,
+        DeathDrops = 17,
 
-        Fame = 19,
+        InstanceEffect = 150,
+        Fame = 151,
 
         //War
         Defiance = 100,
@@ -269,7 +269,6 @@ namespace Library
         JudgementOfHeaven = 202,
         ElementalHurricane = 203,
         SuperiorMagicShield = 204,
-        FrostBite = 205,
         Tornado = 206,
 
         //Tao
@@ -298,8 +297,9 @@ namespace Library
         DragonRepulse = 408,
         Evasion = 409,
         RagingWind = 410,
-        LastStand = 411,
+        FrostBite = 411,
         Concentration = 412,
+        LastStand = 413,
 
         MagicWeakness = 500,
     }
@@ -615,25 +615,25 @@ namespace Library
         Endurance = 116,
         ReflectDamage = 117,
         Fetter = 118,
-        AugmentDestructiveSurge = 119,
-        AugmentDefiance = 120,
-        AugmentReflectDamage = 121,
+        SwirlingBlade = 119,
+        ReigningStep = 120,
+        MaelstromBlade = 121,
         AdvancedPotionMastery = 122,
         MassBeckon = 123,
         SeismicSlam = 124,
-        Invincibility = 125,
-        CrushingWave = 126,
-        DefensiveMastery = 127,
-        PhysicalImmunity = 128,
-        MagicImmunity = 129,
-        DefensiveBlow = 130,
-        ElementalSwords = 131,
-        Shuriken = 132,
-        HundredFist = 133,
-        OffensiveBlow = 134,
-        TaecheonSword = 135,
-        FireSword = 136,
-        FlameArt = 137, //NOT CODED
+        Invincibility = 600,
+        CrushingWave = 601,
+        DefensiveMastery = 602,
+        PhysicalImmunity = 603,
+        MagicImmunity = 604,
+        DefensiveBlow = 605,
+        ElementalSwords = 606,
+        Shuriken = 607,
+        HundredFist = 608,
+        OffensiveBlow = 609,
+        TaecheonSword = 610,
+        FireSword = 611,
+        FlameArt = 612, //NOT CODED
 
         FireBall = 201,
         LightningBall = 202,
@@ -665,23 +665,23 @@ namespace Library
         Tempest = 228,
         JudgementOfHeaven = 229,
         ThunderStrike = 230,
-        FireBounce = 231,
-        ElementalHurricane = 232,
-        SuperiorMagicShield = 233,
-        Burning = 234,
-        Shocked = 235,
-        LightningStrike = 236,
+        RayOfLight = 231,
+        BurstOfEnergy = 232,
+        ShieldOfPreservation = 233,
+        RetrogressionOfEnergy = 234,
+        FuryBlast = 235,
+        TempestOfUnstableEnergy = 236,
         MirrorImage = 237,
-        IceRain = 238,
+        AdvancedRenounce = 238,
         FrostBite = 239,
         Asteroid = 240,
-        Storm = 241,//NOT CODED
-        Tornado = 242,//NOT CODED
-        IceAura = 243,
-        IceDragon = 244,
-        IceBreaker = 245,
-        FrozenDragon = 246,
-        UnityWithNature = 247, //NOT CODED
+        Storm = 700,//NOT CODED
+        Tornado = 701,//NOT CODED
+        IceAura = 702,
+        IceDragon = 703,
+        IceBreaker = 704,
+        FrozenDragon = 705,
+        UnityWithNature = 706, //NOT CODED
 
         Heal = 300,
         SpiritSword = 301,
@@ -694,7 +694,7 @@ namespace Library
         GreaterEvilSlayer = 308,
         Resilience = 309,
         TrapOctagon = 310,
-        CombatKick = 311,
+        TaoistCombatKick = 311,
         ElementalSuperiority = 312,
         MassHeal = 313,
         BloodLust = 314,
@@ -705,16 +705,16 @@ namespace Library
         EmpoweredHealing = 319,
         LifeSteal = 320,
         ImprovedExplosiveTalisman = 321,
-        AugmentPoisonDust = 322,
-        CursedDoll = 323,
+        GreaterPoisonDust = 322,
+        Scarecrow = 323,
         ThunderKick = 324,
-        SoulResonance = 325,
-        Parasite = 326,
-        Spiritualism = 327,
+        DragonBreath = 325,
+        MassTransparency = 326,
+        GreaterHolyStrike = 327,
         AugmentExplosiveTalisman = 328,
         AugmentEvilSlayer = 329,
         AugmentPurification = 330,
-        AugmentResurrection = 331,
+        OathOfThePerished = 331,
         SummonSkeleton = 332,
         SummonShinsu = 333,
         SummonJinSkeleton = 334,
@@ -723,18 +723,18 @@ namespace Library
         DemonExplosion = 337,
         Infection = 338,
         DemonicRecovery = 339,
-        Neutralize = 340,
-        AugmentNeutralize = 341,
-        DarkSoulPrison = 342,
-        SearingLight = 343,
-        AugmentCelestialLight = 344,
-        CorpseExploder = 345,
-        SummonDead = 346,
-        BindingTalisman = 347,
-        BrainStorm = 348,
-        HeavenlySky = 349,
-        PoisonCloud = 350,
-        SupremeHealing = 351, //NOT CODED
+        Neutralize = 800,
+        AugmentNeutralize = 801,
+        DarkSoulPrison = 802,
+        SearingLight = 803,
+        AugmentCelestialLight = 804,
+        CorpseExploder = 805,
+        SummonDead = 806,
+        BindingTalisman = 807,
+        BrainStorm = 808,
+        HeavenlySky = 809,
+        PoisonCloud = 810,
+        SupremeHealing = 811, //NOT CODED
 
         WillowDance = 401,
         VineTreeDance = 402,
@@ -773,34 +773,34 @@ namespace Library
         Stealth = 435,
         Evasion = 436,
         RagingWind = 437,
-        Unused = 438,//UNUSED
+        AdvancedBloodyFlower = 438,
         Massacre = 439,
         ArtOfShadows = 440,
-        DragonBlood = 441,
-        FatalBlow = 442,
-        LastStand = 443,
-        MagicCombustion = 444,
-        Vitality = 445,
-        Chain = 446,
-        Concentration = 447,
-        DualWeaponSkills = 448,
-        Containment = 449,
-        DragonWave = 450,
-        Hemorrhage = 451,
-        BurningFire = 452,
-        ChainOfFire = 453,
-        FlamingDaggers = 454,
-        Shredding = 455,
-        FourWheels = 456,
-        CrescentMoon = 457,
-        ManaBurn = 458, //NOT CODED
+        DragonBlood = 900,
+        FatalBlow = 901,
+        LastStand = 902,
+        MagicCombustion = 903,
+        Vitality = 904,
+        Chain = 905,
+        Concentration = 906,
+        DualWeaponSkills = 907,
+        Containment = 908,
+        DragonWave = 909,
+        Hemorrhage = 910,
+        BurningFire = 911,
+        ChainOfFire = 912,
+        FlamingDaggers = 913,
+        Shredding = 914,
+        FourWheels = 915,
+        CrescentMoon = 916,
+        ManaBurn = 917, //NOT CODED
 
         MonsterScortchedEarth = 501,
         MonsterIceStorm = 502,
         MonsterDeathCloud = 503,
         MonsterThunderStorm = 504,
-        IgyuCyclone = 516,
-        IgyuScorchedEarth = 517,
+        IgyuCyclone = 950,
+        IgyuScorchedEarth = 951,
 
         SamaGuardianFire = 505,
         SamaGuardianIce = 506,
@@ -1477,7 +1477,7 @@ namespace Library
         HellFire = 1 << 5,      //Tick damage, no colour
         Silenced = 1 << 6,      //Stops movement (all races), physical and magic attacks (monster), displays effect
         Abyss = 1 << 7,         //Reduces monster viewrange, displays blinding effect (player)
-        Parasite = 1 << 8,      //Tick damage, explosion, ignores transparency (monster), displays effect
+        Infection = 1 << 8,      //Tick damage, explosion, ignores transparency (monster), displays effect
         Neutralize = 1 << 9,    //Stops attackTime, slows actionTime, displays effect (needs code revisiting)
         Fear = 1 << 10,         //Stops attack (monster), forces runaway (monster), displays effect
         Burn = 1 << 11,         //Tick damage, displays effect
@@ -1849,9 +1849,11 @@ namespace Library
     {
         None = 0,
 
-        New = 1,
-        Incomplete = 2,
-        Complete = 3,
+        NewQuest = 1,
+        QuestIncomplete = 2,
+        QuestComplete = 4,
+        NewRepeatable = 8,
+        RepeatableComplete = 16,
     }
 
     public enum QuestRequirementType
@@ -1941,7 +1943,7 @@ namespace Library
         JinSkeleton = 2,
         Shinsu = 3,
         InfernalSoldier = 4,
-        CursedDoll = 5,
+        Scarecrow = 5,
 
         SummonPuppet = 6,
 
@@ -2003,7 +2005,7 @@ namespace Library
         QuartzMiniTurtle = 204,
         QuartzTurtleSub = 205,
 
-        Sacrifice = 210
+        Sacrafice = 210
     }
 
     public enum FishingState : byte

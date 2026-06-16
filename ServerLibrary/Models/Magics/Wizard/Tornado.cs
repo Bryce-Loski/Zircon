@@ -8,6 +8,23 @@ using System.Linq;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【召唤龙卷风】- 风系召唤技能
+    /// 
+    /// 效果：在指定位置召唤一个龙卷风怪物（Monsters.Tornado），
+    ///       龙卷风的属性基于法师自身属性进行缩放加成。
+    /// 元素属性：风 (Element.Wind)
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 获取 MonsterFlag.Tornado 对应的 MonsterInfo
+    /// - MagicComplete: 创建 Monsters.Tornado 实例
+    ///   设置 VisibleTime=10秒，添加 BuffType.Tornado Buff
+    ///   属性缩放（bonusScalingFactor=10）：
+    ///   - MinDC/MaxDC = Level + MinMC/MaxMC/10 * max(1,Level) + WindAttack
+    ///   - HP = Level*10 + 玩家HP/10 * max(1,Level)
+    ///   - AC/MR 同理缩放，敏捷/准确固定100
+    /// TODO: 动画音效未完成，Level 3增加移速，Level 4增加击退
+    /// </summary>
     [MagicType(MagicType.Tornado)]
     public class Tornado : MagicObject
     {

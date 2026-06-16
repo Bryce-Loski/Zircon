@@ -1318,7 +1318,7 @@ namespace Client.Envir
                             DXSoundManager.Play(SoundIndex.ChainLightningEnd);
                     }
                     break;
-                case MagicType.LightningStrike:
+                case MagicType.TempestOfUnstableEnergy:
                     {
                         foreach (MapObject attackTarget in targets)
                         {
@@ -1335,7 +1335,7 @@ namespace Client.Envir
                             DXSoundManager.Play(SoundIndex.LightningBeamEnd);
                     }
                     break;
-                case MagicType.FireBounce:
+                case MagicType.RayOfLight:
                     {
                         foreach (MapObject attackTarget in targets)
                         {

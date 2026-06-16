@@ -3606,13 +3606,13 @@ namespace Client.Scenes.Views
             if (UserQuest != null)
             {
                 type = UserQuest.Quest.QuestType;
-                icon = UserQuest.IsComplete ? Library.QuestIcon.Complete : Library.QuestIcon.Incomplete;
+                icon = UserQuest.IsComplete ? Library.QuestIcon.QuestComplete : Library.QuestIcon.QuestIncomplete;
             }
             else if (QuestInfo != null)
             {
                 type = QuestInfo.QuestType;
 
-                icon = Library.QuestIcon.New;
+                icon = Library.QuestIcon.NewQuest;
             }
 
             int startIndex = 0;
@@ -3641,13 +3641,13 @@ namespace Client.Scenes.Views
 
             switch (icon)
             {
-                case Library.QuestIcon.New:
+                case Library.QuestIcon.NewQuest:
                     startIndex += 0;
                     break;
-                case Library.QuestIcon.Incomplete:
+                case Library.QuestIcon.QuestIncomplete:
                     startIndex = 2;
                     break;
-                case Library.QuestIcon.Complete:
+                case Library.QuestIcon.QuestComplete:
                     startIndex += 2;
                     break;
             }

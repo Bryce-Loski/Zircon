@@ -5,6 +5,20 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【瞬间移动】- 随机传送技能
+    /// 
+    /// 效果：随机传送到当前地图的任意位置。
+    ///       成功率 = (2+Level*2) / (MagicMaxLevel+5)。
+    ///       某些地图禁止使用（SkillDelay>0）。
+    /// 元素属性：无 (Element.None)
+    /// 特性：UpdateCombatTime = false
+    /// 
+    /// 实现机制：
+    /// - MagicComplete: 
+    ///   检查地图是否允许使用（Info.SkillDelay）
+    ///   成功率判定后调用 Player.Teleport(CurrentMap, GetRandomLocation())
+    /// </summary>
     [MagicType(MagicType.Teleportation)]
     public class Teleportation : MagicObject
     {

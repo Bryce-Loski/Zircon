@@ -6,6 +6,18 @@ using System.Drawing;
 
 namespace Server.Models.Magics.Wizard
 {
+    /// <summary>
+    /// 【寒冰破碎】- 冰系自身周围AOE攻击技能（自定义技能）
+    /// 
+    /// 效果：以自身为中心5x5范围内爆发冰系伤害，附带减速效果。
+    /// 元素属性：冰 (Element.Ice)
+    /// 减速参数：Slow=5，SlowLevel=5
+    /// 
+    /// 实现机制：
+    /// - MagicCast: GetCells(CurrentLocation, 0, 2) 获取5x5范围格子
+    ///   延迟按距离递增：500 + 500*distance ms，实现由近及远的扩散效果
+    /// - MagicComplete: 逐格伤害判定
+    /// </summary>
     [MagicType(MagicType.IceBreaker)]
     public class IceBreaker : MagicObject
     {

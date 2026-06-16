@@ -7,7 +7,24 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.LightningStrike)]
+    /// <summary>
+    /// 【雷击术】(TempestOfUnstableEnergy) - 雷系连锁弹射攻击技能（自定义技能）
+    /// 
+    /// 效果：类似连锁闪电，但弹射机制不同——每次弹射伤害递增而非递减。
+    ///       最多弹射 Magic.Level + 2 次。
+    /// 元素属性：雷 (Element.Lightning)
+    /// 
+    /// 实现机制：
+    /// - Strike(): 递归弹射方法，与 FireBounce 的 Bounce() 结构类似
+    ///   首次(strikesRemaining=-1)设定次数 = Level+2
+    ///   后续通过 S.ObjectProjectile 广播弹射视觉
+    /// - MagicComplete: 在目标周围3格内随机选取下一个怪物
+    /// - ModifyPowerMultiplier: 伤害随弹射次数递增
+    ///   multiplier = (MaxStrike - remaining) * (1/MaxStrike)
+    /// - TODO: 视觉效果应改为粒子连线而非投射物
+    /// - 联动 FuryBlast 麻痹强化
+    /// </summary>
+    [MagicType(MagicType.TempestOfUnstableEnergy)]
     public class LightningStrike : MagicObject
     {
         protected override Element Element => Element.Lightning;
@@ -21,7 +38,7 @@ namespace Server.Models.Magics
 
         public override int GetShock(int shock, Stats stats = null)
         {
-            var shocked = GetAugmentedSkill(MagicType.Shocked);
+            var shocked = GetAugmentedSkill(MagicType.FuryBlast);
 
             if (shocked != null && SEnvir.Random.Next(Globals.MagicMaxLevel) <= shocked.Level)
             {

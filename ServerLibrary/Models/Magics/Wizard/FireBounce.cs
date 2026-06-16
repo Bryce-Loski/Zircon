@@ -7,7 +7,23 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.FireBounce)]
+    /// <summary>
+    /// 【火焰弹射】(RayOfLight) - 火系弹射攻击技能（自定义技能）
+    /// 
+    /// 效果：火球命中目标后自动弹跳到附近3格内的其他怪物，
+    ///       最多弹跳 Magic.Level + 2 次。
+    /// 元素属性：火 (Element.Fire)
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 调用 Bounce() 发起首次攻击
+    /// - Bounce(): 递归弹射方法，计算源到目标的飞行延迟(距离*48ms)
+    ///   首次弹射(bounce=-1)时设定总次数 = Level+2
+    ///   后续弹射通过 S.ObjectProjectile 广播弹射视觉效果
+    /// - MagicComplete: 命中后在目标周围3格内随机选取一个怪物作为下一个弹射目标
+    /// - 联动 RetrogressionOfEnergy 灼烧强化
+    /// - 伤害公式: Magic.GetPower() + Player.GetMC()
+    /// </summary>
+    [MagicType(MagicType.RayOfLight)]
     public class FireBounce : MagicObject
     {
         protected override Element Element => Element.Fire;
@@ -19,7 +35,7 @@ namespace Server.Models.Magics
 
         public override int GetBurn(int burn, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -31,7 +47,7 @@ namespace Server.Models.Magics
 
         public override int GetBurnLevel(int burnLevel, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -68,7 +84,7 @@ namespace Server.Models.Magics
             if (Player.MagicAttack(new List<MagicType> { Type }, target, true, null, bounce) < 1)
                 return;
 
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {

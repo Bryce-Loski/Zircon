@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.Spiritualism)]
+    [MagicType(MagicType.GreaterHolyStrike)]
     public class Spiritualism : MagicObject
     {
         protected override Element Element => Element.None;

@@ -5,6 +5,19 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【驱逐不死】- 对亡灵怪物的即死技能
+    /// 
+    /// 效果：对非Boss、等级<70的亡灵怪物进行驱逐判定，
+    ///       成功则直接击杀。成功率基于等级差和魔法等级。
+    /// 元素属性：无 (Element.None)
+    /// 
+    /// 实现机制：
+    /// - 前置条件：目标必须是怪物、亡灵(Undead=true)、非Boss、等级<70
+    /// - 等级判定: 怪物等级 >= PlayerLevel-1+Random(4) 则抵抗
+    /// - 成功率 = 35 + Level*9 + (PlayerLevel-MonsterLevel)*5 + PhantomAttack/2
+    /// - 成功时 ob.SetHP(0) 直接击杀
+    /// </summary>
     [MagicType(MagicType.ExpelUndead)]
     public class ExpelUndead : MagicObject
     {

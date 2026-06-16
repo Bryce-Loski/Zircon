@@ -3,7 +3,7 @@ using Server.DBModels;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.AugmentPoisonDust)]
+    [MagicType(MagicType.GreaterPoisonDust)]
     public class GreaterPoisonDust : MagicObject
     {
         protected override Element Element => Element.None;

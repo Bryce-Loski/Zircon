@@ -6,6 +6,18 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【雷光束】- 雷系线状AOE攻击技能
+    /// 
+    /// 效果：沿面向方向释放一条8格长、3格宽的雷系伤害带。
+    /// 元素属性：雷 (Element.Lightning)
+    /// 
+    /// 实现机制：
+    /// - 线状AOE模板（与焦土术/冻土术相同结构）
+    /// - 沿方向1-8格，正交偏移±2/对角偏移±1
+    /// - ModifyPowerMultiplier: 侧翼目标只受30%伤害
+    /// - 联动 FuryBlast 麻痹强化
+    /// </summary>
     [MagicType(MagicType.LightningBeam)]
     public class LightningBeam : MagicObject
     {
@@ -18,7 +30,7 @@ namespace Server.Models.Magics
 
         public override int GetShock(int shock, Stats stats = null)
         {
-            var shocked = GetAugmentedSkill(MagicType.Shocked);
+            var shocked = GetAugmentedSkill(MagicType.FuryBlast);
 
             if (shocked != null && SEnvir.Random.Next(Globals.MagicMaxLevel) <= shocked.Level)
             {

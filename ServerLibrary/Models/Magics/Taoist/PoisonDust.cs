@@ -33,7 +33,7 @@ namespace Server.Models.Magics
 
             List<uint> targets = new List<uint>();
 
-            var greaterPoisonDust = GetAugmentedSkill(MagicType.AugmentPoisonDust);
+            var greaterPoisonDust = GetAugmentedSkill(MagicType.GreaterPoisonDust);
 
             if (greaterPoisonDust != null && SEnvir.Now > greaterPoisonDust.Cooldown)
             {
@@ -115,7 +115,7 @@ namespace Server.Models.Magics
 
             Player.LevelMagic(Magic);
 
-            var greaterPoisonDust = GetAugmentedSkill(MagicType.AugmentPoisonDust);
+            var greaterPoisonDust = GetAugmentedSkill(MagicType.GreaterPoisonDust);
 
             if (hasGreaterPoisonDust && greaterPoisonDust != null)
             {

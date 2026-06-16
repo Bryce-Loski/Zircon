@@ -6,6 +6,18 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【雷球术】- 雷系单体攻击技能
+    /// 
+    /// 效果：向目标发射雷球，造成雷系伤害并有概率附加麻痹效果。
+    /// 元素属性：雷 (Element.Lightning)
+    /// 
+    /// 实现机制：
+    /// - 标准单体远程攻击模板
+    /// - GetShock: 检查是否学会 FuryBlast（天怒/麻痹强化），
+    ///   若学会且随机判定通过(Random(MagicMaxLevel) <= Level)，附加麻痹效果
+    /// - 伤害公式: Magic.GetPower() + Player.GetMC()
+    /// </summary>
     [MagicType(MagicType.LightningBall)]
     public class LightningBall : MagicObject
     {
@@ -18,7 +30,7 @@ namespace Server.Models.Magics
 
         public override int GetShock(int shock, Stats stats = null)
         {
-            var shocked = GetAugmentedSkill(MagicType.Shocked);
+            var shocked = GetAugmentedSkill(MagicType.FuryBlast);
 
             if (shocked != null && SEnvir.Random.Next(Globals.MagicMaxLevel) <= shocked.Level)
             {

@@ -26,7 +26,7 @@ namespace Server.Models.Magics
 
                 if (((MonsterObject)target).MonsterInfo.IsBoss) continue;
 
-                if (target.PoisonList.Any(x => x.Type == PoisonType.Parasite)) continue;
+                if (target.PoisonList.Any(x => x.Type == PoisonType.Infection)) continue;
 
                 foreach (var p in ob.PoisonList)
                 {

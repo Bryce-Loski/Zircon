@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.CursedDoll)]
+    [MagicType(MagicType.Scarecrow)]
     public class CursedDoll : MagicObject
     {
         protected override Element Element => Element.None;
@@ -25,7 +25,7 @@ namespace Server.Models.Magics
                 Ob = target
             };
 
-            var info = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.CursedDoll);
+            var info = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.Scarecrow);
 
             if (!Player.CanAttackTarget(target) || Doll.CursedList.Contains(target) || (target is MonsterObject mon && mon.MonsterInfo.IsBoss) || target.Level > Player.Level + 2)
             {

@@ -50,7 +50,7 @@ namespace Server.Models.Magics
 
             int offence = 20;
 
-            var augmentDefiance = GetAugmentedSkill(MagicType.AugmentDefiance);
+            var augmentDefiance = GetAugmentedSkill(MagicType.ReigningStep);
 
             if (augmentDefiance != null)
             {

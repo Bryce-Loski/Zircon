@@ -6,6 +6,23 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【火墙术】- 火系持续性地面法术
+    /// 
+    /// 效果：在目标位置及其上下左右5个格子放置火墙，
+    ///       火墙每2秒对经过的敌人造成火系伤害。
+    /// 元素属性：火 (Element.Fire)
+    /// 特性：CanStruck = false（不会被怪物攻击打断）
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 在攻沙战(ConquestWar)中，先清除玩家旧火墙
+    ///   对中心+上下左右5个格子创建 DelayedAction
+    /// - MagicComplete: 先清除格子上的旧火墙/风暴法术，
+    ///   再创建 SpellObject(SpellEffect.FireWall)
+    ///   持续时间 = (Level+2)*5 次tick，tick频率 = 2秒
+    /// - ModifyPowerMultiplier: 伤害乘以 0.60（60%系数）
+    /// - 联动 RetrogressionOfEnergy 灼烧强化
+    /// </summary>
     [MagicType(MagicType.FireWall)]
     public class FireWall : MagicObject
     {
@@ -19,7 +36,7 @@ namespace Server.Models.Magics
 
         public override int GetBurn(int burn, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -31,7 +48,7 @@ namespace Server.Models.Magics
 
         public override int GetBurnLevel(int burnLevel, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -113,7 +130,7 @@ namespace Server.Models.Magics
 
             Player.LevelMagic(Magic);
 
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {

@@ -598,7 +598,7 @@ namespace Server.Models
                         MonsterInfo = monsterInfo,
                         SpawnList =
                         {
-                            [SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.Sacrifice)] = 1,
+                            [SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.Sacrafice)] = 1,
                         }
                     };
                 case 127:
@@ -1465,7 +1465,7 @@ namespace Server.Models
                 if (ob.Level >= Level) return false;
             }
 
-            if (ob.Buffs.Any(x => x.Type == BuffType.Transparency) && ((Poison & PoisonType.Parasite) != PoisonType.Parasite || Level < 100)) return false;
+            if (ob.Buffs.Any(x => x.Type == BuffType.Transparency) && ((Poison & PoisonType.Infection) != PoisonType.Infection || Level < 100)) return false;
 
             switch (ob.Race)
             {
@@ -1804,7 +1804,7 @@ namespace Server.Models
             {
                 MirDirection direction = Functions.ShiftDirection(Direction, d);
 
-                if (magic == MagicType.LightningBeam || magic == MagicType.BlowEarth || magic == MagicType.ElementalHurricane)
+                if (magic == MagicType.LightningBeam || magic == MagicType.BlowEarth || magic == MagicType.BurstOfEnergy)
                     locations.Add(Functions.Move(CurrentLocation, direction, distance));
 
                 for (int i = 1; i <= distance; i++)
@@ -1814,7 +1814,7 @@ namespace Server.Models
 
                     if (cell == null) continue;
 
-                    if (magic != MagicType.LightningBeam && magic != MagicType.BlowEarth && magic != MagicType.ElementalHurricane)
+                    if (magic != MagicType.LightningBeam && magic != MagicType.BlowEarth && magic != MagicType.BurstOfEnergy)
                         locations.Add(cell.Location);
 
                     if (cell.Objects != null)

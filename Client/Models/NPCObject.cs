@@ -227,13 +227,13 @@ namespace Client.Models
 
             switch (CurrentQuest.Icon)
             {
-                case QuestIcon.New:
+                case QuestIcon.NewQuest:
                     startIndex += 0;
                     break;
-                case QuestIcon.Incomplete:
+                case QuestIcon.QuestIncomplete:
                     startIndex = 0;
                     break;
-                case QuestIcon.Complete:
+                case QuestIcon.QuestComplete:
                     startIndex += 2;
                     break;
             }

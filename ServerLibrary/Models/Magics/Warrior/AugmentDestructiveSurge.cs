@@ -3,7 +3,7 @@ using Server.DBModels;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.AugmentDestructiveSurge)]
+    [MagicType(MagicType.SwirlingBlade)]
     public class AugmentDestructiveSurge : MagicObject
     {
         protected override Element Element => Element.None;

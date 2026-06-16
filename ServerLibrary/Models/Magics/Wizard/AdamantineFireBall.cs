@@ -5,6 +5,17 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【金刚火球】- 火球术的进阶升级版
+    /// 
+    /// 效果：向目标发射一颗强化火球，造成更高的火系魔法伤害。
+    /// 元素属性：火 (Element.Fire)
+    /// 
+    /// 实现机制：
+    /// - 与 FireBall 结构完全相同，但使用不同的 MagicType（伤害系数不同）
+    /// - 同样联动 RetrogressionOfEnergy 灼烧强化
+    /// - 伤害公式: Magic.GetPower() + Player.GetMC()
+    /// </summary>
     [MagicType(MagicType.AdamantineFireBall)]
     public class AdamantineFireBall : MagicObject
     {
@@ -17,7 +28,7 @@ namespace Server.Models.Magics
 
         public override int GetBurn(int burn, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -29,7 +40,7 @@ namespace Server.Models.Magics
 
         public override int GetBurnLevel(int burnLevel, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -70,7 +81,7 @@ namespace Server.Models.Magics
 
             if (damage > 0)
             {
-                var burning = GetAugmentedSkill(MagicType.Burning);
+                var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
                 if (burning != null)
                 {

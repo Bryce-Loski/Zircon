@@ -6,6 +6,18 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【冻土术】- 冰系线状AOE攻击技能
+    /// 
+    /// 效果：沿面向方向释放一条8格长、3格宽的冰系伤害带，附带减速效果。
+    /// 元素属性：冰 (Element.Ice)
+    /// 减速参数：Slow=10，SlowLevel=3
+    /// 
+    /// 实现机制：
+    /// - 与 ScortchedEarth（焦土术）完全相同的线状AOE模板
+    /// - 沿方向1-8格，正交偏移±2格/对角偏移±1格
+    /// - ModifyPowerMultiplier: 侧翼目标只受30%伤害
+    /// </summary>
     [MagicType(MagicType.FrozenEarth)]
     public class FrozenEarth : MagicObject
     {

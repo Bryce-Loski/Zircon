@@ -6,6 +6,20 @@ using System.Drawing;
 
 namespace Server.Models.Magics.Wizard
 {
+    /// <summary>
+    /// 【冻龙术】- 冰系自身周围大范围AOE技能（自定义技能）
+    /// 
+    /// 效果：以自身为中心5x5范围内召唤冻龙攻击，造成冰系伤害并减速。
+    ///       分两波攻击（i=1,2），延迟递增实现波浪扩散效果。
+    /// 元素属性：冰 (Element.Ice)
+    /// 减速参数：Slow=2，SlowLevel=5
+    /// 
+    /// 实现机制：
+    /// - MagicCast: GetCells(CurrentLocation, 0, 2) 获取5x5范围
+    ///   双层循环：外层 i=1~2（两波），内层遍历所有格子
+    ///   延迟 = 500 + 500*distance*i ms，第二波延迟翻倍
+    /// - MagicComplete: 逐格伤害判定
+    /// </summary>
     [MagicType(MagicType.FrozenDragon)]
     public class FrozenDragon : MagicObject
     {

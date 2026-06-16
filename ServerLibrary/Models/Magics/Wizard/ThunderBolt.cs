@@ -6,6 +6,16 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【雷电术】- 雷系单体攻击技能
+    /// 
+    /// 效果：召唤雷电劈向目标，造成雷系伤害并有概率附加麻痹。
+    /// 元素属性：雷 (Element.Lightning)
+    /// 
+    /// 实现机制：
+    /// - 与 LightningBall 结构相同，600ms固定延迟
+    /// - 同样联动 FuryBlast 麻痹强化
+    /// </summary>
     [MagicType(MagicType.ThunderBolt)]
     public class ThunderBolt : MagicObject
     {
@@ -18,7 +28,7 @@ namespace Server.Models.Magics
 
         public override int GetShock(int shock, Stats stats = null)
         {
-            var shocked = GetAugmentedSkill(MagicType.Shocked);
+            var shocked = GetAugmentedSkill(MagicType.FuryBlast);
 
             if (shocked != null && SEnvir.Random.Next(Globals.MagicMaxLevel) <= shocked.Level)
             {

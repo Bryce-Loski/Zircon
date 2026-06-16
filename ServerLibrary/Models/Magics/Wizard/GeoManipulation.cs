@@ -5,6 +5,21 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【操纵大地】- 定点传送技能
+    /// 
+    /// 效果：瞬间传送到指定位置，成功率 = 25 + Level*25%。
+    ///       PvP后30秒内使用，冷却时间翻10倍。
+    /// 元素属性：无 (Element.None)
+    /// 特性：UpdateCombatTime = false
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 地面指向性，检查施法距离
+    /// - MagicComplete: 
+    ///   成功率判定 Random(100) <= 25+Level*25
+    ///   调用 Player.Teleport 传送到目标位置
+    ///   PvP冷却惩罚：PvPTime后30秒内 delay*10
+    /// </summary>
     [MagicType(MagicType.GeoManipulation)]
     public class GeoManipulation : MagicObject
     {

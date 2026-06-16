@@ -47,7 +47,7 @@ namespace Server.Models.Magics
                 response.Cast = true;
                 response.Magics.Add(Type);
 
-                var augmentDestructiveSurge = GetAugmentedSkill(MagicType.AugmentDestructiveSurge);
+                var augmentDestructiveSurge = GetAugmentedSkill(MagicType.SwirlingBlade);
                 var hasAugmentDestructiveSurge = augmentDestructiveSurge != null && Magic.Level >= 3;
 
                 if (hasAugmentDestructiveSurge)
@@ -66,7 +66,7 @@ namespace Server.Models.Magics
             for (int i = 1; i < 8; i++)
                 Player.AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, i)), magics, false);
 
-            var augmentDestructiveSurge = GetAugmentedSkill(MagicType.AugmentDestructiveSurge);
+            var augmentDestructiveSurge = GetAugmentedSkill(MagicType.SwirlingBlade);
             var hasAugmentDestructiveSurge = augmentDestructiveSurge != null && Magic.Level >= 3;
 
             if (hasAugmentDestructiveSurge)

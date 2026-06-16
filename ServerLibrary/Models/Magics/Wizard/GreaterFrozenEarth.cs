@@ -6,6 +6,19 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【强化冻土术】- 冻土术的升级版，三方向扇形AOE
+    /// 
+    /// 效果：沿面向方向及其左右各偏转一个方向（共3个方向），
+    ///       各释放8格长的冰系伤害带，覆盖更大的扇形区域。
+    /// 元素属性：冰 (Element.Ice)
+    /// 减速参数：Slow=5，SlowLevel=5
+    /// 
+    /// 实现机制：
+    /// - 在 FrozenEarth 基础上增加外层循环 for(d=-1;d<=1)，
+    ///   对 ShiftDirection(direction, d) 三个方向分别释放
+    /// - ModifyPowerMultiplier: 侧翼目标只受30%伤害
+    /// </summary>
     [MagicType(MagicType.GreaterFrozenEarth)]
     public class GreaterFrozenEarth : MagicObject
     {

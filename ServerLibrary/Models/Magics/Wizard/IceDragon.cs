@@ -5,6 +5,17 @@ using System.Drawing;
 
 namespace Server.Models.Magics.Wizard
 {
+    /// <summary>
+    /// 【冰龙术】- 冰系单体攻击技能（自定义技能）
+    /// 
+    /// 效果：召唤冰龙攻击目标，造成冰系伤害并附带轻微减速。
+    /// 元素属性：冰 (Element.Ice)
+    /// 减速参数：Slow=2，SlowLevel=3
+    /// 
+    /// 实现机制：
+    /// - 标准单体远程攻击模板
+    /// - 减速效果较弱（Slow=2），定位为高伤害单体技能
+    /// </summary>
     [MagicType(MagicType.IceDragon)]
     public class IceDragon : MagicObject
     {

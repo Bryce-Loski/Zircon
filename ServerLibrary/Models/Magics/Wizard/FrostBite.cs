@@ -8,6 +8,22 @@ using System.Linq;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【冰霜噬咬】- 冰系自身增益+延迟爆发技能（自定义技能）
+    /// 
+    /// 效果：激活后获得 FrostBite Buff，持续期间攻击有概率附加额外冰系伤害。
+    ///       Buff结束时，对周围3格内所有怪物造成一次冰系爆发伤害（不攻击Boss）。
+    /// 元素属性：冰 (Element.Ice)
+    /// 特性：UpdateCombatTime = false（不触发战斗计时）
+    /// 
+    /// 实现机制：
+    /// - MagicComplete: 添加 BuffType.FrostBite Buff
+    ///   持续时间 = 3 + Level*3 秒
+    ///   Buff属性：FrostBiteDamage = GetMC()+GetPower()+IceAttack*2
+    ///            FrostBiteChance = 5 + Level*5（触发概率%）
+    /// - FrostBiteEnd(): Buff到期回调，对周围3格怪物创建 DelayedMagicDamage
+    ///   伤害上限 = MaxMC*50 + IceAttack*70
+    /// </summary>
     [MagicType(MagicType.FrostBite)]
     public class FrostBite : MagicObject
     {

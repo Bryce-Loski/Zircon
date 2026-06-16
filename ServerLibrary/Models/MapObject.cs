@@ -244,7 +244,7 @@ namespace Server.Models
                     case PoisonType.HellFire:
                         damage += poison.Value;
                         break;
-                    case PoisonType.Parasite:
+                    case PoisonType.Infection:
                         {
                             damage += poison.Value;
 
@@ -390,9 +390,9 @@ namespace Server.Models
 
                     switch (poison.Type)
                     {
-                        case PoisonType.Parasite:
+                        case PoisonType.Infection:
                             {
-                                if ((poison.Owner is PlayerObject owner) && owner.GetMagic(MagicType.Parasite, out Parasite parasite))
+                                if ((poison.Owner is PlayerObject owner) && owner.GetMagic(MagicType.MassTransparency, out Parasite parasite))
                                 {
                                     parasite.Explode(this);
                                 }
@@ -694,7 +694,7 @@ namespace Server.Models
                                 {
                                     player = (PlayerObject)this;
 
-                                    if (!player.GetMagic(MagicType.ElementalHurricane, out ElementalHurricane elementalHurricane)) break;
+                                    if (!player.GetMagic(MagicType.BurstOfEnergy, out ElementalHurricane elementalHurricane)) break;
 
                                     int cost = elementalHurricane.Magic.Cost;
 
@@ -712,7 +712,7 @@ namespace Server.Models
                                         ActionList.Add(new DelayedAction(
                                             SEnvir.Now,
                                             ActionType.DelayMagic,
-                                            MagicType.ElementalHurricane,
+                                            MagicType.BurstOfEnergy,
                                             cell,
                                             true));
 
@@ -725,13 +725,13 @@ namespace Server.Models
                                                 ActionList.Add(new DelayedAction(
                                                     SEnvir.Now,
                                                     ActionType.DelayMagic,
-                                                    MagicType.ElementalHurricane,
+                                                    MagicType.BurstOfEnergy,
                                                     CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -2))),
                                                     false));
                                                 ActionList.Add(new DelayedAction(
                                                     SEnvir.Now,
                                                     ActionType.DelayMagic,
-                                                    MagicType.ElementalHurricane,
+                                                    MagicType.BurstOfEnergy,
                                                     CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 2))),
                                                     false));
                                                 break;
@@ -742,13 +742,13 @@ namespace Server.Models
                                                 ActionList.Add(new DelayedAction(
                                                     SEnvir.Now,
                                                     ActionType.DelayMagic,
-                                                    MagicType.ElementalHurricane,
+                                                    MagicType.BurstOfEnergy,
                                                     CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 1))),
                                                     false));
                                                 ActionList.Add(new DelayedAction(
                                                     SEnvir.Now,
                                                     ActionType.DelayMagic,
-                                                    MagicType.ElementalHurricane,
+                                                    MagicType.BurstOfEnergy,
                                                     CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -1))),
                                                     false));
                                                 break;
@@ -1335,7 +1335,7 @@ namespace Server.Models
 
                 for (int i = ob.PoisonList.Count - 1; i >= 0; i--)
                 {
-                    if (ob.PoisonList[i].Type == PoisonType.Parasite) continue;
+                    if (ob.PoisonList[i].Type == PoisonType.Infection) continue;
 
                     ob.PoisonList.RemoveAt(i);
                 }

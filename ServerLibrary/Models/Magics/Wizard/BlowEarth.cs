@@ -6,6 +6,19 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【大地吹息】- 风系线状AOE攻击技能
+    /// 
+    /// 效果：沿面向方向释放一条8格长、3格宽的风系伤害带，
+    ///       附带强力击退效果（10格），侧翼伤害衰减至30%。
+    /// 元素属性：风 (Element.Wind)
+    /// 击退参数：Repel=10
+    /// 
+    /// 实现机制：
+    /// - 线状AOE模板（与焦土术/冻土术相同结构）
+    /// - 沿方向1-8格，正交偏移±2/对角偏移±1
+    /// - ModifyPowerMultiplier: 侧翼目标只受30%伤害
+    /// </summary>
     [MagicType(MagicType.BlowEarth)]
     public class BlowEarth : MagicObject
     {

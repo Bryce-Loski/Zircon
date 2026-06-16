@@ -8,6 +8,22 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【镜像分身】- 元素分身召唤技能
+    /// 
+    /// 效果：在指定位置召唤一个镜像分身怪物(Monsters.MirrorImage)，
+    ///       分身的元素属性由装备的暗石(DarkStone)决定。
+    ///       分身持续 Level*5 秒（最少5秒），同时只能存在1个。
+    /// 元素属性：无 (Element.None)，分身属性由暗石决定
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 地面指向性，检查施法距离
+    /// - MagicComplete: 
+    ///   检查暗石元素(Fire/Ice/Lightning/Wind)，无暗石则不召唤
+    ///   检查是否已有 MirrorImage 宠物（同时只允许1个）
+    ///   创建 Monsters.MirrorImage 实例，设置 Element/ExplodeTime/TameTime
+    ///   通过 S.ObjectEffect 播放召唤特效
+    /// </summary>
     [MagicType(MagicType.MirrorImage)]
     public class MirrorImage : MagicObject
     {

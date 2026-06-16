@@ -9,7 +9,23 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.ElementalHurricane)]
+    /// <summary>
+    /// 【元素飓风】(BurstOfEnergy) - 切换式持续AOE技能（自定义技能）
+    /// 
+    /// 效果：开启后在周围持续造成AOE伤害（元素类型由装备暗石决定），
+    ///       再次使用可关闭。持续消耗MP。
+    /// 元素属性：动态（由 Amulet 槽位暗石决定，无暗石则为无属性）
+    /// 
+    /// 实现机制：
+    /// - GetElement: 检查装备暗石(DarkStone)的元素属性
+    /// - CheckCost: 若Buff已激活则MP消耗为0
+    /// - MagicCast: 切换逻辑
+    ///   已有Buff → 移除 BuffType.ElementalHurricane（关闭）
+    ///   无Buff → 添加永久Buff，tickTime=500ms（开启）
+    /// - MagicConsume: 消耗 MP = MaxMana * Cost / 1000（按千分比）
+    /// - MagicComplete: 逐格AOE伤害，非主目标30%伤害
+    /// </summary>
+    [MagicType(MagicType.BurstOfEnergy)]
     public class ElementalHurricane : MagicObject
     {
         protected override Element Element => Element.None;

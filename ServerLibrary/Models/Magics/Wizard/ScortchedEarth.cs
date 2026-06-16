@@ -6,6 +6,21 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【焦土术】- 火系线状AOE攻击技能
+    /// 
+    /// 效果：沿面向方向释放一条8格长、3格宽的火系伤害带。
+    /// 元素属性：火 (Element.Fire)
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 沿方向循环1-8格，对每格及其两侧（垂直方向偏移±2或±1）
+    ///   创建 DelayedAction，正前方800ms延迟
+    ///   正交方向(上下左右)：向两侧各偏移2格
+    ///   对角方向(右上等)：向两侧各偏移1格
+    /// - MagicComplete: 逐格伤害判定，primary标记区分中心/侧翼
+    /// - ModifyPowerMultiplier: 侧翼目标只受30%伤害
+    /// - 联动 RetrogressionOfEnergy 灼烧强化
+    /// </summary>
     [MagicType(MagicType.ScortchedEarth)]
     public class ScortchedEarth : MagicObject
     {
@@ -18,7 +33,7 @@ namespace Server.Models.Magics
 
         public override int GetBurn(int burn, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -30,7 +45,7 @@ namespace Server.Models.Magics
 
         public override int GetBurnLevel(int burnLevel, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -88,7 +103,7 @@ namespace Server.Models.Magics
 
             if (cell?.Objects == null) return;
 
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             for (int i = cell.Objects.Count - 1; i >= 0; i--)
             {

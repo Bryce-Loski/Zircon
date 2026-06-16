@@ -37,7 +37,7 @@ namespace Server.Models.Magics
                 response.Ob = null;
             }
 
-            var augmentResurrection = GetAugmentedSkill(MagicType.AugmentResurrection);
+            var augmentResurrection = GetAugmentedSkill(MagicType.OathOfThePerished);
 
             if (augmentResurrection != null && SEnvir.Now > augmentResurrection.Cooldown)
             {
@@ -111,7 +111,7 @@ namespace Server.Models.Magics
 
             MagicCooldown(null, 20000);
 
-            var augmentResurrection = GetAugmentedSkill(MagicType.AugmentResurrection);
+            var augmentResurrection = GetAugmentedSkill(MagicType.OathOfThePerished);
 
             if (!primary && hasAugmentResurrection && augmentResurrection != null)
             {

@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.CombatKick)]
+    [MagicType(MagicType.TaoistCombatKick)]
     public class CombatKick : MagicObject
     {
         protected override Element Element => Element.None;

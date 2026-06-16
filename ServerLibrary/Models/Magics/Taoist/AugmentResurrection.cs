@@ -3,7 +3,7 @@ using Server.DBModels;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.AugmentResurrection)]
+    [MagicType(MagicType.OathOfThePerished)]
     public class AugmentResurrection : MagicObject
     {
         protected override Element Element => Element.None;

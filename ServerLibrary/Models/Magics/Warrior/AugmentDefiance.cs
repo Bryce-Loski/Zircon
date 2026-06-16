@@ -3,7 +3,7 @@ using Server.DBModels;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.AugmentDefiance)]
+    [MagicType(MagicType.ReigningStep)]
     public class AugmentDefiance : MagicObject
     {
         protected override Element Element => Element.None;

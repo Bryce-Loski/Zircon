@@ -9,6 +9,23 @@ using S = Library.Network.ServerPackets;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【连锁闪电】- 雷系连锁弹射攻击技能
+    /// 
+    /// 效果：闪电击中目标后自动弹跳到附近1格内的其他怪物，
+    ///       每次弹射伤害递减（powerDivisor递增）。
+    /// 元素属性：雷 (Element.Lightning)
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 对初始目标发起首次 ChainLightningStart
+    /// - ChainLightningStart(): 递归弹射方法
+    ///   首次(primary=true)直接攻击目标位置
+    ///   后续搜索周围1格内未攻击过的怪物，按 powerDivisor 概率命中
+    /// - MagicComplete: 攻击后调用 ChainLightningStart 继续弹射
+    ///   通过 S.ObjectProjectile 广播弹射视觉
+    /// - ModifyPowerMultiplier: power * 5 / (extra+5)，弹射越远伤害越低
+    /// - 联动 FuryBlast 麻痹强化
+    /// </summary>
     [MagicType(MagicType.ChainLightning)]
     public class ChainLightning : MagicObject
     {
@@ -21,7 +38,7 @@ namespace Server.Models.Magics
 
         public override int GetShock(int shock, Stats stats = null)
         {
-            var shocked = GetAugmentedSkill(MagicType.Shocked);
+            var shocked = GetAugmentedSkill(MagicType.FuryBlast);
 
             if (shocked != null && SEnvir.Random.Next(Globals.MagicMaxLevel) <= shocked.Level)
             {

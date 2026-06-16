@@ -6,6 +6,19 @@ using System.Drawing;
 
 namespace Server.Models.Magics
 {
+    /// <summary>
+    /// 【流星雨】- 火系多目标攻击技能
+    /// 
+    /// 效果：在目标区域召唤流星雨，随机攻击 6+Magic.Level 个目标。
+    /// 元素属性：火 (Element.Fire)
+    /// 
+    /// 实现机制：
+    /// - MagicCast: 获取目标位置3格内的所有可攻击目标，
+    ///   随机选取最多 6+Level 个（不重复），每个目标独立创建 DelayedAction
+    /// - MagicComplete: 对每个目标单独进行伤害判定
+    /// - 联动 RetrogressionOfEnergy 灼烧强化
+    /// - 伤害公式: Magic.GetPower() + Player.GetMC()
+    /// </summary>
     [MagicType(MagicType.MeteorShower)]
     public class MeteorShower : MagicObject
     {
@@ -18,7 +31,7 @@ namespace Server.Models.Magics
 
         public override int GetBurn(int burn, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -30,7 +43,7 @@ namespace Server.Models.Magics
 
         public override int GetBurnLevel(int burnLevel, Stats stats = null)
         {
-            var burning = GetAugmentedSkill(MagicType.Burning);
+            var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
             if (burning != null)
             {
@@ -82,7 +95,7 @@ namespace Server.Models.Magics
 
             if (damage > 0)
             {
-                var burning = GetAugmentedSkill(MagicType.Burning);
+                var burning = GetAugmentedSkill(MagicType.RetrogressionOfEnergy);
 
                 if (burning != null)
                 {

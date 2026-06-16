@@ -423,7 +423,7 @@ namespace Client.Models
                 EndMagicEffect(MagicEffect.Blind);
             }
 
-            if ((Poison & PoisonType.Parasite) == PoisonType.Parasite)
+            if ((Poison & PoisonType.Infection) == PoisonType.Infection)
             {
                 CreateMagicEffect(MagicEffect.Parasite);
             }
@@ -1021,7 +1021,7 @@ namespace Client.Models
 
                         case MagicType.AdamantineFireBall:
                         case MagicType.MeteorShower:
-                        case MagicType.FireBounce:
+                        case MagicType.RayOfLight:
 
                             foreach (Point point in MagicLocations)
                             {
@@ -1480,7 +1480,7 @@ namespace Client.Models
 
                         #region Lightning Strike
 
-                        case MagicType.LightningStrike:
+                        case MagicType.TempestOfUnstableEnergy:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(500, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx6, 50, 50, Globals.LightningColour, CurrentLocation)
@@ -1522,7 +1522,7 @@ namespace Client.Models
 
                         #region Ice Rain
 
-                        case MagicType.IceRain:
+                        case MagicType.AdvancedRenounce:
                             int delay = 0;
 
                             foreach (Point point in MagicLocations)
@@ -1708,7 +1708,7 @@ namespace Client.Models
                         #region Poison Dust & Greater Poison Dust
 
                         case MagicType.PoisonDust:
-                        case MagicType.AugmentPoisonDust:
+                        case MagicType.GreaterPoisonDust:
                             foreach (MapObject attackTarget in AttackTargets)
                             {
                                 attackTarget.Effects.Add(spell = new MirEffect(70, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 10, 35, Globals.DarkColour)
@@ -2184,7 +2184,7 @@ namespace Client.Models
 
                         #region Parasite
 
-                        case MagicType.Parasite:
+                        case MagicType.MassTransparency:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(800, 6, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx5, 35, 35, Globals.NoneColour, CurrentLocation)
@@ -2365,7 +2365,7 @@ namespace Client.Models
 
                         #region Soul Resonance
 
-                        case MagicType.SoulResonance:
+                        case MagicType.DragonBreath:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(500, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx7, 35, 35, Globals.NoneColour, CurrentLocation, null)
@@ -3854,7 +3854,7 @@ namespace Client.Models
 
                         case MagicType.AdamantineFireBall:
                         case MagicType.MeteorShower:
-                        case MagicType.FireBounce:
+                        case MagicType.RayOfLight:
                             Effects.Add(spell = new MirEffect(1560, 9, TimeSpan.FromMilliseconds(65), LibraryFile.Magic, 10, 35, Globals.FireColour)
                             {
                                 Blend = true,
@@ -4168,7 +4168,7 @@ namespace Client.Models
 
                         #region Superior Magic Shield
 
-                        case MagicType.SuperiorMagicShield:
+                        case MagicType.ShieldOfPreservation:
                             Effects.Add(new MirEffect(1900, 17, TimeSpan.FromMilliseconds(60), LibraryFile.MagicEx2, 10, 35, Globals.FireColour)
                             {
                                 Blend = true,
@@ -4181,7 +4181,7 @@ namespace Client.Models
 
                         #region Lightning Strike
 
-                        case MagicType.LightningStrike:
+                        case MagicType.TempestOfUnstableEnergy:
                             Effects.Add(spell = new MirEffect(400, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx6, 10, 35, Globals.LightningColour)
                             {
                                 Blend = true,
@@ -4195,7 +4195,7 @@ namespace Client.Models
 
                         #region Ice Rain
 
-                        case MagicType.IceRain:
+                        case MagicType.AdvancedRenounce:
                             Effects.Add(spell = new MirEffect(1430, 12, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 10, 35, Globals.IceColour)
                             {
                                 Blend = true,
@@ -4379,7 +4379,7 @@ namespace Client.Models
 
                         #region Taoist Combat Kick
 
-                        case MagicType.CombatKick:
+                        case MagicType.TaoistCombatKick:
                             DXSoundManager.Play(SoundIndex.TaoistCombatKickStart);
                             break;
 
@@ -4532,7 +4532,7 @@ namespace Client.Models
 
                         #region Cursed Doll
 
-                        case MagicType.CursedDoll:
+                        case MagicType.Scarecrow:
                             Effects.Add(new MirEffect(690, 10, TimeSpan.FromMilliseconds(60), LibraryFile.MagicEx3, 10, 35, Globals.FireColour)
                             {
                                 Blend = true,
@@ -4569,7 +4569,7 @@ namespace Client.Models
 
                         #region Parasite
 
-                        case MagicType.Parasite:
+                        case MagicType.MassTransparency:
                             Effects.Add(spell = new MirEffect(1000, 5, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx5, 35, 35, Globals.NoneColour)
                             {
                                 Blend = true,
@@ -4614,7 +4614,7 @@ namespace Client.Models
 
                         #region Spiritualism
 
-                        case MagicType.Spiritualism:
+                        case MagicType.GreaterHolyStrike:
                             {
                                 if (MapObject.User == this)
                                 {

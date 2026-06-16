@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Server.Models.Magics
 {
-    [MagicType(MagicType.SoulResonance)]
+    [MagicType(MagicType.DragonBreath)]
     public class SoulResonance : MagicObject
     {
         protected override Element Element => Element.None;

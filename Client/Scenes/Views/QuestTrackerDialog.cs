@@ -149,7 +149,7 @@ namespace Client.Scenes.Views
                 };
 
                 var type = userQuest.Quest.QuestType;
-                var icon = userQuest.IsComplete ? Library.QuestIcon.Complete : Library.QuestIcon.Incomplete;
+                var icon = userQuest.IsComplete ? Library.QuestIcon.QuestComplete : Library.QuestIcon.QuestIncomplete;
                 int startIndex = 0;
 
                 switch (type)
@@ -176,13 +176,13 @@ namespace Client.Scenes.Views
 
                 switch (icon)
                 {
-                    case Library.QuestIcon.New:
+                    case Library.QuestIcon.NewQuest:
                         startIndex += 0;
                         break;
-                    case Library.QuestIcon.Incomplete:
+                    case Library.QuestIcon.QuestIncomplete:
                         startIndex = 2;
                         break;
-                    case Library.QuestIcon.Complete:
+                    case Library.QuestIcon.QuestComplete:
                         startIndex += 2;
                         break;
                 }

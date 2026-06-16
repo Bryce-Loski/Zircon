@@ -196,11 +196,11 @@ namespace Library
                 case MagicType.ScortchedEarth:
                 case MagicType.LightningBeam:
                 case MagicType.AdamantineFireBall:
-                case MagicType.FireBounce:
+                case MagicType.RayOfLight:
                 case MagicType.IceBlades:
                 case MagicType.FrozenEarth:
                 case MagicType.MeteorShower:
-                case MagicType.LightningStrike:
+                case MagicType.TempestOfUnstableEnergy:
                 case MagicType.IceAura:
                 case MagicType.IceDragon:
 
@@ -211,14 +211,14 @@ namespace Library
                 case MagicType.MassInvisibility:
                 case MagicType.GreaterEvilSlayer:
                 case MagicType.GreaterFrozenEarth:
-                case MagicType.Parasite:
+                case MagicType.MassTransparency:
                 case MagicType.ElementalSuperiority:
                 case MagicType.BloodLust:
                 case MagicType.LifeSteal:
                 case MagicType.ImprovedExplosiveTalisman:
                 case MagicType.Neutralize:
                 case MagicType.CorpseExploder:
-                case MagicType.SoulResonance:
+                case MagicType.DragonBreath:
                 case MagicType.SearingLight:
                 case MagicType.BindingTalisman:
                 case MagicType.BrainStorm:
@@ -256,8 +256,8 @@ namespace Library
                 case MagicType.ThunderStrike:
                 case MagicType.MirrorImage:
                 case MagicType.Asteroid:
-                case MagicType.SuperiorMagicShield:
-                case MagicType.IceRain:
+                case MagicType.ShieldOfPreservation:
+                case MagicType.AdvancedRenounce:
                 case MagicType.Tornado:
                 case MagicType.IceBreaker:
                 case MagicType.FrozenDragon:
@@ -274,17 +274,17 @@ namespace Library
                 case MagicType.SummonShinsu:
                 case MagicType.StrengthOfFaith:
                 case MagicType.CelestialLight:
-                case MagicType.AugmentPoisonDust:
+                case MagicType.GreaterPoisonDust:
                 case MagicType.SummonDemonicCreature:
                 case MagicType.DemonExplosion:
-                case MagicType.CursedDoll:
+                case MagicType.Scarecrow:
                 case MagicType.DarkSoulPrison:
                 case MagicType.SummonDead:
                 case MagicType.HeavenlySky:
                 case MagicType.PoisonCloud:
                     return MirAnimation.Combat2;
 
-                case MagicType.ElementalHurricane:
+                case MagicType.BurstOfEnergy:
                     return MirAnimation.ChannellingStart;
 
                 case MagicType.PoisonousCloud:
@@ -298,7 +298,7 @@ namespace Library
                     return MirAnimation.DragonRepulseStart;
 
                 case MagicType.ThunderKick:
-                case MagicType.CombatKick:
+                case MagicType.TaoistCombatKick:
                     return MirAnimation.Combat7;
 
                 case MagicType.HundredFist:
@@ -331,7 +331,7 @@ namespace Library
                 case MagicType.Endurance:
                 case MagicType.Invincibility:
 
-                case MagicType.Spiritualism:
+                case MagicType.GreaterHolyStrike:
                     return MirAnimation.Combat15;
 
                 case MagicType.Shuriken:
