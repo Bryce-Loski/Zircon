@@ -86,7 +86,7 @@ namespace Client.Scenes
         public ClientUserCurrency CurrencyPickedUp = null;
 
         public MapObject MagicObject, MouseObject, TargetObject, FocusObject;
-        public DXControl ItemLabel, MagicLabel;
+        public DXControl ItemLabel, MagicLabel, FameLabel;
 
         #region MouseItem
 
@@ -142,6 +142,34 @@ namespace Client.Scenes
 
         #endregion
 
+        #region MouseFame
+
+        public FameInfo MouseFame
+        {
+            get => _MouseFame;
+            set
+            {
+                if (_MouseFame == value) return;
+
+                FameInfo oldValue = _MouseFame;
+                _MouseFame = value;
+
+                OnMouseFameChanged(oldValue, value);
+            }
+        }
+        private FameInfo _MouseFame;
+        public event EventHandler<EventArgs> MouseFameChanged;
+        public void OnMouseFameChanged(FameInfo oValue, FameInfo nValue)
+        {
+            MouseFameChanged?.Invoke(this, EventArgs.Empty);
+
+            if (FameLabel != null && !FameLabel.IsDisposed) FameLabel.Dispose();
+            FameLabel = null;
+            CreateFameLabel();
+        }
+
+        #endregion
+
         public MapControl MapControl;
         public MainPanel MainPanel;
 
@@ -191,6 +219,7 @@ namespace Client.Scenes
         public GuildMemberDialog GuildMemberBox;
         public QuestDialog QuestBox;
         public QuestTrackerDialog QuestTrackerBox;
+        public MilestoneAchievedDialog MilestoneAchievedBox;
         public CompanionDialog CompanionBox;
         public MonsterDialog MonsterBox;
         public MagicBarDialog MagicBarBox;
@@ -669,11 +698,19 @@ namespace Client.Scenes
                 Parent = this,
                 Visible = false
             };
+
             QuestTrackerBox = new QuestTrackerDialog
             {
                 Parent = this,
                 Visible = false
             };
+
+            MilestoneAchievedBox = new MilestoneAchievedDialog
+            {
+                Parent = this,
+                Visible = false,
+            };
+
             CompanionBox = new CompanionDialog
             {
                 Parent = this,
@@ -811,6 +848,8 @@ namespace Client.Scenes
             MiniMapBox.Location = new Point(Size.Width - MiniMapBox.Size.Width, 0);
 
             QuestTrackerBox.Location = new Point(Size.Width - QuestTrackerBox.Size.Width, MiniMapBox.Size.Height + 5);
+
+            MilestoneAchievedBox.Location = new Point((Size.Width - MilestoneAchievedBox.Size.Width) / 2, ((Size.Height - MilestoneAchievedBox.Size.Height) / 2) + 100);
 
             BuffBox.Location = new Point(Size.Width - MiniMapBox.Size.Width - BuffBox.Size.Width - 5, 0);
 
@@ -1088,6 +1127,25 @@ namespace Client.Scenes
                     y = Location.Y;
 
                 MagicLabel.Location = new Point(x, y);
+            }
+
+            if (FameLabel != null && !FameLabel.IsDisposed)
+            {
+                int x = CEnvir.MouseLocation.X + 15, y = CEnvir.MouseLocation.Y;
+
+                if (x + FameLabel.Size.Width > Size.Width + Location.X)
+                    x = Size.Width - FameLabel.Size.Width + Location.X;
+
+                if (y + FameLabel.Size.Height > Size.Height + Location.Y)
+                    y = Size.Height - FameLabel.Size.Height + Location.Y;
+
+                if (x < Location.X)
+                    x = Location.X;
+
+                if (y <= Location.Y)
+                    y = Location.Y;
+
+                FameLabel.Location = new Point(x, y);
             }
 
             MonsterObject mob = MouseObject as MonsterObject;
@@ -2613,6 +2671,76 @@ namespace Client.Scenes
             }
         }
 
+        private void CreateFameLabel()
+        {
+            if (MouseFame == null) return;
+
+            FameLabel = new DXControl
+            {
+                BackColour = Color.FromArgb(200, 0, 24, 48),
+                Border = true,
+                BorderColour = Color.Yellow, // Color.FromArgb(144, 148, 48),
+                DrawTexture = true,
+                IsControl = false,
+                IsVisible = true,
+            };
+
+            DXLabel label = new DXLabel
+            {
+                ForeColour = Color.Yellow,
+                Location = new Point(4, 4),
+                Parent = FameLabel,
+                Text = MouseFame.Name
+            };
+            FameLabel.Size = new Size(label.DisplayArea.Right + 4, label.DisplayArea.Bottom + 4);
+
+            if (!string.IsNullOrEmpty(MouseFame.Description))
+            {
+                label = new DXLabel
+                {
+                    ForeColour = Color.Wheat,
+                    Location = new Point(4, FameLabel.DisplayArea.Bottom),
+                    Parent = FameLabel,
+                    Text = Functions.BreakStringIntoLines(MouseFame.Description, 45),
+                };
+
+                FameLabel.Size = new Size(label.DisplayArea.Right + 4 > FameLabel.Size.Width ? label.DisplayArea.Right + 4 : FameLabel.Size.Width,
+                    label.DisplayArea.Bottom > FameLabel.Size.Height ? label.DisplayArea.Bottom + 4 : FameLabel.Size.Height);
+            }
+
+            if (MouseFame.BuffStats.Count > 0)
+            {
+                Stats stats = new Stats();
+                foreach (FameInfoStat stat in MouseFame.BuffStats)
+                    stats[stat.Stat] = stat.Amount;
+
+                string statsText = string.Empty;
+                foreach (KeyValuePair<Stat, int> pair in stats.Values)
+                {
+                    if (pair.Key == Stat.Duration) continue;
+
+                    string temp = stats.GetDisplay(pair.Key);
+
+                    if (temp == null) continue;
+                    statsText += $"\n{temp}";
+                }
+
+                if (!string.IsNullOrEmpty(statsText))
+                {
+                    label = new DXLabel
+                    {
+                        ForeColour = Color.White,
+                        Location = new Point(4, FameLabel.DisplayArea.Bottom),
+                        Parent = FameLabel,
+                        Text = statsText.Trim(),
+                    };
+
+                    FameLabel.Size = new Size(label.DisplayArea.Right + 4 > FameLabel.Size.Width ? label.DisplayArea.Right + 4 : FameLabel.Size.Width,
+                        label.DisplayArea.Bottom > FameLabel.Size.Height ? label.DisplayArea.Bottom + 4 : FameLabel.Size.Height);
+                }
+            }
+        }
+
         private void CreateMagicLabel()
         {
             if (MouseMagic == null) return;
@@ -3536,6 +3664,9 @@ namespace Client.Scenes
 
             if (MagicLabel != null && !MagicLabel.IsDisposed)
                 MagicLabel.Draw();
+
+            if (FameLabel != null && !FameLabel.IsDisposed)
+                FameLabel.Draw();
         }
 
         public void Displacement(MirDirection direction, Point location, bool clearQueue = false)
@@ -4161,10 +4292,9 @@ namespace Client.Scenes
             else
                 text = questInfo.ProgressText; //Current
 
-
-            text = text.Replace("[PLAYERNAME]", User.Name);
-            text = text.Replace("[STARTNAME]", questInfo.StartNPC.NPCName);
-            text = text.Replace("[FINISHNAME]", questInfo.FinishNPC.NPCName);
+            text = text.Replace("[PLAYERNAME]", User.Name, StringComparison.OrdinalIgnoreCase);
+            text = text.Replace("[STARTNAME]", questInfo.StartNPC.NPCName, StringComparison.OrdinalIgnoreCase);
+            text = text.Replace("[FINISHNAME]", questInfo.FinishNPC.NPCName, StringComparison.OrdinalIgnoreCase);
 
             return text;
 
@@ -4473,6 +4603,7 @@ namespace Client.Scenes
                 _User = null;
                 _MouseItem = null;
                 _MouseMagic = null;
+                _MouseFame = null;
 
                 CurrencyPickedUp = null;
 
@@ -4495,6 +4626,14 @@ namespace Client.Scenes
                         MagicLabel.Dispose();
 
                     MagicLabel = null;
+                }
+
+                if (FameLabel != null)
+                {
+                    if (!FameLabel.IsDisposed)
+                        FameLabel.Dispose();
+
+                    FameLabel = null;
                 }
 
                 if (MapControl != null)

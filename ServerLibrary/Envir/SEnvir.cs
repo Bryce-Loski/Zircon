@@ -18,6 +18,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -146,12 +147,18 @@ namespace Server.Envir
                 for (int i = Connections.Count - 1; i >= 0; i--)
                     Connections[i].SendDisconnect(p);
 
-                Thread.Sleep(2000);
+                Thread.Sleep(200);
+
+                for (int i = Connections.Count - 1; i >= 0; i--)
+                    Connections[i].Disconnect();
             }
             catch (Exception ex)
             {
                 Log(ex.ToString());
             }
+
+            Connections.Clear();
+            IPCount.Clear();
 
             if (log) Log("Network Stopped.");
         }
@@ -316,6 +323,9 @@ namespace Server.Envir
         public static DBCollection<UserDiscipline> UserDisciplineList;
         public static DBCollection<BundleInfo> BundleInfoList;
         public static DBCollection<LootBoxInfo> LootBoxInfoList;
+        public static DBCollection<MilestoneInfo> MilestoneInfoList;
+        public static DBCollection<UserMilestoneLog> UserMilestoneLogList;
+        public static DBCollection<UserMilestone> UserMilestoneList;
 
         public static DBCollection<WorldEventTrigger> WorldEventInfoTriggerList;
         public static DBCollection<PlayerEventTrigger> PlayerEventInfoTriggerList;
@@ -336,8 +346,9 @@ namespace Server.Envir
 
         public static Random Random;
 
-        public static Dictionary<MapInfo, Map> Maps = [];
-        public static Dictionary<InstanceInfo, Dictionary<MapInfo, Map>[]> Instances = [];
+        private static Dictionary<MapInfo, Map> Maps = [];
+        private static Dictionary<InstanceInfo, Dictionary<MapInfo, Map>[]> Instances = [];
+        private static readonly object MapLoadLock = new();
 
         private static long _ObjectID;
         public static uint ObjectID => (uint)Interlocked.Increment(ref _ObjectID);
@@ -517,6 +528,9 @@ namespace Server.Envir
             UserDisciplineList = Session.GetCollection<UserDiscipline>();
             BundleInfoList = Session.GetCollection<BundleInfo>();
             LootBoxInfoList = Session.GetCollection<LootBoxInfo>();
+            MilestoneInfoList = Session.GetCollection<MilestoneInfo>();
+            UserMilestoneLogList = Session.GetCollection<UserMilestoneLog>();
+            UserMilestoneList = Session.GetCollection<UserMilestone>();
 
             WorldEventInfoTriggerList = Session.GetCollection<WorldEventTrigger>();
             PlayerEventInfoTriggerList = Session.GetCollection<PlayerEventTrigger>();
@@ -577,8 +591,9 @@ namespace Server.Envir
 
         public static void RankingSort(CharacterInfo character, bool updateLead = true, bool initialSetup = false)
         {
-            //Only works on Increasing EXP, still need to do Rebirth or loss of exp ranking update.
             bool changed = false;
+            int rank = initialSetup ? 0 : GetRankingPosition(character.RankingNode);
+            Dictionary<CharacterInfo, int> changedRanks = null;
 
             LinkedListNode<CharacterInfo> node;
 
@@ -589,37 +604,81 @@ namespace Server.Envir
 
                 if (!initialSetup)
                 {
-                    SwapRankPosition(character.RankChange, node.Value.RankChange, RequiredClass.All);
-
-                    if (character.Class == node.Value.Class)
-                    {
-                        switch (character.Class)
-                        {
-                            case MirClass.Warrior:
-                                SwapRankPosition(character.RankChange, node.Value.RankChange, RequiredClass.Warrior);
-                                break;
-                            case MirClass.Wizard:
-                                SwapRankPosition(character.RankChange, node.Value.RankChange, RequiredClass.Wizard);
-                                break;
-                            case MirClass.Taoist:
-                                SwapRankPosition(character.RankChange, node.Value.RankChange, RequiredClass.Taoist);
-                                break;
-                            case MirClass.Assassin:
-                                SwapRankPosition(character.RankChange, node.Value.RankChange, RequiredClass.Assassin);
-                                break;
-                        }
-                    }
+                    SwapRankPosition(character, node.Value);
+                    changedRanks ??= new Dictionary<CharacterInfo, int>();
+                    changedRanks[character] = rank - 1;
+                    changedRanks[node.Value] = rank;
                 }
 
                 changed = true;
 
                 Rankings.Remove(character.RankingNode);
                 Rankings.AddBefore(node, character.RankingNode);
+                rank--;
+            }
+
+            while ((node = character.RankingNode.Next) != null)
+            {
+                if (node.Value.Level < character.Level) break;
+                if (node.Value.Level == character.Level && node.Value.Experience <= character.Experience) break;
+
+                if (!initialSetup)
+                {
+                    SwapRankPosition(node.Value, character);
+                    changedRanks ??= new Dictionary<CharacterInfo, int>();
+                    changedRanks[character] = rank + 1;
+                    changedRanks[node.Value] = rank;
+                }
+
+                changed = true;
+
+                Rankings.Remove(character.RankingNode);
+                Rankings.AddAfter(node, character.RankingNode);
+                rank++;
+            }
+
+            if (changedRanks != null)
+            {
+                foreach (KeyValuePair<CharacterInfo, int> changedRank in changedRanks)
+                    LogMilestone(changedRank.Key, MilestoneType.Ranking, changedRank.Value, true);
             }
 
             if (!updateLead || (TopRankings.Count >= 20 && !changed)) return; //5 * 4
 
             UpdateLead();
+        }
+
+        private static int GetRankingPosition(LinkedListNode<CharacterInfo> node)
+        {
+            int rank = 1;
+
+            while ((node = node.Previous) != null)
+                rank++;
+
+            return rank;
+        }
+
+        private static void SwapRankPosition(CharacterInfo rankIncrease, CharacterInfo rankDecrease)
+        {
+            SwapRankPosition(rankIncrease.RankChange, rankDecrease.RankChange, RequiredClass.All);
+
+            if (rankIncrease.Class != rankDecrease.Class) return;
+
+            switch (rankIncrease.Class)
+            {
+                case MirClass.Warrior:
+                    SwapRankPosition(rankIncrease.RankChange, rankDecrease.RankChange, RequiredClass.Warrior);
+                    break;
+                case MirClass.Wizard:
+                    SwapRankPosition(rankIncrease.RankChange, rankDecrease.RankChange, RequiredClass.Wizard);
+                    break;
+                case MirClass.Taoist:
+                    SwapRankPosition(rankIncrease.RankChange, rankDecrease.RankChange, RequiredClass.Taoist);
+                    break;
+                case MirClass.Assassin:
+                    SwapRankPosition(rankIncrease.RankChange, rankDecrease.RankChange, RequiredClass.Assassin);
+                    break;
+            }
         }
 
         private static void SwapRankPosition(Dictionary<RequiredClass, int> rankA, Dictionary<RequiredClass, int> rankB, RequiredClass cls)
@@ -693,12 +752,6 @@ namespace Server.Envir
             LoadDatabase();
             LoadExperienceList();
 
-            #region Load Files
-            for (int i = 0; i < MapInfoList.Count; i++)
-            {
-                Maps[MapInfoList[i]] = new Map(MapInfoList[i]);
-            }
-
             for (int i = 0; i < InstanceInfoList.Count; i++)
             {
                 int count = InstanceInfoList[i].MaxInstances > 0 ? InstanceInfoList[i].MaxInstances : byte.MaxValue;
@@ -706,36 +759,64 @@ namespace Server.Envir
                 Instances[InstanceInfoList[i]] = new Dictionary<MapInfo, Map>[count];
             }
 
-            Parallel.ForEach(Maps, x => x.Value.Load());
-
-            #endregion
-
-            foreach (Map map in Maps.Values)
-                map.Setup();
-
-            Parallel.ForEach(MapRegionList.Binding, x =>
+            if (!Config.LazyLoadMaps)
             {
-                Map map = GetMap(x.Map);
+                Log("Map lazy loading disabled, loading all maps on startup.");
 
-                if (map == null) return;
+                for (int i = 0; i < MapInfoList.Count; i++)
+                {
+                    Maps[MapInfoList[i]] = new Map(MapInfoList[i]);
+                }
 
-                x.CreatePoints(map.Width);
-            });
+                Parallel.ForEach(Maps, x => x.Value.Load());
 
-            CreateSafeZones();
+                Parallel.ForEach(MapRegionList.Binding, x =>
+                {
+                    if (!Maps.TryGetValue(x.Map, out Map map)) return;
 
-            CreateMovements();
+                    x.CreatePoints(map.Width);
+                });
 
-            CreateNPCs();
+                foreach (Map map in Maps.Values)
+                    map.Setup();
 
-            CreateSpawns();
-
-            CreateQuestRegions();
+                CreateSafeZones();
+                CreateMovements();
+                CreateNPCs();
+                CreateSpawns();
+                CreateQuestRegions();
+            }
+            else
+            {
+                CreateStartZones();
+            }
         }
 
-        private static void CreateMovements(InstanceInfo instance = null, byte instanceSequence = 0)
+        private static void CreateMovements(InstanceInfo instance = null, byte instanceSequence = 0, MapInfo targetMap = null)
         {
-            foreach (MovementInfo movement in MovementInfoList.Binding)
+            IEnumerable<MovementInfo> movements = MovementInfoList.Binding;
+
+            if (targetMap != null)
+            {
+                HashSet<MovementInfo> mapMovements = [];
+
+                if (targetMap.Regions != null)
+                {
+                    foreach (MapRegion region in targetMap.Regions)
+                    {
+                        if (region.SourceMovements == null) continue;
+
+                        foreach (MovementInfo movement in region.SourceMovements)
+                        {
+                            mapMovements.Add(movement);
+                        }
+                    }
+                }
+
+                movements = mapMovements;
+            }
+
+            foreach (MovementInfo movement in movements)
             {
                 if (movement.SourceRegion == null && movement.DestinationRegion == null)
                 {
@@ -748,6 +829,8 @@ namespace Server.Envir
                     Log($"[Movement] No Source Region, Destination: {movement.DestinationRegion.ServerDescription}");
                     continue;
                 }
+
+                if (targetMap != null && movement.SourceRegion.Map != targetMap) continue;
 
                 Map sourceMap = GetMap(movement.SourceRegion.Map, instance, instanceSequence);
 
@@ -767,15 +850,32 @@ namespace Server.Envir
                     continue;
                 }
 
-                if (movement.DestinationRegion.PointList.Count == 0)
+                if (movement.DestinationRegion.PointList == null)
                 {
-                    Log($"[Movement] Bad Destination, Dest: {movement.DestinationRegion.ServerDescription}, No Points");
+                    if (movement.DestinationRegion.Map == sourceMap.Info)
+                    {
+                        movement.DestinationRegion.CreatePoints(sourceMap.Width);
+                    }
+                    else if (movement.DestinationRegion.PointRegion != null)
+                    {
+                        movement.DestinationRegion.PointList = movement.DestinationRegion.PointRegion.ToList();
+                    }
+                }
+
+                if (movement.DestinationRegion.PointList == null || movement.DestinationRegion.PointList.Count == 0)
+                {
+                    if (targetMap == null)
+                        Log($"[Movement] Bad Destination, Dest: {movement.DestinationRegion.ServerDescription}, No Points");
+
                     continue;
                 }
 
-                Map destMap = GetMap(movement.DestinationRegion.Map, instance, instanceSequence);
+                Map destMap = null;
 
-                if (destMap == null)
+                if (targetMap == null)
+                    destMap = GetMap(movement.DestinationRegion.Map, instance, instanceSequence);
+
+                if (targetMap == null && destMap == null)
                 {
                     if (instance == null)
                     {
@@ -810,11 +910,34 @@ namespace Server.Envir
             }
         }
 
-        private static void CreateNPCs(InstanceInfo instance = null, byte instanceSequence = 0)
+        private static void CreateNPCs(InstanceInfo instance = null, byte instanceSequence = 0, MapInfo targetMap = null)
         {
-            foreach (NPCInfo info in NPCInfoList.Binding)
+            IEnumerable<NPCInfo> npcInfos = NPCInfoList.Binding;
+
+            if (targetMap != null)
+            {
+                HashSet<NPCInfo> mapNPCInfos = [];
+
+                if (targetMap.Regions != null)
+                {
+                    foreach (MapRegion region in targetMap.Regions)
+                    {
+                        if (region?.NPCs == null) continue;
+
+                        foreach (NPCInfo info in region.NPCs)
+                        {
+                            mapNPCInfos.Add(info);
+                        }
+                    }
+                }
+
+                npcInfos = mapNPCInfos;
+            }
+
+            foreach (NPCInfo info in npcInfos)
             {
                 if (info.Region == null) continue;
+                if (targetMap != null && info.Region.Map != targetMap) continue;
 
                 Map map = GetMap(info.Region.Map, instance, instanceSequence);
 
@@ -838,14 +961,70 @@ namespace Server.Envir
             }
         }
 
-        private static void CreateQuestRegions(InstanceInfo instance = null, byte instanceSequence = 0)
+        private static void CreateQuestRegions(InstanceInfo instance = null, byte instanceSequence = 0, MapInfo targetMap = null)
         {
+            if (targetMap != null)
+            {
+                HashSet<QuestTask> mapQuestTasks = [];
+
+                if (targetMap.Regions != null)
+                {
+                    foreach (MapRegion region in targetMap.Regions)
+                    {
+                        if (region?.QuestTasks == null) continue;
+
+                        foreach (QuestTask task in region.QuestTasks)
+                        {
+                            mapQuestTasks.Add(task);
+                        }
+                    }
+                }
+
+                foreach (QuestTask task in mapQuestTasks)
+                {
+                    if (task.RegionParameter == null) continue;
+
+                    var sourceMap = GetMap(task.RegionParameter.Map, instance, instanceSequence);
+
+                    if (sourceMap == null)
+                    {
+                        if (instance == null)
+                        {
+                            Log($"[Quest Region] Bad Map, Map: {task.RegionParameter.ServerDescription}");
+                        }
+
+                        continue;
+                    }
+
+                    foreach (Point sPoint in task.RegionParameter.PointList)
+                    {
+                        Cell source = sourceMap.GetCell(sPoint);
+
+                        if (source == null)
+                        {
+                            Log($"[Quest Region] Bad Quest Region, Source: {task.RegionParameter.ServerDescription}, X:{sPoint.X}, Y:{sPoint.Y}");
+                            continue;
+                        }
+
+                        if (source.QuestTasks == null)
+                            source.QuestTasks = new List<QuestTask>();
+
+                        if (source.QuestTasks.Contains(task)) continue;
+
+                        source.QuestTasks.Add(task);
+                    }
+                }
+
+                return;
+            }
+
             foreach (QuestInfo quest in QuestInfoList.Binding)
             {
                 foreach (QuestTask task in quest.Tasks)
                 {
                     if (task.Task != QuestTaskType.Region) continue;
                     if (task.RegionParameter == null) continue;
+                    if (targetMap != null && task.RegionParameter.Map != targetMap) continue;
 
                     var sourceMap = GetMap(task.RegionParameter.Map, instance, instanceSequence);
 
@@ -880,102 +1059,185 @@ namespace Server.Envir
             }
         }
 
-        private static void CreateSafeZones(InstanceInfo instance = null, byte instanceSequence = 0)
+        private static void CreateSafeZones(InstanceInfo instance = null, byte instanceSequence = 0, MapInfo targetMap = null)
         {
-            foreach (SafeZoneInfo info in SafeZoneInfoList.Binding)
+            IEnumerable<SafeZoneInfo> safeZones = SafeZoneInfoList.Binding;
+
+            if (targetMap != null)
             {
-                if (info.Region == null) continue;
+                HashSet<SafeZoneInfo> mapSafeZones = [];
 
-                Map map = GetMap(info.Region.Map, instance, instanceSequence);
-
-                if (map == null)
+                if (targetMap.Regions != null)
                 {
-                    if (instance == null)
+                    foreach (MapRegion region in targetMap.Regions)
                     {
-                        Log($"[Safe Zone] Bad Map, Map: {info.Region.ServerDescription}");
-                    }
-
-                    continue;
-                }
-
-                map.HasSafeZone = true;
-
-                HashSet<Point> edges = new HashSet<Point>();
-
-                foreach (Point point in info.Region.PointList)
-                {
-                    Cell cell = map.GetCell(point);
-
-                    if (cell == null)
-                    {
-                        Log($"[Safe Zone] Bad Location, Region: {info.Region.ServerDescription}, X: {point.X}, Y: {point.Y}.");
-
-                        continue;
-                    }
-
-                    cell.SafeZone = info;
-
-                    if (info.Border)
-                    {
-                        for (int i = 0; i < 8; i++)
+                        if (region?.SafeZones != null)
                         {
-                            Point test = Functions.Move(point, (MirDirection)i);
+                            foreach (SafeZoneInfo info in region.SafeZones)
+                            {
+                                mapSafeZones.Add(info);
+                            }
+                        }
 
-                            if (info.Region.PointList.Contains(test)) continue;
-
-                            if (map.GetCell(test) == null) continue;
-
-                            edges.Add(test);
+                        if (region?.BindSafeZones != null)
+                        {
+                            foreach (SafeZoneInfo info in region.BindSafeZones)
+                            {
+                                mapSafeZones.Add(info);
+                            }
                         }
                     }
                 }
 
-                foreach (Point point in edges)
+                if (mapSafeZones.Count == 0) return;
+
+                safeZones = mapSafeZones;
+            }
+
+            foreach (SafeZoneInfo info in safeZones)
+            {
+                if (info.Region == null) continue;
+                if (targetMap != null && info.Region.Map != targetMap && info.BindRegion?.Map != targetMap) continue;
+
+                if (targetMap == null || info.Region.Map == targetMap)
                 {
-                    SpellObject ob = new SpellObject
+                    Map map = GetMap(info.Region.Map, instance, instanceSequence);
+
+                    if (map == null)
                     {
-                        Visible = true,
-                        DisplayLocation = point,
-                        TickCount = 10,
-                        TickFrequency = TimeSpan.FromDays(365),
-                        Effect = SpellEffect.SafeZone
-                    };
+                        if (instance == null)
+                        {
+                            Log($"[Safe Zone] Bad Map, Map: {info.Region.ServerDescription}");
+                        }
 
-                    ob.Spawn(map, point);
-                }
-
-                if (info.BindRegion == null || instance != null) continue;
-
-                map = GetMap(info.BindRegion.Map);
-
-                if (map == null)
-                {
-                    Log($"[Safe Zone] Bad Bind Map, Map: {info.Region.ServerDescription}");
-
-                    continue;
-                }
-
-                foreach (Point point in info.BindRegion.PointList)
-                {
-                    Cell cell = map.GetCell(point);
-
-                    if (cell == null)
-                    {
-                        Log($"[Safe Zone] Bad Location, Region: {info.BindRegion.ServerDescription}, X: {point.X}, Y: {point.Y}.");
                         continue;
                     }
 
-                    info.ValidBindPoints.Add(point);
+                    map.HasSafeZone = true;
+
+                    HashSet<Point> edges = new HashSet<Point>();
+
+                    foreach (Point point in info.Region.PointList)
+                    {
+                        Cell cell = map.GetCell(point);
+
+                        if (cell == null)
+                        {
+                            Log($"[Safe Zone] Bad Location, Region: {info.Region.ServerDescription}, X: {point.X}, Y: {point.Y}.");
+
+                            continue;
+                        }
+
+                        cell.SafeZone = info;
+
+                        if (info.Border)
+                        {
+                            for (int i = 0; i < 8; i++)
+                            {
+                                Point test = Functions.Move(point, (MirDirection)i);
+
+                                if (info.Region.PointList.Contains(test)) continue;
+
+                                if (map.GetCell(test) == null) continue;
+
+                                edges.Add(test);
+                            }
+                        }
+                    }
+
+                    foreach (Point point in edges)
+                    {
+                        SpellObject ob = new SpellObject
+                        {
+                            Visible = true,
+                            DisplayLocation = point,
+                            TickCount = 10,
+                            TickFrequency = TimeSpan.FromDays(365),
+                            Effect = SpellEffect.SafeZone
+                        };
+
+                        ob.Spawn(map, point);
+                    }
                 }
+
+                if (info.BindRegion == null || instance != null) continue;
+                if (targetMap != null && info.BindRegion.Map != targetMap) continue;
+
+                EnsureSafeZoneBindPoints(info);
             }
         }
 
-        private static void CreateSpawns(InstanceInfo instance = null, byte instanceSequence = 0)
+        public static bool EnsureSafeZoneBindPoints(SafeZoneInfo info)
         {
-            foreach (RespawnInfo info in RespawnInfoList.Binding)
+            if (info == null) return false;
+            if (info.ValidBindPoints.Count > 0) return true;
+            if (info.BindRegion == null) return false;
+
+            Map bindMap = GetMap(info.BindRegion.Map);
+
+            if (bindMap == null)
+            {
+                Log($"[Safe Zone] Bad Bind Map, Map: {info.Region?.ServerDescription ?? info.BindRegion.ServerDescription}");
+
+                return false;
+            }
+
+            foreach (Point point in info.BindRegion.PointList)
+            {
+                Cell cell = bindMap.GetCell(point);
+
+                if (cell == null)
+                {
+                    Log($"[Safe Zone] Bad Location, Region: {info.BindRegion.ServerDescription}, X: {point.X}, Y: {point.Y}.");
+                    continue;
+                }
+
+                if (!info.ValidBindPoints.Contains(point))
+                    info.ValidBindPoints.Add(point);
+            }
+
+            return info.ValidBindPoints.Count > 0;
+        }
+
+        private static void CreateStartZones()
+        {
+            foreach (SafeZoneInfo info in SafeZoneInfoList.Binding)
+            {
+                if (info.StartClass == RequiredClass.None && !info.RedZone) continue;
+
+                _ = GetMap(info.Region.Map);
+            }
+        }
+
+        private static void CreateSpawns(InstanceInfo instance = null, byte instanceSequence = 0, MapInfo targetMap = null)
+        {
+            IEnumerable<RespawnInfo> respawnInfos = RespawnInfoList.Binding;
+
+            if (targetMap != null)
+            {
+                HashSet<RespawnInfo> mapRespawns = [];
+
+                if (targetMap.Regions != null)
+                {
+                    foreach (MapRegion region in targetMap.Regions)
+                    {
+                        if (region?.Respawns == null) continue;
+
+                        foreach (RespawnInfo info in region.Respawns)
+                        {
+                            mapRespawns.Add(info);
+                        }
+                    }
+                }
+
+                respawnInfos = mapRespawns;
+            }
+
+            foreach (RespawnInfo info in respawnInfos)
             {
                 if (info.Monster == null) continue;
                 if (info.Region == null) continue;
+                if (targetMap != null && info.Region.Map != targetMap) continue;
 
                 Map map = GetMap(info.Region.Map, instance, instanceSequence);
 
@@ -1023,6 +1285,7 @@ namespace Server.Envir
             AccountInfoList = null;
             CharacterInfoList = null;
             CurrencyInfoList = null;
+            InstanceMapInfoList = null;
 
             MapInfoList = null;
             SafeZoneInfoList = null;
@@ -1035,18 +1298,69 @@ namespace Server.Envir
             FameInfoList = null;
 
             BeltLinkList = null;
+            AutoPotionLinkList = null;
             UserItemList = null;
             UserCurrencyList = null;
+            RefineInfoList = null;
             UserItemStatsList = null;
             UserMagicList = null;
             BuffInfoList = null;
             SetInfoList = null;
             UserDisciplineList = null;
+            AuctionInfoList = null;
+            MailInfoList = null;
+            QuestInfoList = null;
+            AuctionHistoryInfoList = null;
+            UserDropList = null;
+            StoreInfoList = null;
+            BaseStatList = null;
+            MovementInfoList = null;
+            NPCInfoList = null;
+            MapRegionList = null;
+            GuildInfoList = null;
+            GuildMemberInfoList = null;
+            UserQuestList = null;
+            UserQuestTaskList = null;
+            CompanionInfoList = null;
+            CompanionLevelInfoList = null;
+            UserCompanionList = null;
+            CompanionFiltersList = null;
+            UserCompanionUnlockList = null;
+            CompanionSkillInfoList = null;
+            BlockInfoList = null;
+            FriendInfoList = null;
+            CastleInfoList = null;
+            UserConquestList = null;
+            GameGoldPaymentList = null;
+            GameStoreSaleList = null;
+            GameNPCList = null;
+            GuildWarInfoList = null;
+            UserConquestStatsList = null;
+            UserFortuneInfoList = null;
+            WeaponCraftStatInfoList = null;
+            BundleInfoList = null;
+            LootBoxInfoList = null;
+            UserMilestoneLogList = null;
+            UserMilestoneList = null;
 
             WorldEventInfoTriggerList = null;
             PlayerEventInfoTriggerList = null;
 
+            GoldInfo = null;
+            RefinementStoneInfo = null;
+            FragmentInfo = null;
+            Fragment2Info = null;
+            Fragment3Info = null;
+            FortuneCheckerInfo = null;
+            ItemPartInfo = null;
+
+            StarterGuild = null;
+            MysteryShipMapRegion = null;
+            LairMapRegion = null;
+
             Rankings = null;
+            TopRankings?.Clear();
+            TopRankings = null;
             Random = null;
 
 
@@ -1055,15 +1369,21 @@ namespace Server.Envir
             Objects.Clear();
             ActiveObjects.Clear();
             Players.Clear();
+            ConquestWars.Clear();
+            EventLogs.Clear();
 
             Spawns.Clear();
+            BossList.Clear();
+            MagicTypes.Clear();
 
             _ObjectID = 0;
 
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect(2, GCCollectionMode.Forced, blocking: true, compacting: true);
+            GC.WaitForPendingFinalizers();
 
             EnvirThread = null;
         }
-
 
         public static void EnvirLoop()
         {
@@ -1713,7 +2033,6 @@ namespace Server.Envir
                 $"After: {ordered[after].Key} ({Range(afterStart, afterEnd)})";
         }
 
-
         /// <summary>
         /// Calculates light level between two times.
         /// </summary>
@@ -1784,6 +2103,8 @@ namespace Server.Envir
 
             freshItem.ExpireTime = item.ExpireTime;
 
+            ItemSetup(item);
+
             foreach (UserItemStat stat in item.AddedStats)
                 freshItem.AddStat(stat.Stat, stat.Amount, stat.StatSource);
             freshItem.StatsChanged();
@@ -1804,6 +2125,8 @@ namespace Server.Envir
 
             check.Count -= item.Count;
 
+            ItemSetup(item);
+
             return item;
         }
         public static UserItem CreateFreshItem(ItemInfo info)
@@ -1816,6 +2139,8 @@ namespace Server.Envir
             item.CurrentDurability = info.Durability;
             item.MaxDurability = info.Durability;
 
+            ItemSetup(item);
+
             return item;
         }
         public static UserItem CreateDropItem(ItemCheck check, int chance = 15)
@@ -1824,6 +2149,8 @@ namespace Server.Envir
 
             item.Flags = check.Flags;
             item.ExpireTime = check.ExpireTime;
+
+            ItemSetup(item);
 
             if (IsCurrencyItem(item.Info) || item.Info.ItemEffect == ItemEffect.Experience)
                 item.Count = check.Count;
@@ -1840,6 +2167,8 @@ namespace Server.Envir
 
             item.Info = info;
             item.MaxDurability = info.Durability;
+
+            ItemSetup(item);
 
             item.Colour = Color.FromArgb(Random.Next(256), Random.Next(256), Random.Next(256));
 
@@ -1874,12 +2203,6 @@ namespace Server.Envir
                     case ItemType.Shoes:
                         UpgradeShoes(item);
                         break;
-                    case ItemType.Bundle:
-                        UpgradeBundle(item);
-                        break;
-                    case ItemType.LootBox:
-                        UpgradeLootBox(item);
-                        break;
                 }
                 item.StatsChanged();
             }
@@ -1910,9 +2233,22 @@ namespace Server.Envir
                     break;
             }
 
-
             return item;
         }
+
+        private static void ItemSetup(UserItem item)
+        {
+            switch (item.Info.ItemType)
+            {
+                case ItemType.Bundle:
+                    UpgradeBundle(item);
+                    break;
+                case ItemType.LootBox:
+                    UpgradeLootBox(item);
+                    break;
+            }
+        }
+
         public static ItemInfo GetItemInfo(string name)
         {
             for (int i = 0; i < ItemInfoList.Count; i++)
@@ -3683,35 +4019,26 @@ namespace Server.Envir
 
         public static byte[] CreateHash(string password)
         {
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-            {
-                byte[] salt = new byte[SaltSize];
-                rng.GetBytes(salt);
+            byte[] salt = RandomNumberGenerator.GetBytes(SaltSize);
+            byte[] hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, HashAlgorithmName.SHA256, hashSize);
 
-                using (Rfc2898DeriveBytes rfc = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256))
-                {
-                    byte[] hash = rfc.GetBytes(hashSize);
+            byte[] totalHash = new byte[SaltSize + hashSize];
 
-                    byte[] totalHash = new byte[SaltSize + hashSize];
+            Buffer.BlockCopy(salt, 0, totalHash, 0, SaltSize);
+            Buffer.BlockCopy(hash, 0, totalHash, SaltSize, hashSize);
 
-                    Buffer.BlockCopy(salt, 0, totalHash, 0, SaltSize);
-                    Buffer.BlockCopy(hash, 0, totalHash, SaltSize, hashSize);
-
-                    return totalHash;
-                }
-            }
+            return totalHash;
         }
         private static bool PasswordMatch(string password, byte[] totalHash)
         {
+            if (totalHash == null || totalHash.Length != SaltSize + hashSize) return false;
+
             byte[] salt = new byte[SaltSize];
             Buffer.BlockCopy(totalHash, 0, salt, 0, SaltSize);
 
-            using (Rfc2898DeriveBytes rfc = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256))
-            {
-                byte[] hash = rfc.GetBytes(hashSize);
+            byte[] hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, HashAlgorithmName.SHA256, hashSize);
 
-                return Functions.IsMatch(totalHash, hash, SaltSize);
-            }
+            return CryptographicOperations.FixedTimeEquals(totalHash.AsSpan(SaltSize, hashSize), hash);
         }
         #endregion
 
@@ -3850,21 +4177,84 @@ namespace Server.Envir
             return result;
         }
 
+        private static void FinaliseMapLoad(Map map)
+        {
+            if (map == null) return;
+
+            map.Load();
+
+            foreach (MapRegion region in map.Info.Regions)
+                region.CreatePoints(map.Width);
+
+            map.Setup();
+
+            CreateSafeZones(map.Instance, map.InstanceSequence, map.Info);
+            CreateMovements(map.Instance, map.InstanceSequence, map.Info);
+            CreateNPCs(map.Instance, map.InstanceSequence, map.Info);
+            CreateSpawns(map.Instance, map.InstanceSequence, map.Info);
+            CreateQuestRegions(map.Instance, map.InstanceSequence, map.Info);
+
+            var scope = map.Instance == null
+                ? $"{map.Info.Description} [{map.Info.FileName}]"
+                : $"{map.Info.Description} [{map.Instance.Name}:{map.InstanceSequence}:{map.Info.FileName}]";
+
+            Log($"Map loaded: {scope}");
+        }
+
         public static Map GetMap(MapInfo info, InstanceInfo instance = null, byte instanceSequence = 0)
         {
+            if (info == null) return null;
+
             if (instance == null)
             {
-                return info != null && Maps.ContainsKey(info) ? Maps[info] : null;
+                if (Maps.TryGetValue(info, out Map loadedMap))
+                    return loadedMap;
+
+                lock (MapLoadLock)
+                {
+                    if (Maps.TryGetValue(info, out loadedMap))
+                        return loadedMap;
+
+                    loadedMap = new Map(info);
+                    Maps[info] = loadedMap;
+                    FinaliseMapLoad(loadedMap);
+
+                    return loadedMap;
+                }
             }
 
-            var instanceMaps = Instances[instance];
+            if (!Instances.TryGetValue(instance, out var instanceMaps))
+                return null;
 
             if (instanceSequence >= instanceMaps.Length || instanceMaps[instanceSequence] == null)
-            {
                 return null;
+
+            if (instanceMaps[instanceSequence].TryGetValue(info, out Map instanceMap))
+                return instanceMap;
+
+            var instanceMapInfo = instance.Maps.FirstOrDefault(x => x.Map == info);
+            if (instanceMapInfo == null) 
+                return null;
+
+            lock (MapLoadLock)
+            {
+                if (instanceMaps[instanceSequence].TryGetValue(info, out instanceMap))
+                    return instanceMap;
+
+                instanceMap = new Map(info, instance, instanceSequence, instanceMapInfo.RespawnIndex);
+                instanceMaps[instanceSequence][info] = instanceMap;
+                FinaliseMapLoad(instanceMap);
             }
 
-            return instanceMaps != null && instanceMaps[instanceSequence].ContainsKey(info) ? instanceMaps[instanceSequence][info] : null;
+            return instanceMap;
+        }
+
+        public static Dictionary<MapInfo, Map>[] GetInstance(InstanceInfo info)
+        {
+            if (Instances.TryGetValue(info, out Dictionary<MapInfo, Map>[] loadedInstance))
+                return loadedInstance;
+
+            return null;
         }
 
         public static byte? LoadInstance(InstanceInfo instance, byte instanceSequence)
@@ -3875,25 +4265,12 @@ namespace Server.Envir
 
             for (int i = 0; i < instance.Maps.Count; i++)
             {
-                mapInstance[instanceSequence][instance.Maps[i].Map] = new Map(instance.Maps[i].Map, instance, instanceSequence, instance.Maps[i].RespawnIndex);
+                var mapInfo = instance.Maps[i];
+
+                Map map = new Map(mapInfo.Map, instance, instanceSequence, mapInfo.RespawnIndex);
+                mapInstance[instanceSequence][mapInfo.Map] = map;
+                FinaliseMapLoad(map);
             }
-
-            Parallel.ForEach(mapInstance[instanceSequence], x => x.Value.Load());
-
-            foreach (Map map in mapInstance[instanceSequence].Values)
-            {
-                map.Setup();
-            }
-
-            CreateSafeZones(instance, instanceSequence);
-
-            CreateMovements(instance, instanceSequence);
-
-            CreateNPCs(instance, instanceSequence);
-
-            CreateSpawns(instance, instanceSequence);
-
-            CreateQuestRegions(instance, instanceSequence);
 
             Log($"Loaded Instance {instance.Name} at index {instanceSequence}");
 
@@ -3983,6 +4360,178 @@ namespace Server.Envir
 
             return null;
         }
+
+        #region Milestones
+
+        private static Dictionary<CharacterInfo, Dictionary<(MilestoneType, int), UserMilestoneLog>> MilestoneLogCache = [];
+
+        private static int GetSecondaryId(MilestoneType type, CharacterInfo player = null, ItemInfo item = null, MonsterInfo monster = null, CurrencyInfo currency = null, MapRegion region = null, InstanceInfo instance = null, QuestInfo quest = null, MagicInfo magic = null)
+        {
+            int index = -1;
+
+            switch (type)
+            {
+                case MilestoneType.ItemGain:
+                case MilestoneType.ItemUse:
+                    index = item?.Index ?? 0;
+                    break;
+                case MilestoneType.CurrencyGain:
+                    index = currency?.Index ?? 0;
+                    break;
+                case MilestoneType.QuestComplete:
+                    index = quest?.Index ?? 0;
+                    break;
+                case MilestoneType.SkillLearn:
+                case MilestoneType.SkillLevel:
+                    index = magic?.Index ?? 0;
+                    break;
+                case MilestoneType.PetTame:
+                case MilestoneType.PetSummon:
+                    index = monster?.Index ?? 0;
+                    break;
+                case MilestoneType.MineCatch:
+                    index = item?.Index ?? 0;
+                    break;
+                case MilestoneType.FishingCatch:
+                    index = item?.Index ?? 0;
+                    break;
+                case MilestoneType.InstanceJoin:
+                    index = instance?.Index ?? 0;
+                    break;
+                case MilestoneType.Region:
+                    index = region?.Index ?? 0;
+                    break;
+                case MilestoneType.ShopPurchase:
+                case MilestoneType.ShopSell:
+                    index = item?.Index ?? 0;
+                    break;
+                case MilestoneType.MarketConsign:
+                case MilestoneType.MarketPurchase:
+                case MilestoneType.MarketSell:
+                    index = item?.Index ?? 0;
+                    break;
+                case MilestoneType.MonsterKill:
+                case MilestoneType.MonsterDeath:
+                case MilestoneType.MonsterDamageTake:
+                case MilestoneType.MonsterDamageDone:
+                case MilestoneType.MonsterPetKill:
+                    index = monster?.Index ?? 0;
+                    break;
+                case MilestoneType.PlayerKill:
+                case MilestoneType.PlayerDeath:
+                case MilestoneType.PlayerDamageTake:
+                case MilestoneType.PlayerDamageDone:
+                case MilestoneType.PlayerPetKill:
+                    index = player?.Index ?? 0;
+                    break;
+            }
+
+            return index;
+        }
+
+        public static void LogMilestone(CharacterInfo character, MilestoneType type, long amount = 1, bool setAmount = false, CharacterInfo player = null, ItemInfo item = null, MonsterInfo monster = null, CurrencyInfo currency = null, MapRegion region = null, InstanceInfo instance = null, QuestInfo quest = null, MagicInfo magic = null)
+        {
+            if (!MilestoneLogCache.TryGetValue(character, out Dictionary<(MilestoneType, int), UserMilestoneLog> cache))
+            {
+                MilestoneLogCache[character] = cache = [];
+            }
+
+            int secondaryId = GetSecondaryId(type, player, item, monster, currency, region, instance, quest, magic);
+            var key = (type, secondaryId);
+
+            if (!cache.TryGetValue(key, out var log))
+            {
+                switch (type)
+                {
+                    case MilestoneType.ItemGain:
+                    case MilestoneType.ItemUse:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Item == item);
+                        break;
+                    case MilestoneType.CurrencyGain:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Currency == currency);
+                        break;
+                    case MilestoneType.QuestComplete:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Quest == quest);
+                        break;
+                    case MilestoneType.SkillLearn:
+                    case MilestoneType.SkillLevel:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Magic == magic);
+                        break;
+                    case MilestoneType.PetTame:
+                    case MilestoneType.PetSummon:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Monster == monster);
+                        break;
+                    case MilestoneType.MineCatch:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Item == item);
+                        break;
+                    case MilestoneType.FishingCast:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Item == item);
+                        break;
+                    case MilestoneType.InstanceJoin:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Instance == instance);
+                        break;
+                    case MilestoneType.Region:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Region == region);
+                        break;
+                    case MilestoneType.ShopPurchase:
+                    case MilestoneType.ShopSell:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Item == item);
+                        break;
+                    case MilestoneType.MarketConsign:
+                    case MilestoneType.MarketPurchase:
+                    case MilestoneType.MarketSell:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Item == item);
+                        break;
+                    case MilestoneType.MonsterKill:
+                    case MilestoneType.MonsterDeath:
+                    case MilestoneType.MonsterDamageDone:
+                    case MilestoneType.MonsterDamageTake:
+                    case MilestoneType.MonsterPetKill:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Monster == monster);
+                        break;
+                    case MilestoneType.PlayerKill:
+                    case MilestoneType.PlayerDeath:
+                    case MilestoneType.PlayerDamageDone:
+                    case MilestoneType.PlayerDamageTake:
+                    case MilestoneType.PlayerPetKill:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type && x.Player == player);
+                        break;
+                    default:
+                        log = character.MilestoneLogs.FirstOrDefault(x => x.Type == type);
+                        break;
+                }
+
+                if (log == null)
+                {
+                    log = SEnvir.UserMilestoneLogList.CreateNewObject();
+                    log.Character = character;
+                    log.Type = type;
+                    log.Item = item;
+                    log.Monster = monster;
+                    log.Currency = currency;
+                    log.Region = region;
+                    log.Instance = instance;
+                    log.Player = player;
+                    log.Quest = quest;
+                    log.Magic = magic;
+                    log.Count = 0;
+                    character.MilestoneLogs.Add(log);
+                }
+                cache[key] = log;
+            }
+
+            if (setAmount)
+                log.Count = amount;
+            else
+                log.Count += amount;
+
+            if (character.Player != null)
+            {
+                character.Player.CheckMilestones(type);
+            }
+        }
+
+        #endregion
     }
 
     public class WebCommand

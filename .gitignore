@@ -18,3 +18,9 @@ System解析/
 
 # Local docs
 技术方案*.md
+
+# Upstream build artifacts
+/.dotnet/.dotnet
+/artifacts/client-build
+/Client/artifacts/codex-build/Client
+/LibraryCore/artifacts/codex-build/Client

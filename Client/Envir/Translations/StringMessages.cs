@@ -91,6 +91,12 @@ namespace Client.Envir.Translations
         public abstract string FilterConfigSaved { get; set; }
         public abstract string GroupMemberLimit { get; set; }
         public abstract string GroupNotLeader { get; set; }
+        public abstract string GroupAlreadyGrouped { get; set; }
+        public abstract string GroupSelf { get; set; }
+        public abstract string GroupLFGRequestDelay { get; set; }
+        public abstract string GroupLFGRequestSent { get; set; }
+        public abstract string GroupDialogNotAllowingGroupMessage { get; set; }
+        public abstract string GroupDialogCreateLFGButtonHint { get; set; }
         public abstract string MarketNoItemSelected { get; set; }
         public abstract string MarketInvalidPrice { get; set; }
         public abstract string BuySellOverweight { get; set; }
@@ -145,8 +151,11 @@ namespace Client.Envir.Translations
         public abstract string CommonControlConfigWindowNetworkSectionSettingsLabel { get; set; }
         public abstract string CommonControlConfigWindowUISectionSettingsLabel { get; set; }
         public abstract string CommonControlConfigWindowUISectionColoursLabel { get; set; }
+        public abstract string CommonControlConfigWindowUISectionTargetColoursLabel { get; set; }
         public abstract string CommonControlConfigWindowGraphicsTabFullScreenLabel { get; set; }
+        public abstract string CommonControlConfigWindowGraphicsTabBorderlessLabel { get; set; }
         public abstract string CommonControlConfigWindowGraphicsTabGameSizeLabel { get; set; }
+        public abstract string CommonControlConfigWindowGraphicsTabDefaultMonitorLabel { get; set; }
         public abstract string CommonControlConfigWindowGraphicsTabVSyncLabel { get; set; }
         public abstract string CommonControlConfigWindowGraphicsTabLimitFPSLabel { get; set; }
         public abstract string CommonControlConfigWindowGraphicsTabSmoothMoveLabel { get; set; }
@@ -179,6 +188,7 @@ namespace Client.Envir.Translations
         public abstract string CommonControlConfigWindowGraphicsTabDrawEffectsLabel { get; set; }
         public abstract string CommonControlConfigWindowGraphicsTabDrawWeatherLabel { get; set; }
         public abstract string CommonControlConfigWindowGameTabShowTargetOutlineLabel { get; set; }
+        public abstract string CommonControlConfigWindowGameTabObservableLabel { get; set; }
         public abstract string CommonControlConfigWindowUITabKeyBindButtonLabel { get; set; }
         public abstract string CommonControlConfigWindowNetworkTabUseNetworkConfigLabel { get; set; }
         public abstract string CommonControlConfigWindowNetworkTabUseIPAddressLabel { get; set; }
@@ -197,6 +207,13 @@ namespace Client.Envir.Translations
         public abstract string CommonControlConfigWindowColoursTabGainsTextLabel { get; set; }
         public abstract string CommonControlConfigWindowColoursTabAnnouncementsLabel { get; set; }
         public abstract string CommonControlConfigWindowColoursTabResetColoursButtonLabel { get; set; }
+        public abstract string CommonControlConfigWindowTargetColoursTabMonsterLowLabel { get; set; }
+        public abstract string CommonControlConfigWindowTargetColoursTabMonsterSameLabel { get; set; }
+        public abstract string CommonControlConfigWindowTargetColoursTabMonsterHighLabel { get; set; }
+        public abstract string CommonControlConfigWindowTargetColoursTabMonsterFriendlyLabel { get; set; }
+        public abstract string CommonControlConfigWindowTargetColoursTabNPCLabel { get; set; }
+        public abstract string CommonControlConfigWindowTargetColoursTabPlayerFriendlyLabel { get; set; }
+        public abstract string CommonControlConfigWindowTargetColoursTabPlayerEnemyLabel { get; set; }
         public abstract string CommonControlDXKeyBindWindowTitle { get; set; }
         public abstract string CommonControlDXKeyBindWindowTipLabel { get; set; }
         public abstract string CommonControlDXKeyBindWindowDefaultConfirmMessage { get; set; }
@@ -696,6 +713,12 @@ namespace Client.Envir.Translations
         public abstract string QuestDialogCurrentTab { get; set; }
         public abstract string QuestDialogAvailableTab { get; set; }
         public abstract string QuestDialogCompletedTab { get; set; }
+        public abstract string QuestDialogMilestonesTab { get; set; }
+        public abstract string QuestDialogMissionsTab { get; set; }
+        public abstract string QuestDialogMilestonesHideCompleteLabel { get; set; }
+        public abstract string QuestDialogMilestonesResetTitleButtonLabel { get; set; }
+        public abstract string QuestDialogMilestonesAllCategory { get; set; }
+        public abstract string QuestDialogMilestonesTitleAchievedLabel { get; set; }
         public abstract string QuestTabDetailsLabel { get; set; }
         public abstract string QuestTabShowQuestTrackerLabel { get; set; }
         public abstract string QuestTabTasksLabel { get; set; }

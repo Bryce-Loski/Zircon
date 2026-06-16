@@ -7,6 +7,7 @@ namespace Library.SystemModels
     public sealed class NPCInfo : DBObject
     {
         [IsIdentity]
+        [Association("RegionNPCs")]
         public MapRegion Region
         {
             get { return _Region; }
@@ -116,6 +117,11 @@ namespace Library.SystemModels
         [JsonIgnore]
         [IgnoreProperty]
         public CurrentQuest CurrentQuest { get; set; }
+
+        public override string ToString()
+        {
+            return NPCName;
+        }
     }
 
     public sealed class CurrentQuest : IEquatable<CurrentQuest>
@@ -239,6 +245,11 @@ namespace Library.SystemModels
 
         [Association("Values", true)]
         public DBBindingList<NPCValue> Values { get; set; }
+
+        public override string ToString()
+        {
+            return Description;
+        }
     }
 
     public sealed class NPCGood : DBObject

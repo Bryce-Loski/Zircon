@@ -147,6 +147,21 @@ namespace Client.Models
             }
         }
         private string _Caption;
+
+        public virtual Color CaptionOutlineColour
+        {
+            get { return _CaptionOutlineColour; }
+            set
+            {
+                if (_CaptionOutlineColour == value) return;
+
+                _CaptionOutlineColour = value;
+
+                NameChanged();
+            }
+        }
+        private Color _CaptionOutlineColour;
+
         public virtual string Title
         {
             get { return _Title; }
@@ -328,6 +343,8 @@ namespace Client.Models
         public static int CellHeight => MapControl.CellHeight;
         public static int OffSetX => MapControl.OffSetX;
         public static int OffSetY => MapControl.OffSetY;
+        public static int PixelOffsetX => MapControl.PixelOffsetX;
+        public static int PixelOffsetY => MapControl.PixelOffsetY;
 
         public List<ObjectAction> ActionQueue = new List<ObjectAction>();
 
@@ -360,6 +377,8 @@ namespace Client.Models
 
             DrawX *= MapControl.CellWidth;
             DrawY *= MapControl.CellHeight;
+            DrawX += MapControl.PixelOffsetX;
+            DrawY += MapControl.PixelOffsetY;
 
             //if (this != User)
             {
@@ -5330,7 +5349,7 @@ namespace Client.Models
                     BackColour = Color.Empty,
                     ForeColour = NameColour,
                     Outline = true,
-                    OutlineColour = Color.Black,
+                    OutlineColour = CaptionOutlineColour,
                     Text = Caption,
                     IsControl = false,
                     IsVisible = true,

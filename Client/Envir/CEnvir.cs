@@ -13,6 +13,7 @@ using Sentry;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -39,6 +40,8 @@ namespace Client.Envir
         private static DateTime _FPSTime;
         private static int FPSCounter;   // 当前秒内的帧数计数
         private static int FPSCount;     // 上一秒的实际帧数
+        private static readonly long LimitFPSTicks = Stopwatch.Frequency / 60;  // 60FPS上限的刻度间隔
+        private static long _nextLimitedFrameTicks;  // 下一帧允许的时间刻度
 
         // ===== DPS 绘制调用统计 =====
         public static int DPSCounter;    // 当前秒内的绘制调用计数
@@ -177,12 +180,48 @@ namespace Client.Envir
         /// </summary>
         public static void GameLoop()
         {
+            if (RenderingPipelineManager.ApplyPendingPipelineSwitch())
+                return;
+
             UpdateGame();
             RenderGame();
 
             if (Config.LimitFPS)
-                Thread.Sleep(1);
+                LimitFrameRate();
+            else
+                _nextLimitedFrameTicks = 0;
         }
+
+        /// <summary>
+        /// FPS帧率限制器（当启用限帧时，每帧调用）
+        /// 通过高精度计时器实现精确的60FPS上限
+        /// </summary>
+        private static void LimitFrameRate()
+        {
+            long now = Stopwatch.GetTimestamp();
+
+            if (_nextLimitedFrameTicks == 0 || _nextLimitedFrameTicks < now - LimitFPSTicks)
+                _nextLimitedFrameTicks = now + LimitFPSTicks;
+
+            while (true)
+            {
+                now = Stopwatch.GetTimestamp();
+                long remainingTicks = _nextLimitedFrameTicks - now;
+
+                if (remainingTicks <= 0)
+                    break;
+
+                int remainingMilliseconds = (int)(remainingTicks * 1000 / Stopwatch.Frequency);
+
+                if (remainingMilliseconds > 1)
+                    Thread.Sleep(remainingMilliseconds - 1);
+                else
+                    Thread.Sleep(0);
+            }
+
+            _nextLimitedFrameTicks += LimitFPSTicks;
+        }
+
         /// <summary>
         /// 游戏逻辑更新（每帧调用）
         /// 处理：网络连接消息、场景逻辑、FPS/DPS统计、调试信息显示、提示标签更新
@@ -397,6 +436,8 @@ namespace Client.Envir
                     Globals.BundleInfoList = Session.GetCollection<BundleInfo>();
                     Globals.LootBoxInfoList = Session.GetCollection<LootBoxInfo>();
                     Globals.HelpInfoList = Session.GetCollection<HelpInfo>();
+                    Globals.MilestoneInfoList = Session.GetCollection<MilestoneInfo>();
+                    Globals.MilestoneTaskInfoList = Session.GetCollection<MilestoneInfoTask>();
 
                     KeyBinds = Session.GetCollection<KeyBindInfo>();
                     WindowSettings = Session.GetCollection<WindowSetting>();

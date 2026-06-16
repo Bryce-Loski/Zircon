@@ -11,6 +11,8 @@ namespace Client.Controls
     {
         public DXColourControl ForeColourControl, BackColourControl;
 
+        public event EventHandler<EventArgs> BackColourPairChanged, ForeColourPairChanged;
+
         public DXColourControlPair()
         {
             Size = new Size(40, 16);
@@ -23,6 +25,7 @@ namespace Client.Controls
                 Location = new Point(0, 0),
                 Size = new Size(20, 16),
             };
+            ForeColourControl.BackColourChanged += ForeColourControl_BackColourChanged;
 
             BackColourControl = new DXColourControl
             {
@@ -31,6 +34,17 @@ namespace Client.Controls
                 Size = new Size(20, 16),
                 AllowNoColour = true,
             };
+            BackColourControl.BackColourChanged += BackColourControl_BackColourChanged;
+        }
+
+        private void BackColourControl_BackColourChanged(object sender, EventArgs e)
+        {
+            BackColourPairChanged?.Invoke(this, e);
+        }
+
+        private void ForeColourControl_BackColourChanged(object sender, EventArgs e)
+        {
+            ForeColourPairChanged?.Invoke(this, e);
         }
 
         #region IDisposable
@@ -352,7 +366,7 @@ namespace Client.Controls
                 DrawTexture = true,
                 BorderColour = Color.FromArgb(198, 166, 99),
                 Parent = this,
-                Visible = SelectedColour != Color.Empty
+                Visible = SelectedColour != Color.FromArgb(0, 0, 0, 0)
             };
             label = new DXLabel
             {
@@ -366,7 +380,7 @@ namespace Client.Controls
                 Parent = this,
                 Location = new Point(BlueBox.Location.X + BlueBox.ValueTextBox.Location.X, 172),
                 Text = CEnvir.Language.CommonControlColourPickerNoneLabel,
-                Visible = SelectedColour == Color.Empty
+                Visible = SelectedColour == Color.FromArgb(0, 0, 0, 0)
             };
         }
 

@@ -50,6 +50,8 @@ namespace Client.Envir
         public static bool ExtendedLogin { get; set; }
         /// <summary>游戏窗口分辨率</summary>
         public static Size GameSize { get; set; } = IntroSceneSize;
+        /// <summary>默认显示器（多显示器时选择）</summary>
+        public static string DefaultMonitor { get; set; } = string.Empty;
         /// <summary>当前使用的渲染管线标识（SharpDXD3D9 或 SharpDXD3D11）</summary>
         public static string RenderingPipeline { get; set; } = RenderingPipelineIds.SharpDXD3D9;
         /// <summary>纹理缓存持续时间（超时后释放 GPU 纹理内存）</summary>
@@ -169,5 +171,14 @@ namespace Client.Envir
         public static Color SystemTextBackColour { get; set; } = Color.FromArgb(200, 255, 255, 255);
         public static Color GainsTextBackColour { get; set; } = Color.FromArgb(0, 0, 0, 0);
         public static Color AnnouncementTextBackColour { get; set; } = Color.FromArgb(200, 255, 255, 255);
+
+        [ConfigSection("Target Colours")]
+        public static Color TargetMonsterLowLevelColour { get; set; } = Color.LimeGreen;
+        public static Color TargetMonsterSameLevelColour { get; set; } = Color.Yellow;
+        public static Color TargetMonsterHighLevelColour { get; set; } = Color.Red;
+        public static Color TargetMonsterFriendlyColour { get; set; } = Color.Cyan;
+        public static Color TargetPlayerFriendlyColour { get; set; } = Color.Cyan;
+        public static Color TargetPlayerEnemyColour { get; set; } = Color.Red;
+        public static Color TargetNPCColour { get; set; } = Color.Cyan;
     }
 }

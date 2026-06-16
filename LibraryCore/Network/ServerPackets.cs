@@ -259,7 +259,7 @@ namespace Library.Network.ServerPackets
     {
         public uint ObjectID { get; set; }
         public BuffType Type { get; set; }
-        public int Extra { get;set; }
+        public int Extra { get; set; }
     }
     public sealed class ObjectBuffRemove : Packet
     {
@@ -724,6 +724,22 @@ namespace Library.Network.ServerPackets
     {
         public string Name { get; set; }
     }
+    public sealed class GroupRequest : Packet
+    {
+        public string Name { get; set; }
+        public int Level { get; set; }
+        public MirClass Class { get; set; }
+    }
+
+    public sealed class GroupLFG : Packet
+    {
+        public List<ClientLookingForGroup> List { get; set; } = new List<ClientLookingForGroup>();
+    }
+
+    public sealed class GroupUpdate : Packet
+    {
+        public ClientLookingForGroup Group { get; set; }
+    }
 
     public sealed class BuffAdd : Packet
     {
@@ -780,6 +796,7 @@ namespace Library.Network.ServerPackets
 
         public bool Ranking { get; set; }
     }
+
     public sealed class Rankings : Packet
     {
         public bool OnlineOnly { get; set; }
@@ -790,9 +807,11 @@ namespace Library.Network.ServerPackets
 
         public List<RankInfo> Ranks { get; set; }
     }
+
     public sealed class RankSearch : Packet
     {
         public RankInfo Rank { get; set; }
+        public int StartIndex { get; set; }
     }
 
     public sealed class StartObserver : Packet
@@ -1286,6 +1305,7 @@ namespace Library.Network.ServerPackets
         public uint ObjectID { get; set; }
         public string Name { get; set; }
         public string Caption { get; set; }
+        public Color CaptionOutlineColour { get; set; }
         public MirGender Gender { get; set; }
         public int HairType { get; set; }
 
@@ -1398,6 +1418,16 @@ namespace Library.Network.ServerPackets
     public sealed class BundleClose : Packet
     {
 
+    }
+
+    public sealed class UserMilestones : Packet
+    {
+        public List<ClientUserMilestone> Milestones { get; set; }
+    }
+
+    public sealed class MilestoneEarned : Packet
+    {
+        public int Index { get; set; }
     }
 }
 

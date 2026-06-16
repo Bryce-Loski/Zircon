@@ -769,7 +769,7 @@ namespace Client.Envir
                         scene.User = new UserObject(p.StartInformation);
 
                         GameScene.Game.BuffBox.BuffsChanged();
-                        GameScene.Game.RankingBox.Observable = p.StartInformation.Observable;
+                        GameScene.Game.ConfigBox.Observable = p.StartInformation.Observable;
 
                         GameScene.Game.StorageSize = p.StartInformation.StorageSize;
 
@@ -3384,18 +3384,35 @@ namespace Client.Envir
                 GameScene.Game.MiniMapBox.Update(data);
             }
         }
+
         public void Process(S.GroupInvite p)
         {
-
-
             DXMessageBox messageBox = new DXMessageBox($"Do you want to group with {p.Name}?", "Group Invitation", DXMessageBoxButtons.YesNo);
 
-            messageBox.YesButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = true });
-            messageBox.NoButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = false });
-            messageBox.CloseButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = false });
+            messageBox.YesButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = true, Name = p.Name });
+            messageBox.NoButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = false, Name = p.Name });
             messageBox.Modal = false;
             messageBox.CloseButton.Visible = false;
+        }
 
+        public void Process(S.GroupRequest p)
+        {
+            DXMessageBox messageBox = new DXMessageBox($"{p.Name} [Level {p.Level} {p.Class}] would like to join your group.", "Group Invitation Request", DXMessageBoxButtons.YesNo);
+
+            messageBox.YesButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupInvite { Name = p.Name });
+            messageBox.NoButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = false, Name = p.Name });
+            messageBox.Modal = false;
+            messageBox.CloseButton.Visible = false;
+        }
+
+        public void Process(S.GroupLFG p)
+        {
+            GameScene.Game.GroupBox.UpdateList(p.List);
+        }
+
+        public void Process(S.GroupUpdate p)
+        {
+            GameScene.Game.GroupBox.UpdateItem(p.Group);
         }
 
         public void Process(S.BuffAdd p)
@@ -3471,9 +3488,15 @@ namespace Client.Envir
             CEnvir.FillStorage(p.Items, true);
 
             int index = 0;
+            RankInfo selectedRank = null;
+            int selectedStartIndex = -1;
 
             if (GameScene.Game != null)
+            {
                 index = GameScene.Game.RankingBox.StartIndex;
+                selectedRank = GameScene.Game.RankingBox.SelectedRank;
+                selectedStartIndex = GameScene.Game.RankingBox.SelectedStartIndex;
+            }
 
             DXControl.ActiveScene.Dispose();
 
@@ -3502,7 +3525,9 @@ namespace Client.Envir
 
             GameScene.Game.BuffBox.BuffsChanged();
 
-            GameScene.Game.RankingBox.StartIndex = index;
+            GameScene.Game.RankingBox.SetScrollIndex(index);
+            GameScene.Game.RankingBox.SelectRank(selectedRank, selectedStartIndex);
+            GameScene.Game.RankingBox.InspectSelectedRank();
 
             GameScene.Game.CompanionBox.RefreshFilter();
 
@@ -3510,7 +3535,7 @@ namespace Client.Envir
         }
         public void Process(S.ObservableSwitch p)
         {
-            GameScene.Game.RankingBox.Observable = p.Allow;
+            GameScene.Game.ConfigBox.Observable = p.Allow;
         }
 
         public void Process(S.MarketPlaceHistory p)
@@ -4535,6 +4560,7 @@ namespace Client.Envir
 
                 player.Name = p.Name;
                 player.Caption = p.Caption;
+                player.CaptionOutlineColour = p.CaptionOutlineColour;
                 player.Gender = p.Gender;
                 player.HairType = p.HairType;
                 player.HairColour = p.HairColour;
@@ -4987,6 +5013,31 @@ namespace Client.Envir
         public void Process(S.LootBoxClose p)
         {
             GameScene.Game.LootBoxBox.Close();
+        }
+
+        public void Process(S.UserMilestones p)
+        {
+            foreach (var milestone in p.Milestones)
+            {
+                var existingMilestone = GameScene.Game.User.Milestones.FirstOrDefault(x => x.InfoIndex == milestone.Info.Index);
+
+                if (existingMilestone != null)
+                {
+                    GameScene.Game.User.Milestones.Remove(existingMilestone);
+                }
+
+                GameScene.Game.User.Milestones.Add(milestone);
+
+                GameScene.Game.QuestBox.RefreshMilestones();
+            }
+        }
+
+        public void Process(S.MilestoneEarned p)
+        {
+            var info = Globals.MilestoneInfoList.Binding.FirstOrDefault(x => x.Index == p.Index);
+            if (info == null) return;
+
+            GameScene.Game.MilestoneAchievedBox.Show(info);
         }
     }
 }

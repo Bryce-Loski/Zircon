@@ -16,8 +16,9 @@ namespace Library.Network
     {
         /// <summary>网络诊断信息字典</summary>
         public static Dictionary<string, DiagnosticValue> Diagnostics = new Dictionary<string, DiagnosticValue>();
-        /// <summary>数据包处理方法缓存（类型 -> MethodInfo）</summary>
-        public static Dictionary<Type, MethodInfo> PacketMethods = new Dictionary<Type, MethodInfo>();
+        /// <summary>数据包处理方法缓存（(连接类型, 包类型) -> MethodInfo）</summary>
+        public static Dictionary<(Type ConnectionType, Type PacketType), MethodInfo> PacketMethods = new Dictionary<(Type ConnectionType, Type PacketType), MethodInfo>();
+        private static readonly object PacketMethodsLock = new object();
         /// <summary>是否启用网络监控</summary>
         public static bool Monitor;
 
@@ -333,12 +334,25 @@ namespace Library.Network
 
             DateTime start = Time.Now;
 
+            Type connectionType = GetType();
+            (Type ConnectionType, Type PacketType) key = (connectionType, p.PacketType);
+
             MethodInfo info;
-            if (!PacketMethods.TryGetValue(p.PacketType, out info))
-                PacketMethods[p.PacketType] = info = GetType().GetMethod("Process", new[] { p.PacketType });
+            lock (PacketMethodsLock)
+            {
+                if (!PacketMethods.TryGetValue(key, out info))
+                {
+                    info = connectionType.GetMethod("Process", new[] { p.PacketType });
+                    if (info != null)
+                        PacketMethods[key] = info;
+                }
+            }
 
             if (info == null)
-                throw new NotImplementedException($"Not Implemented Exception: Method Process({p.PacketType}).");
+            {
+                ProcessUnhandledPacket(p);
+                return;
+            }
 
             info.Invoke(this, new object[] { p });
 
@@ -359,6 +373,11 @@ namespace Library.Network
 
             if (p.Length > value.LargestSize)
                 value.LargestSize = p.Length;
+        }
+
+        protected virtual void ProcessUnhandledPacket(Packet p)
+        {
+            throw new NotImplementedException($"Not Implemented Exception: Method Process({p.PacketType}).");
         }
 
         public void UpdateTimeOut()
