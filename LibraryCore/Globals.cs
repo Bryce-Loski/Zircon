@@ -286,6 +286,7 @@ namespace Library
                          EquipmentSize = 22,
                          CompanionInventorySize = 30,
                          CompanionEquipmentSize = 4,
+                         CompanionMoveDelay = 100, // 伴侣瞬移间隔(毫秒)，可通过道具调整
                          EquipmentOffSet = 1000,
                          StorageSize = 100,
                          PartsStorageOffset = 2000;

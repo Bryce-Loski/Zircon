@@ -105,7 +105,7 @@ namespace Server.Models.Monsters
 
             LevelInfo = SEnvir.CompanionLevelInfoList.Binding.First(x => x.Level == UserCompanion.Level);
 
-            MoveDelay = MonsterInfo.MoveDelay;
+            MoveDelay = Globals.CompanionMoveDelay; // 使用全局参数，不使用 MonsterInfo.MoveDelay
             AttackDelay = MonsterInfo.AttackDelay;
 
             foreach (UserItem item in Equipment)
