@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【金刚火球】- 火球术的进阶升级版
+    /// 【大火球】- 火球术的进阶升级版
     /// 
     /// 效果：向目标发射一颗强化火球，造成更高的火系魔法伤害。
     /// 元素属性：火 (Element.Fire)

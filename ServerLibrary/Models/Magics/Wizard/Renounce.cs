@@ -10,7 +10,7 @@ using S = Library.Network.ServerPackets;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【舍身术】- 牺牲生命值换取魔法攻击力的增益技能
+    /// 【凝血离魂】- 牺牲生命值换取魔法攻击力的增益技能
     /// 
     /// 效果：牺牲 (1+Level)*10% 的最大生命值，
     ///       同时增加 (1+Level)*10% 的魔法攻击力。

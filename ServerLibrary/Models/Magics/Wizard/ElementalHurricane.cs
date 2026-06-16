@@ -10,7 +10,7 @@ using S = Library.Network.ServerPackets;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【元素飓风】(BurstOfEnergy) - 切换式持续AOE技能（自定义技能）
+    /// 【透心链】(BurstOfEnergy) - 切换式持续AOE技能（自定义技能）
     /// 
     /// 效果：开启后在周围持续造成AOE伤害（元素类型由装备暗石决定），
     ///       再次使用可关闭。持续消耗MP。

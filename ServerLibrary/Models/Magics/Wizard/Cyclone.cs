@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【旋风术】- 风系单体攻击技能
+    /// 【击风】- 风系单体攻击技能
     /// 
     /// 效果：召唤旋风吹向目标，造成风系伤害并击退目标5格。
     /// 元素属性：风 (Element.Wind)

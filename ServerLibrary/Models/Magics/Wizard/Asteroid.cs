@@ -8,7 +8,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【陨石术】- 火系大范围AOE终极技能
+    /// 【天灾陨石】- 火系大范围AOE终极技能
     /// 
     /// 效果：召唤陨石砸向目标区域（7x7范围），造成大量火系伤害。
     ///       若玩家已学会火墙术，陨石落点同时会放置火墙。

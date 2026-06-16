@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【操纵大地】- 定点传送技能
+    /// 【异形换位】- 定点传送技能
     /// 
     /// 效果：瞬间传送到指定位置，成功率 = 25 + Level*25%。
     ///       PvP后30秒内使用，冷却时间翻10倍。

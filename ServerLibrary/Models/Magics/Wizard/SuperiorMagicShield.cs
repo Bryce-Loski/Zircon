@@ -8,7 +8,7 @@ using System.Linq;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【高级魔法盾】(ShieldOfPreservation) - 魔法盾的升级版
+    /// 【魔光盾】(ShieldOfPreservation) - 魔法盾的升级版
     /// 
     /// 效果：生成高级魔法护盾，护盾值基于魔法值计算，永久持续直到被打破。
     ///       护盾值 = MaxMana * (0.25 + Level*0.05)。

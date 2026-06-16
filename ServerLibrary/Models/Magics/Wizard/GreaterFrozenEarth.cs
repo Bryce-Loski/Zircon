@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【强化冻土术】- 冻土术的升级版，三方向扇形AOE
+    /// 【魄冰刺】- 冻土术的升级版，三方向扇形AOE
     /// 
     /// 效果：沿面向方向及其左右各偏转一个方向（共3个方向），
     ///       各释放8格长的冰系伤害带，覆盖更大的扇形区域。

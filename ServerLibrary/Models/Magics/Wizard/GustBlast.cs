@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【疾风冲击】- 风系单体攻击技能
+    /// 【风掌】- 风系单体攻击技能
     /// 
     /// 效果：向目标释放疾风冲击，造成风系伤害并强力击退10格。
     /// 元素属性：风 (Element.Wind)

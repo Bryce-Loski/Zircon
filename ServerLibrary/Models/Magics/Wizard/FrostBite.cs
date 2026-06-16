@@ -9,7 +9,7 @@ using System.Linq;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【冰霜噬咬】- 冰系自身增益+延迟爆发技能（自定义技能）
+    /// 【护身冰环】- 冰系自身增益+延迟爆发技能（自定义技能）
     /// 
     /// 效果：激活后获得 FrostBite Buff，持续期间攻击有概率附加额外冰系伤害。
     ///       Buff结束时，对周围3格内所有怪物造成一次冰系爆发伤害（不攻击Boss）。

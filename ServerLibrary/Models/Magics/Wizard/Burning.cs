@@ -4,7 +4,7 @@ using Server.DBModels;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【灼烧强化】(RetrogressionOfEnergy) - 被动增强技能
+    /// 【焚魂魔功】(RetrogressionOfEnergy) - 被动增强技能
     /// 
     /// 效果：被动技能，为所有火系攻击技能附加灼烧效果。
     ///       被其他火系技能通过 GetAugmentedSkill() 引用。

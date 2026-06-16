@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【火墙术】- 火系持续性地面法术
+    /// 【火墙】- 火系持续性地面法术
     /// 
     /// 效果：在目标位置及其上下左右5个格子放置火墙，
     ///       火墙每2秒对经过的敌人造成火系伤害。

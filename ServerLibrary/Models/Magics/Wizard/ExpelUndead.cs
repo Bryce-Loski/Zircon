@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【驱逐不死】- 对亡灵怪物的即死技能
+    /// 【圣言术】- 对亡灵怪物的即死技能
     /// 
     /// 效果：对非Boss、等级<70的亡灵怪物进行驱逐判定，
     ///       成功则直接击杀。成功率基于等级差和魔法等级。

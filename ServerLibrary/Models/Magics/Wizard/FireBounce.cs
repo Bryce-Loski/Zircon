@@ -8,7 +8,7 @@ using S = Library.Network.ServerPackets;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【火焰弹射】(RayOfLight) - 火系弹射攻击技能（自定义技能）
+    /// 【混元掌】(RayOfLight) - 火系弹射攻击技能（自定义技能）
     /// 
     /// 效果：火球命中目标后自动弹跳到附近3格内的其他怪物，
     ///       最多弹跳 Magic.Level + 2 次。

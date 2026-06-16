@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【焦土术】- 火系线状AOE攻击技能
+    /// 【地狱火】- 火系线状AOE攻击技能
     /// 
     /// 效果：沿面向方向释放一条8格长、3格宽的火系伤害带。
     /// 元素属性：火 (Element.Fire)

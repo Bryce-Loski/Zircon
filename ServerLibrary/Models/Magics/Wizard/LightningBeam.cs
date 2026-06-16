@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【雷光束】- 雷系线状AOE攻击技能
+    /// 【疾光电影】- 雷系线状AOE攻击技能
     /// 
     /// 效果：沿面向方向释放一条8格长、3格宽的雷系伤害带。
     /// 元素属性：雷 (Element.Lightning)

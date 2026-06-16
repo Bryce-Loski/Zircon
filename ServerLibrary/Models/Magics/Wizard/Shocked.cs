@@ -4,7 +4,7 @@ using Server.DBModels;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【天怒】(FuryBlast) - 被动增强技能
+    /// 【魔爆术】(FuryBlast) - 被动增强技能
     /// 
     /// 效果：被动技能，为所有雷系攻击技能附加麻痹效果。
     ///       被其他雷系技能通过 GetAugmentedSkill() 引用。

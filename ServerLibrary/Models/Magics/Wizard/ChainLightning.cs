@@ -10,7 +10,7 @@ using S = Library.Network.ServerPackets;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【连锁闪电】- 雷系连锁弹射攻击技能
+    /// 【怒神霹雳】- 雷系连锁弹射攻击技能
     /// 
     /// 效果：闪电击中目标后自动弹跳到附近1格内的其他怪物，
     ///       每次弹射伤害递减（powerDivisor递增）。

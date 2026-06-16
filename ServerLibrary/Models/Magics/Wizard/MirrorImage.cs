@@ -9,7 +9,7 @@ using S = Library.Network.ServerPackets;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【镜像分身】- 元素分身召唤技能
+    /// 【分身术】- 元素分身召唤技能
     /// 
     /// 效果：在指定位置召唤一个镜像分身怪物(Monsters.MirrorImage)，
     ///       分身的元素属性由装备的暗石(DarkStone)决定。

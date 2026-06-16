@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【天罚】- 自身增益Buff技能
+    /// 【天打雷劈】- 自身增益Buff技能
     /// 
     /// 效果：激活天罚Buff，持续期间获得伤害反射效果。
     ///       反射值 = (2+Level)*20，持续时间 = 30+Level*30 秒。

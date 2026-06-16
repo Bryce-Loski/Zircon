@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【雷电波】- 雷系范围AOE攻击技能
+    /// 【地狱雷光】- 雷系范围AOE攻击技能
     /// 
     /// 效果：在指定位置释放雷电波，对3x3范围内所有敌人造成雷系伤害。
     /// 元素属性：雷 (Element.Lightning)

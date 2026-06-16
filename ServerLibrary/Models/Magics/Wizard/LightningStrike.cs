@@ -8,7 +8,7 @@ using S = Library.Network.ServerPackets;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【雷击术】(TempestOfUnstableEnergy) - 雷系连锁弹射攻击技能（自定义技能）
+    /// 【地狱魔焰】(TempestOfUnstableEnergy) - 雷系连锁弹射攻击技能（自定义技能）
     /// 
     /// 效果：类似连锁闪电，但弹射机制不同——每次弹射伤害递增而非递减。
     ///       最多弹射 Magic.Level + 2 次。

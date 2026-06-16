@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【瞬间移动】- 随机传送技能
+    /// 【瞬息移动】- 随机传送技能
     /// 
     /// 效果：随机传送到当前地图的任意位置。
     ///       成功率 = (2+Level*2) / (MagicMaxLevel+5)。

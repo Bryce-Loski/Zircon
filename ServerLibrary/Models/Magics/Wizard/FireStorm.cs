@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【火风暴】- 火系范围AOE攻击技能
+    /// 【爆裂火焰】- 火系范围AOE攻击技能
     /// 
     /// 效果：在指定位置召唤火风暴，对3x3范围内所有敌人造成火系伤害。
     /// 元素属性：火 (Element.Fire)

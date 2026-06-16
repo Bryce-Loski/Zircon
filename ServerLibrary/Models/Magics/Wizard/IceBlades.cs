@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【冰刃术】- 冰系单体攻击技能
+    /// 【冰月震天】- 冰系单体攻击技能
     /// 
     /// 效果：召唤冰刃刺向目标，造成冰系伤害并附带减速效果。
     /// 元素属性：冰 (Element.Ice)

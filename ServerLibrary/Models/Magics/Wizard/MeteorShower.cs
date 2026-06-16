@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【流星雨】- 火系多目标攻击技能
+    /// 【焰天火雨】- 火系多目标攻击技能
     /// 
     /// 效果：在目标区域召唤流星雨，随机攻击 6+Magic.Level 个目标。
     /// 元素属性：火 (Element.Fire)

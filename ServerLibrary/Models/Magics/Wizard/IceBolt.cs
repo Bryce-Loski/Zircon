@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【冰箭术】- 冰系单体攻击技能
+    /// 【冰月神掌】- 冰系单体攻击技能
     /// 
     /// 效果：向目标发射冰箭，造成冰系伤害并附带减速效果。
     /// 元素属性：冰 (Element.Ice)

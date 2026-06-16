@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【雷球术】- 雷系单体攻击技能
+    /// 【霹雳掌】- 雷系单体攻击技能
     /// 
     /// 效果：向目标发射雷球，造成雷系伤害并有概率附加麻痹效果。
     /// 元素属性：雷 (Element.Lightning)

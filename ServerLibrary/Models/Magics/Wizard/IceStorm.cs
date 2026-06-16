@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【冰风暴】- 冰系范围AOE攻击技能
+    /// 【冰咆哮】- 冰系范围AOE攻击技能
     /// 
     /// 效果：在指定位置召唤冰风暴，对3x3范围内所有敌人造成冰系伤害并减速。
     /// 元素属性：冰 (Element.Ice)

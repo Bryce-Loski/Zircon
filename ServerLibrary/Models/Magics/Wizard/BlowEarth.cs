@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【大地吹息】- 风系线状AOE攻击技能
+    /// 【风震天】- 风系线状AOE攻击技能
     /// 
     /// 效果：沿面向方向释放一条8格长、3格宽的风系伤害带，
     ///       附带强力击退效果（10格），侧翼伤害衰减至30%。

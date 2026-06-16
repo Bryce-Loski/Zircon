@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【冻土术】- 冰系线状AOE攻击技能
+    /// 【冰沙掌】- 冰系线状AOE攻击技能
     /// 
     /// 效果：沿面向方向释放一条8格长、3格宽的冰系伤害带，附带减速效果。
     /// 元素属性：冰 (Element.Ice)

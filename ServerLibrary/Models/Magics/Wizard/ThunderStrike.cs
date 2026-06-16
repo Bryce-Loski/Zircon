@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【雷暴术】- 雷系自身周围AOE攻击技能
+    /// 【电闪雷鸣】- 雷系自身周围AOE攻击技能
     /// 
     /// 效果：以自身为中心释放雷暴，对范围内随机目标造成雷系伤害。
     ///       Level<=3时范围3格(7x7)，Level>3时范围6格(13x13)。

@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Server.Models.Magics
 {
     /// <summary>
-    /// 【冰雨】(AdvancedRenounce) - 冰系大范围AOE攻击技能
+    /// 【高级凝血离魂】(AdvancedRenounce) - 冰系大范围AOE攻击技能
     /// 
     /// 效果：在目标位置7x7范围内随机降下多波冰雨（Level+1波），
     ///       每波随机命中约30%的格子，对命中格造成冰系伤害。
